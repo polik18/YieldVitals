@@ -1,3 +1,6 @@
+        // Fallback t() before i18n loads
+        if (typeof window.t === 'undefined') { window.t = function(k) { return k; }; }
+
 ﻿        let currentRunId = 0; // 取代 isCancelled，使用 runId 防止競態
         let radarChart;
         let reportText = "";
@@ -29,7 +32,7 @@
 
         // 模式設定 (分級策略)
         const MODE_SETTINGS = {
-            quick: { gpuMax: 50000, gpuTimeLimit: 10000, cpuTime: 1500, otherTime: 1000, label: '快速', desc: 't('mode_quick_desc')' },
+            quick: { gpuMax: 50000, gpuTimeLimit: 10000, cpuTime: 1500, otherTime: 1000, label: '快速', desc: '適合手機或輕度測試' },
             standard: { gpuMax: 150000, gpuTimeLimit: 20000, cpuTime: 3000, otherTime: 2000, label: '標準', desc: '適合一般筆電或桌機' },
             extreme: { gpuMax: 500000, gpuTimeLimit: 30000, cpuTime: 5000, otherTime: 3000, label: '極限', desc: '適合高階桌機 (不建議手機使用)' },
             burnin: { gpuMax: 500000, gpuTimeLimit: 120000, cpuTime: 15000, otherTime: 5000, label: '燒機', desc: '長時間壓力測試 (測量散熱與穩定度)' }
@@ -67,27 +70,6 @@
 
         const deviceSpecs = getDeviceSpecs();
 
-        // 取得環境資訊 (使用 escapeHtml 防止 HTML 注入)
-        document.getElementById('envInfo').innerHTML = `
-            <div class="grid grid-cols-2 gap-3 mb-3">
-                <div class="bg-slate-800/50 p-2.5 rounded-lg border border-slate-700/50 flex flex-col justify-center items-center text-center hover:bg-slate-800/80 transition-colors">
-                    <span class="text-[10px] text-slate-500 mb-0.5 uppercase tracking-wider">OS Platform</span>
-                    <span class="text-xs font-bold text-slate-200">${escapeHtml(deviceSpecs.platform)}</span>
-                </div>
-                <div class="bg-slate-800/50 p-2.5 rounded-lg border border-slate-700/50 flex flex-col justify-center items-center text-center hover:bg-slate-800/80 transition-colors">
-                    <span class="text-[10px] text-slate-500 mb-0.5 uppercase tracking-wider">Memory / Cores</span>
-                    <span class="text-xs font-bold text-slate-200">${escapeHtml(deviceSpecs.memory)} / ${deviceSpecs.cores}C</span>
-                </div>
-                <div class="bg-slate-800/50 p-2.5 rounded-lg border border-slate-700/50 flex flex-col justify-center items-center text-center col-span-2 hover:bg-slate-800/80 transition-colors">
-                    <span class="text-[10px] text-slate-500 mb-0.5 uppercase tracking-wider">GPU Renderer</span>
-                    <span class="text-xs font-bold text-primary truncate w-full px-2" title="${escapeHtml(deviceSpecs.gpuRenderer)}">${escapeHtml(deviceSpecs.gpuRenderer)}</span>
-                </div>
-            </div>
-            <div class="flex justify-between items-center text-[10px] text-slate-600 border-t border-slate-800 pt-3">
-                <span>Res: ${deviceSpecs.resolution} @ ${deviceSpecs.pixelRatio}x</span>
-                <span class="truncate w-1/2 text-right" title="${escapeHtml(deviceSpecs.userAgent)}">${escapeHtml(deviceSpecs.userAgent)}</span>
-            </div>
-        `;
 
         // 模式切換文字連動
         document.querySelectorAll('input[name="testMode"]').forEach(radio => {
@@ -253,9 +235,7 @@
             } catch (e) { return false; }
         }
 
-        // 取消事件綁定 (遞增 currentRunId 使所有進行中的測試視為已取消)
-        document.getElementById('cancelBtn').addEventListener('click', () => currentRunId++);
-        document.getElementById('fullscreenCancelBtn').addEventListener('click', () => currentRunId++);
+        // cancelBtn listeners moved to DOMContentLoaded
 
         // 1. CPU 多核心測試 (Worker)
         const cpuWorkerCode = `
@@ -1053,8 +1033,23 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            // 初始化 Chart.js
-            if (window.Chart) {
+            // 取消事件纁定
+            document.getElementById('cancelBtn').addEventListener('click', () => currentRunId++);
+            document.getElementById('fullscreenCancelBtn').addEventListener('click', () => currentRunId++);
+
+
+            // Trigger initial mode description display
+            const initModeEvt = new Event('change');
+            document.querySelector('input[name="testMode"]:checked').dispatchEvent(initModeEvt);
+
+            // 初始化 Chart.js (延遲等待 defer 腳本載入)
+            async function initChart() {
+                let waited = 0;
+                while (!window.Chart && waited < 5000) {
+                    await new Promise(r => setTimeout(r, 100));
+                    waited += 100;
+                }
+                if (!window.Chart) return;
                 const ctx = document.getElementById('radarChart').getContext('2d');
                 Chart.defaults.color = '#94a3b8';
                 radarChart = new Chart(ctx, {
@@ -1084,6 +1079,7 @@
                     }
                 });
             }
+            initChart();
 
             // 複製報告按鈕綁定
             document.getElementById('copyReportBtn').addEventListener('click', async () => {
@@ -1124,6 +1120,12 @@
 
             // 主執行流 (具有完整錯誤保護與取消保護)
             document.getElementById('startBtn').addEventListener('click', async function () {
+                // Wait up to 3s for deferred scripts to load
+                let waited = 0;
+                while ((!window.Chart || !window.THREE) && waited < 3000) {
+                    await new Promise(r => setTimeout(r, 100));
+                    waited += 100;
+                }
                 const depError = checkDependencies();
                 if (depError) return showFatalError(depError);
 
@@ -1207,8 +1209,11 @@
                     showError("嚴重錯誤: " + fatalErr.message);
                 } finally {
                     setButtonLoading(false);
+                }
+            });
+        });
 
-window.updateDynamicElements = function() {
+        window.updateDynamicElements = function() {
     if (typeof radarChart !== 'undefined' && radarChart) {
         radarChart.data.labels = t('radar_labels');
         radarChart.update();

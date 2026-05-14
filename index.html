@@ -349,9 +349,31 @@
         <span id="toastMsg" class="font-bold text-sm"></span>
     </div>
 
+    <!-- GPU Fullscreen Test Container -->
+    <div id="threeContainer" class="fixed inset-0 z-50 bg-black hidden flex-col items-center justify-center">
+        <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-black/70 backdrop-blur px-6 py-2 rounded-full flex items-center gap-4 z-10">
+            <span class="text-xs text-slate-400 font-mono">GPU STRESS TEST</span>
+            <span id="fpsCounter" class="text-white font-bold font-mono text-sm">-- FPS</span>
+        </div>
+        <button id="fullscreenCancelBtn" class="absolute top-4 right-4 bg-red-600 hover:bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-lg z-10 transition-colors">
+            ✕ Cancel
+        </button>
+    </div>
+
+    <!-- Reliability Box (hidden until test done) -->
+    <div id="reliabilityBox" class="hidden mx-auto max-w-7xl px-4 md:px-6 pb-2">
+        <div class="bg-cardbg border border-slate-700 rounded-lg px-4 py-2 flex items-center gap-3 text-xs">
+            <span class="text-slate-400">Result Reliability:</span>
+            <span id="reliabilityBadge" class="px-2 py-0.5 rounded text-xs font-bold text-white bg-primary">--</span>
+            <span id="reliabilityReason" class="text-slate-500"></span>
+        </div>
+    </div>
+
+    <!-- Crypto warning (hidden by default) -->
+    <div id="cryptoWarning" class="hidden"></div>
+
     <!-- DOM 測試用隱藏區塊 -->
     <div id="domSandbox"></div>
-    <div id="3dContainer" style="position: absolute; width: 1px; height: 1px; overflow: hidden; top: -9999px;"></div>
 
     <footer class="mt-8 py-6 text-center text-xs text-slate-500 border-t border-slate-800 bg-darkbg/50">
         <p class="font-bold text-slate-400 mb-2" data-i18n="footer_disclaimer_title">【 效能評測說明 】</p>
