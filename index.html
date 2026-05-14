@@ -1,532 +1,365 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YieldVitals Pro | 廠測級效能評估</title>
+    <title data-i18n="title">YieldVitals V1.0 | Browser Benchmark</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="YieldVitals V1.0 - Factory-grade web performance testing and hardware diagnostic tool. Evaluate CPU, GPU, RAM, Storage, and Network bottlenecks directly in your browser.">
+    <meta name="keywords" content="browser benchmark, cpu test, gpu test, webgl test, html5 benchmark, hardware diagnostics, yieldvitals">
+    <meta name="author" content="YieldVitals QC Engineering">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yieldvitals.com/">
+    <meta property="og:title" content="YieldVitals V1.0 | Factory-Grade Browser Benchmark">
+    <meta property="og:description" content="Test your device's limits with our 8-axis benchmark. Get expert hardware diagnostic advice for free.">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://yieldvitals.com/">
+    <meta property="twitter:title" content="YieldVitals V1.0 | Browser Benchmark">
+    <meta property="twitter:description" content="Test your device's limits with our 8-axis benchmark. Get expert hardware diagnostic advice for free.">
+    
+    <!-- Hreflang Tags for SEO (Dynamically generated or top languages) -->
+    <link rel="alternate" hreflang="en" href="https://yieldvitals.com/" />
+    <link rel="alternate" hreflang="zh-TW" href="https://yieldvitals.com/?lang=zh-TW" />
+    <link rel="alternate" hreflang="x-default" href="https://yieldvitals.com/" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
     <!-- 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
                     colors: {
-                        tiffany: '#0abab5',
-                        'tiffany-dark': '#088a85',
-                        darkbg: '#0f172a',
-                        cardbg: '#1e293b'
+                        primary: '#3b82f6',
+                        'primary-dark': '#2563eb',
+                        darkbg: '#020617',
+                        cardbg: 'rgba(15, 23, 42, 0.6)'
                     }
                 }
             }
         }
     </script>
-    <!-- 引入 Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- 引入 Three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- 引入 Chart.js 與 Three.js (Deferred for better SEO FCP) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- App Logic -->
+    <script defer src="js/i18n.js"></script>
+    <script defer src="js/app.js"></script>
+
+    <style>
+        #domSandbox {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6;
+        }
+    </style>
 </head>
-<body class="bg-darkbg text-slate-300 font-sans min-h-screen flex flex-col">
+
+<body class="bg-darkbg text-slate-300 font-sans min-h-screen flex flex-col overflow-x-hidden relative">
+
+    <!-- 動態背景網格與光暈 -->
+    <div class="fixed inset-0 z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/20 blur-[120px] rounded-full pointer-events-none"></div>
+    </div>
 
     <!-- 頂部導覽列 -->
-    <header class="bg-cardbg border-b border-slate-700 p-4 flex justify-between items-center z-10 relative shadow-md">
+    <header class="bg-cardbg backdrop-blur-xl border-white/5 border-b border-slate-700 p-4 flex justify-between items-center z-10 relative shadow-md">
         <div class="flex items-center gap-3">
-            <!-- 品牌 Logo 更新為 Y -->
-            <div class="w-8 h-8 bg-tiffany rounded-lg flex items-center justify-center font-bold text-white text-xl shadow-[0_0_10px_rgba(10,186,181,0.5)]">Y</div>
-            <h1 class="text-xl font-bold text-white tracking-wide">YieldVitals <span class="text-tiffany font-light">Pro</span></h1>
+            <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center font-bold text-white text-xl shadow-[0_0_10px_rgba(59,130,246,0.5)]">
+                Y</div>
+            <h1 class="text-xl font-bold text-white tracking-wide">YieldVitals <span class="text-sm font-normal text-primary ml-1">V1.0</span></h1>
         </div>
-        <div class="text-sm text-slate-400 font-mono hidden md:block">
-            v6.0.0 | OQC Calibrated | Multi-Core CPU | 3D Visual ALU | Gigabit Net
+        <div class="flex items-center gap-4">
+            <div class="text-sm text-slate-400 font-mono hidden md:block" data-i18n="subtitle">
+                V1.0 | Browser Benchmark | QC Diagnostics
+            </div>
+            <!-- 語言切換選單 -->
+            <select id="langSelector" class="bg-slate-800 text-slate-300 text-xs border border-slate-600 rounded px-2 py-1 focus:outline-none focus:border-primary cursor-pointer appearance-none text-center">
+                <option value="en">🇺🇸 EN</option>
+                <option value="zh-TW">🇹🇼 繁中</option>
+                <option value="zh-CN">🇨🇳 简中</option>
+                <option value="ja">🇯🇵 日本語</option>
+                <option value="ko">🇰🇷 한국어</option>
+                <option value="es">🇪🇸 Español</option>
+                <option value="fr">🇫🇷 Français</option>
+                <option value="de">🇩🇪 Deutsch</option>
+                <option value="ru">🇷🇺 Русский</option>
+                <option value="id">🇮🇩 Bahasa</option>
+                <option value="vi">🇻🇳 Tiếng Việt</option>
+                <!-- Add others if needed, using these as main quick selects -->
+            </select>
         </div>
     </header>
 
     <main class="flex-1 p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto w-full relative z-10">
-        
         <!-- 左側面板：控制與進度 -->
         <div class="flex flex-col gap-6">
-            <div class="bg-cardbg rounded-xl p-6 border border-slate-700 shadow-lg">
-                <h2 class="text-lg font-bold text-white mb-4">執行廠測級基準測試</h2>
-                <p class="text-sm text-slate-400 mb-6 leading-relaxed">
-                    此測試將喚醒所有 CPU 核心進行矩陣運算、執行十萬級 3D 著色器指令與並發千兆網路壓力。測試期間設備可能會發熱或風扇加速，請保持頁面開啟。
+            <div class="bg-cardbg backdrop-blur-xl border-white/5 rounded-xl p-6 border border-slate-700 shadow-lg relative overflow-hidden">
+                <!-- 全域錯誤提示列 -->
+                <div id="globalError" data-i18n="error_msg" class="absolute top-0 left-0 w-full bg-red-500 text-white text-sm font-bold py-2 px-4 text-center transform -translate-y-full transition-transform duration-300 z-20">
+                    測試過程中發生錯誤，請重試。
+                </div>
+
+                <h2 class="text-lg font-bold text-white mb-4" data-i18n="run_test">執行瀏覽器效能測試</h2>
+                <p class="text-sm text-slate-400 mb-6 leading-relaxed" data-i18n="test_desc">
+                    此測試將評估設備在瀏覽器環境下的綜合運算能力。測試期間設備可能會發熱，請保持頁面開啟。
                 </p>
-                <button id="startBtn" class="w-full bg-tiffany hover:bg-tiffany-dark text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(10,186,181,0.4)]">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    開始極限測試
-                </button>
+
+                <!-- 測試模式選擇 -->
+                <div class="mb-6 border border-slate-700 rounded-lg p-3 bg-slate-800/50">
+                    <div class="text-xs text-slate-400 mb-3 font-bold flex justify-between">
+                        <span data-i18n="select_mode">選擇測試負載模式：</span>
+                        <span id="modeDesc" class="text-primary font-normal"></span>
+                    </div>
+                    <div class="grid grid-cols-4 gap-2 text-sm">
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="testMode" value="quick" class="peer sr-only" checked>
+                            <div data-i18n="mode_quick" class="text-center py-2 px-1 rounded-md border border-slate-600 text-slate-400 peer-checked:border-primary peer-checked:text-primary peer-checked:bg-primary/10 transition-all">
+                                快速</div>
+                        </label>
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="testMode" value="standard" class="peer sr-only">
+                            <div data-i18n="mode_standard" class="text-center py-2 px-1 rounded-md border border-slate-600 text-slate-400 peer-checked:border-yellow-400 peer-checked:text-yellow-400 peer-checked:bg-yellow-400/10 transition-all">
+                                標準</div>
+                        </label>
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="testMode" value="extreme" class="peer sr-only">
+                            <div data-i18n="mode_extreme" class="text-center py-2 px-1 rounded-md border border-slate-600 text-slate-400 peer-checked:border-red-400 peer-checked:text-red-400 peer-checked:bg-red-400/10 transition-all">
+                                極限</div>
+                        </label>
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="testMode" value="burnin" class="peer sr-only">
+                            <div data-i18n="mode_burnin" class="text-center py-2 px-1 rounded-md border border-slate-600 text-slate-400 peer-checked:border-purple-400 peer-checked:text-purple-400 peer-checked:bg-purple-400/10 transition-all">
+                                燒機</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 relative z-10 mt-6">
+                    <button id="startBtn" class="group flex-1 bg-gradient-to-r from-primary to-primary-dark hover:from-primary-dark hover:to-primary text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(59,130,246,0.4)] hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] active:scale-95">
+                        <svg class="w-5 h-5 btn-icon group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        <span class="btn-text text-lg" data-i18n="start_btn">開始壓力測試</span>
+                    </button>
+                    <!-- 取消按鈕 -->
+                    <button id="cancelBtn" class="hidden bg-slate-800 hover:bg-red-500 text-slate-300 hover:text-white font-bold py-3.5 px-5 rounded-xl transition-all duration-300 flex items-center justify-center border border-slate-700 hover:border-red-500 shadow-lg active:scale-95">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
 
-            <div class="bg-cardbg rounded-xl p-6 border border-slate-700 shadow-lg flex-1">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 border-b border-slate-700 pb-2">測試子項目進度</h3>
+            <div class="bg-cardbg backdrop-blur-xl border-white/5 rounded-xl p-6 border border-slate-700 shadow-lg flex-1">
+                <h3 data-i18n="subtasks" class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 border-b border-slate-700 pb-2">
+                    測試子項目進度</h3>
                 <ul class="space-y-4 font-mono text-sm" id="logList">
                     <li class="flex justify-between items-center opacity-50" id="item-cpu">
-                        <span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-slate-600 indicator"></div> 浮點矩陣 (全核心)</span>
-                        <span class="text-right w-24 value">等待中</span>
+                        <span class="flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-slate-600 indicator"></div> <span data-i18n="cpu_calc">邏輯運算 (CPU)</span>
+                        </span>
+                        <span class="text-right w-24 value" data-i18n="status_waiting">等待中</span>
                     </li>
                     <li class="flex justify-between items-center opacity-50" id="item-string">
-                        <span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-slate-600 indicator"></div> 深度字串解析</span>
-                        <span class="text-right w-24 value">等待中</span>
+                        <span class="flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-slate-600 indicator"></div> <span data-i18n="string_parse">深度字串解析</span>
+                        </span>
+                        <span class="text-right w-24 value" data-i18n="status_waiting">等待中</span>
                     </li>
                     <li class="flex justify-between items-center opacity-50" id="item-ram">
-                        <span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-slate-600 indicator"></div> 記憶體 GC 壓力</span>
-                        <span class="text-right w-24 value">等待中</span>
+                        <span class="flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-slate-600 indicator"></div> <span data-i18n="ram_gc">記憶體 GC 壓力</span>
+                        </span>
+                        <span class="text-right w-24 value" data-i18n="status_waiting">等待中</span>
                     </li>
                     <li class="flex justify-between items-center opacity-50" id="item-dom">
-                        <span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-slate-600 indicator"></div> DOM 佈局重繪</span>
-                        <span class="text-right w-24 value">等待中</span>
+                        <span class="flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-slate-600 indicator"></div> <span data-i18n="dom_layout">DOM 佈局重繪</span>
+                        </span>
+                        <span class="text-right w-24 value" data-i18n="status_waiting">等待中</span>
                     </li>
                     <li class="flex justify-between items-center opacity-50" id="item-gpu">
-                        <span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-slate-600 indicator"></div> 全螢幕 3D 渲染 (GPU)</span>
-                        <span class="text-right w-24 value">等待中</span>
+                        <span class="flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-slate-600 indicator"></div> <span data-i18n="gpu_webgl">WebGL 圖形渲染</span>
+                        </span>
+                        <span class="text-right w-24 value" data-i18n="status_waiting">等待中</span>
                     </li>
-                    <li class="flex justify-between items-center opacity-50" id="item-net">
-                        <span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-slate-600 indicator"></div> 網路吞吐 (多線程並發)</span>
-                        <span class="text-right w-24 value">等待中</span>
+                    <li class="flex justify-between items-center opacity-50" id="item-crypto">
+                        <span class="flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-slate-600 indicator"></div> <span data-i18n="crypto_throughput">WebCrypto 吞吐</span>
+                        </span>
+                        <span class="text-right w-24 value" data-i18n="status_waiting">等待中</span>
+                    </li>
+                    <li class="flex justify-between items-center opacity-50" id="item-storage">
+                        <span class="flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-slate-600 indicator"></div> <span data-i18n="storage_io">本機存取 (Storage)</span>
+                        </span>
+                        <span class="text-right w-24 value" data-i18n="status_waiting">等待中</span>
+                    </li>
+                    <li class="flex justify-between items-center opacity-50" id="item-network">
+                        <span class="flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-slate-600 indicator"></div> <span data-i18n="network_dl">網路下載 (Network)</span>
+                        </span>
+                        <span class="text-right w-24 value" data-i18n="status_waiting">等待中</span>
                     </li>
                 </ul>
                 <div class="mt-8 pt-4 border-t border-slate-700 text-xs text-slate-500 font-mono" id="envInfo"></div>
+                <div class="mt-4 p-3 bg-red-900/20 border border-red-500/30 rounded-lg text-xs text-red-200" data-i18n="warning_browser">
+                    ⚠️ 跑分結果受瀏覽器引擎影響極大，跨設備比較請確保使用相同瀏覽器 (建議使用 Chrome/Edge)。
+                </div>
             </div>
         </div>
 
         <!-- 右側面板：圖表與天梯 -->
         <div class="lg:col-span-2 flex flex-col gap-6">
-            
-            <!-- 天梯圖 -->
-            <div class="bg-cardbg rounded-xl p-6 border border-slate-700 shadow-lg relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 via-yellow-500 to-tiffany"></div>
-                <h2 class="text-sm font-bold text-white mb-8">設備效能天梯 (綜合評分對比)</h2>
-                
-                <div class="relative w-full h-12 mt-6">
+            <!-- 天梯圖與建議 -->
+            <div class="bg-cardbg backdrop-blur-xl border-white/5 rounded-xl p-6 border border-slate-700 shadow-lg relative overflow-hidden flex flex-col">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 via-yellow-500 to-primary"></div>
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-sm font-bold text-white" data-i18n="tier_title">設備效能天梯 (綜合評分對比)</h2>
+                    <div class="flex gap-2">
+                        <button id="copyReportBtn" class="hidden bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold py-1.5 px-3 rounded flex items-center gap-2 transition-colors border border-slate-600">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                            <span data-i18n="btn_copy_report">複製測試報告</span>
+                        </button>
+                        <button id="exportJsonBtn" class="hidden bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold py-1.5 px-3 rounded flex items-center gap-2 transition-colors border border-slate-600">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            <span data-i18n="btn_export_json">匯出 JSON</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="relative w-full h-12 mt-2">
                     <div class="absolute top-5 left-0 w-full h-0.5 bg-slate-700"></div>
-                    <!-- 刻度標記 -->
                     <div class="absolute top-3 left-[10%] flex flex-col items-center">
                         <div class="w-0.5 h-3 bg-slate-500 mb-1"></div>
-                        <span class="text-[10px] text-slate-500 text-center leading-tight">舊款文書機<br>(Celeron/i3)</span>
+                        <span class="text-[10px] text-slate-500 text-center leading-tight"><span data-i18n="tier_entry">入門裝置</span><br></span>
                     </div>
                     <div class="absolute top-3 left-[40%] flex flex-col items-center">
                         <div class="w-0.5 h-3 bg-slate-500 mb-1"></div>
-                        <span class="text-[10px] text-slate-500 text-center leading-tight">主流行動裝置<br>(Snapdragon 8/A15)</span>
+                        <span class="text-[10px] text-slate-500 text-center leading-tight"><span data-i18n="tier_mainstream">主流行動裝置</span><br></span>
                     </div>
                     <div class="absolute top-3 left-[70%] flex flex-col items-center">
                         <div class="w-0.5 h-3 bg-slate-500 mb-1"></div>
-                        <span class="text-[10px] text-slate-500 text-center leading-tight">高階創作者筆電<br>(i7/Ryzen 7)</span>
+                        <span class="text-[10px] text-slate-500 text-center leading-tight"><span data-i18n="tier_high_laptop">高階效能筆電</span><br></span>
                     </div>
                     <div class="absolute top-3 left-[95%] flex flex-col items-center">
                         <div class="w-0.5 h-3 bg-slate-500 mb-1"></div>
-                        <span class="text-[10px] text-slate-500 text-center leading-tight">旗艦級工作站<br>(M2/M3 Max/RTX 4090)</span>
+                        <span class="text-[10px] text-slate-500 text-center leading-tight"><span data-i18n="tier_flagship">旗艦級工作站</span><br></span>
                     </div>
-
-                    <!-- 進度條與分數氣泡 -->
-                    <div id="tierBar" class="absolute top-5 left-0 h-0.5 bg-tiffany w-0 transition-all duration-1000 ease-out shadow-[0_0_10px_#0abab5]"></div>
-                    <div id="scoreMarker" class="absolute top-0 -ml-5 w-10 h-10 bg-tiffany text-white font-bold rounded-lg flex items-center justify-center text-lg shadow-[0_0_15px_rgba(10,186,181,0.6)] transition-all duration-1000 ease-out z-10" style="left: 0%; opacity: 0;">
+                    
+                    <div id="tierBar" class="absolute top-5 left-0 h-0.5 bg-primary w-0 transition-all duration-1000 ease-out shadow-[0_0_10px_#3b82f6]"></div>
+                    
+                    <div id="scoreMarker" class="absolute top-0 -ml-5 w-10 h-10 bg-primary text-white font-bold rounded-lg flex items-center justify-center text-lg shadow-[0_0_15px_rgba(59,130,246,0.6)] transition-all duration-1000 ease-out z-10" style="left: 0%; opacity: 0;">
                         0
-                        <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-tiffany rotate-45"></div>
+                        <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rotate-45"></div>
                     </div>
                 </div>
-                <div id="tierText" class="text-center mt-12 text-sm font-bold text-tiffany hidden"></div>
+
+                <div id="tierText" class="mt-8 text-center text-white font-bold hidden relative z-10">
+                    <!-- Text generated via JS based on finalScore -->
+                </div>
             </div>
 
-            <!-- 雷達圖與具體數據 -->
-            <div class="bg-cardbg rounded-xl p-6 border border-slate-700 shadow-lg flex-1 flex flex-col md:flex-row gap-8 items-center">
-                <div class="w-full md:w-1/2 max-w-[300px] aspect-square relative">
-                    <canvas id="radarChart"></canvas>
+            <!-- 雷達圖與細節 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
+                <div class="bg-cardbg backdrop-blur-xl border-white/5 rounded-xl p-6 border border-slate-700 shadow-lg flex flex-col items-center justify-center min-h-[300px]">
+                    <canvas id="radarChart" class="w-full h-full max-h-[250px]"></canvas>
                 </div>
-                <div class="w-full md:w-1/2 grid grid-cols-2 gap-4">
-                    <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-                        <div class="text-[10px] text-slate-400 mb-1">邏輯運算 (CPU全核)</div>
-                        <div class="text-2xl font-bold text-white" id="res-cpu">-- <span class="text-xs font-normal text-slate-500">M/s</span></div>
-                    </div>
-                    <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-                        <div class="text-[10px] text-slate-400 mb-1">圖形渲染 (GPU)</div>
-                        <div class="text-2xl font-bold text-white" id="res-gpu">-- <span class="text-xs font-normal text-slate-500">fps</span></div>
-                    </div>
-                    <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-                        <div class="text-[10px] text-slate-400 mb-1">記憶體與DOM (RAM)</div>
-                        <div class="text-2xl font-bold text-white" id="res-dom">-- <span class="text-xs font-normal text-slate-500">ops/s</span></div>
-                    </div>
-                    <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-                        <div class="text-[10px] text-slate-400 mb-1">網路帶寬 (NET並發)</div>
-                        <div class="text-2xl font-bold text-tiffany" id="res-net">-- <span class="text-xs font-normal text-tiffany/60">Mbps</span></div>
+                
+                <!-- 詳細數據面板 -->
+                <div class="bg-cardbg backdrop-blur-xl border-white/5 rounded-xl p-6 border border-slate-700 shadow-lg flex flex-col justify-center">
+                    <div class="grid grid-cols-2 gap-y-6 gap-x-4">
+                        <div>
+                            <div class="text-xs text-slate-400 mb-1 font-mono" data-i18n="cpu_calc">邏輯運算 (CPU)</div>
+                            <div class="text-2xl font-bold text-white" id="res-cpu">-- <span class="text-xs font-normal text-slate-500">M/s</span></div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-400 mb-1 font-mono" data-i18n="string_parse">深度字串解析</div>
+                            <div class="text-2xl font-bold text-white" id="res-string">-- <span class="text-xs font-normal text-slate-500">k/s</span></div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-400 mb-1 font-mono" data-i18n="crypto_throughput">加密吞吐</div>
+                            <div class="text-2xl font-bold text-white" id="res-crypto">-- <span class="text-xs font-normal text-slate-500">MB/s</span></div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-400 mb-1 font-mono" data-i18n="ram_gc">記憶體配置與 GC</div>
+                            <div class="text-2xl font-bold text-white" id="res-ram">-- <span class="text-xs font-normal text-slate-500">cyc/s</span></div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-400 mb-1 font-mono" data-i18n="storage_io">本機存取 (Storage)</div>
+                            <div class="text-2xl font-bold text-white" id="res-storage">-- <span class="text-xs font-normal text-slate-500">MB/s</span></div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-400 mb-1 font-mono" data-i18n="network_dl">網路下載 (Network)</div>
+                            <div class="text-2xl font-bold text-white" id="res-network">-- <span class="text-xs font-normal text-slate-500">Mbps</span></div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-400 mb-1 font-mono" data-i18n="dom_layout">DOM 重繪 (Layout)</div>
+                            <div class="text-2xl font-bold text-white" id="res-dom">-- <span class="text-xs font-normal text-slate-500">ops/s</span></div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-400 mb-1 font-mono" data-i18n="gpu_webgl">WebGL 渲染 (GPU)</div>
+                            <div class="text-2xl font-bold text-white" id="res-gpu">-- <span class="text-xs font-normal text-slate-500">k objs</span></div>
+                            <p class="text-primary mt-2 font-mono" id="gpuStatus"></p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- 3D 測試全螢幕容器 -->
-    <div id="threeContainer" class="fixed inset-0 z-50 bg-black hidden flex-col items-center justify-center">
-        <div class="absolute top-10 text-center z-50 pointer-events-none">
-            <h2 class="text-2xl font-bold text-white tracking-widest uppercase" style="text-shadow: 0 0 10px rgba(10,186,181,0.8);">GPU 極限壓力測試中</h2>
-            <p class="text-tiffany mt-2 font-mono" id="gpuStatus">渲染 100,000 個動態幾何體...</p>
-        </div>
-        <div id="fpsCounter" class="absolute bottom-10 text-4xl font-mono font-bold text-white z-50" style="text-shadow: 0 0 10px rgba(255,255,255,0.5);">-- FPS</div>
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-slate-800 border border-slate-600 text-white px-4 py-3 rounded-lg shadow-xl transform transition-all duration-300 translate-y-20 opacity-0 z-50 flex items-center gap-3">
+        <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        <span id="toastMsg" class="font-bold text-sm"></span>
     </div>
 
-    <!-- 隱藏的 DOM 測試沙盒 -->
+    <!-- DOM 測試用隱藏區塊 -->
     <div id="domSandbox"></div>
+    <div id="3dContainer" style="position: absolute; width: 1px; height: 1px; overflow: hidden; top: -9999px;"></div>
 
-    <script>
-        //        // 取得環境資訊
-        const cores = navigator.hardwareConcurrency || 4;
-        document.getElementById('envInfo').innerHTML = `
-            瀏覽器引擎 :<br>
-            ${navigator.userAgent}<br>
-            邏輯核心數: ${cores} 核心 | 螢幕解析度: ${window.innerWidth}x${window.innerHeight}@${window.devicePixelRatio}x
-        `;
-
-        // Chart.js 實例
-        let radarChart;
-        function initChart() {
-            const ctx = document.getElementById('radarChart').getContext('2d');
-            Chart.defaults.color = '#94a3b8';
-            radarChart = new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: ['邏輯 CPU', '記憶體與 DOM', '圖形 GPU', '網路傳輸'],
-                    datasets: [{
-                        label: '效能指標',
-                        data: [0, 0, 0, 0],
-                        backgroundColor: 'rgba(10, 186, 181, 0.2)',
-                        borderColor: '#0abab5',
-                        pointBackgroundColor: '#0abab5',
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: '#0abab5',
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    scales: {
-                        r: {
-                            angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
-                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                            pointLabels: { font: { size: 11, family: 'monospace', weight: 'bold' }, color: '#94a3b8' },
-                            ticks: { display: false, min: 0, max: 100 }
-                        }
-                    },
-                    plugins: { legend: { display: false } },
-                    maintainAspectRatio: false
-                }
-            });
-        }
-        initChart();
-
-        // UI 更新小工具
-        function setStatus(id, text, isRunning = false, isDone = false) {
-            const el = document.getElementById(`item-${id}`);
-            el.classList.remove('opacity-50');
-            const val = el.querySelector('.value');
-            const ind = el.querySelector('.indicator');
-            val.textContent = text;
-            if (isRunning) {
-                val.classList.add('text-tiffany', 'animate-pulse');
-                ind.classList.replace('bg-slate-600', 'bg-yellow-400');
-                ind.classList.add('animate-ping');
-            }
-            if (isDone) {
-                val.classList.remove('animate-pulse', 'text-tiffany');
-                val.classList.add('text-white');
-                ind.classList.remove('animate-ping', 'bg-yellow-400');
-                ind.classList.replace('bg-slate-600', 'bg-tiffany');
-            }
-        }
-
-        //        // 1. CPU 多核心測試 (Web Worker 叢集)
-        const cpuWorkerCode = `
-            self.onmessage = function(e) {
-                const startTime = performance.now();
-                let ops = 0;
-                while (performance.now() - startTime < 1500) {
-                    let a = Math.random(), b = Math.random(), c = Math.random();
-                    for(let i=0; i<1000; i++) {
-                        a = (a * b) + c;
-                        b = Math.sqrt(a + c);
-                        c = Math.sin(b) * Math.cos(a);
-                    }
-                    ops += 1000;
-                }
-                self.postMessage(ops);
-            };
-        `;
-
-        async function runCPUMultiCore() {
-            setStatus('cpu', '全核壓測中...', true);
-            const blob = new Blob([cpuWorkerCode], { type: 'application/javascript' });
-            const workerUrl = URL.createObjectURL(blob);
-            let totalOps = 0;
-
-            const promises = Array.from({length: cores}).map(() => {
-                return new Promise(resolve => {
-                    const worker = new Worker(workerUrl);
-                    worker.onmessage = (e) => {
-                        totalOps += e.data;
-                        worker.terminate();
-                        resolve();
-                    };
-                    worker.postMessage('start');
-                });
-            });
-
-            await Promise.all(promises);
-            URL.revokeObjectURL(workerUrl);
-            const scoreInM = (totalOps / 1.5 / 1000000).toFixed(2);
-            setStatus('cpu', `${scoreInM} M/s`, false, true);
-            document.getElementById('res-cpu').innerHTML = `${scoreInM} <span class="text-xs font-normal text-slate-500">M/s</span>`;
-            return parseFloat(scoreInM);
-        }
-
-        //        // 2. 字串解析測試
-        async function runStringTest() {
-            setStatus('string', '解析中...', true);
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    const start = performance.now();
-                    let ops = 0;
-                    // 生成合法且龐大的 JSON 字串
-                    const objStr = '{"id":1,"val":"testbenchmarkstring"},';
-                    const jsonStr = `{"data":[${objStr.repeat(1000).slice(0, -1)}]}`; 
-                    const regex = /"val":"([^"]+)"/g;
-                    
-                    while(performance.now() - start < 1000) {
-                        JSON.parse(jsonStr);
-                        jsonStr.match(regex);
-                        ops++;
-                    }
-                    setStatus('string', `${ops} ops/s`, false, true);
-                    resolve(ops);
-                }, 50);
-            });
-        }
-
-        //        // 3. RAM 記憶體 GC 測試
-        async function runRAMTest() {
-            setStatus('ram', '分配中...', true);
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    const start = performance.now();
-                    let cycles = 0;
-                    while(performance.now() - start < 1000) {
-                        let arr = new Array(10000).fill(0).map((_, i) => ({ id: i, data: new Array(100).fill('x') }));
-                        arr = null; // 觸發 GC
-                        cycles++;
-                    }
-                    setStatus('ram', `${cycles} cyc/s`, false, true);
-                    resolve(cycles);
-                }, 50);
-            });
-        }
-
-        //        // 4. DOM 重繪測試
-        async function runDOMTest() {
-            setStatus('dom', '強制重繪中...', true);
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    const box = document.getElementById('domSandbox');
-                    const start = performance.now();
-                    let ops = 0;
-                    while(performance.now() - start < 1000) {
-                        box.innerHTML = `<div style="padding:${ops%10}px"><span>${ops}</span></div>`;
-                        const forceLayout = box.offsetHeight; // Layout Thrashing
-                        ops++;
-                    }
-                    box.innerHTML = '';
-                    setStatus('dom', `${ops} ops/s`, false, true);
-                    resolve(ops);
-                }, 50);
-            });
-        }
-
-        //        // 5. Three.js 3D 全螢幕測試
-        async function runThreeJSTest() {
-            setStatus('gpu', '渲染十萬實體...', true);
-            const container = document.getElementById('threeContainer');
-            const fpsEl = document.getElementById('fpsCounter');
-            container.classList.remove('hidden');
-            container.classList.add('flex');
-
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    const scene = new THREE.Scene();
-                    scene.fog = new THREE.FogExp2(0x000000, 0.002);
-                    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-                    const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
-                    renderer.setSize(window.innerWidth, window.innerHeight);
-                    renderer.setPixelRatio(window.devicePixelRatio > 1 ? 1.5 : 1); 
-                    container.appendChild(renderer.domElement);
-
-                    const ambientLight = new THREE.AmbientLight(0x404040);
-                    scene.add(ambientLight);
-                    const dirLight = new THREE.DirectionalLight(0x0abab5, 1);
-                    dirLight.position.set(1, 1, 1);
-                    scene.add(dirLight);
-
-                    // 十萬實例壓力
-                    const count = 100000;
-                    const geometry = new THREE.IcosahedronGeometry(1, 0);
-                    const material = new THREE.MeshPhongMaterial({ color: 0x222222, specular: 0x0abab5, shininess: 50 });
-                    const mesh = new THREE.InstancedMesh(geometry, material, count);
-
-                    const dummy = new THREE.Object3D();
-                    for (let i = 0; i < count; i++) {
-                        dummy.position.set(
-                            (Math.random() - 0.5) * 400,
-                            (Math.random() - 0.5) * 400,
-                            (Math.random() - 0.5) * 400
-                        );
-                        dummy.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
-                        dummy.scale.setScalar(Math.random() * 2 + 0.5);
-                        dummy.updateMatrix();
-                        mesh.setMatrixAt(i, dummy.matrix);
-                    }
-                    scene.add(mesh);
-                    camera.position.z = 150;
-
-                    let frames = 0;
-                    let lastTime = performance.now();
-                    const testDuration = 4000; 
-                    const startTime = performance.now();
-                    let finalFPS = 0;
-
-                    function animate() {
-                        const now = performance.now();
-                        if (now - startTime > testDuration) {
-                            renderer.dispose();
-                            geometry.dispose();
-                            material.dispose();
-                            container.removeChild(renderer.domElement);
-                            container.classList.add('hidden');
-                            container.classList.remove('flex');
-                            setStatus('gpu', `${finalFPS} FPS`, false, true);
-                            document.getElementById('res-gpu').innerHTML = `${finalFPS} <span class="text-xs font-normal text-slate-500">fps</span>`;
-                            resolve(finalFPS);
-                            return;
-                        }
-
-                        mesh.rotation.y += 0.005;
-                        mesh.rotation.x += 0.002;
-                        
-                        renderer.render(scene, camera);
-                        frames++;
-
-                        if (now - lastTime >= 500) {
-                            finalFPS = Math.round((frames * 1000) / (now - lastTime));
-                            fpsEl.textContent = `${finalFPS} FPS`;
-                            frames = 0;
-                            lastTime = now;
-                        }
-
-                        requestAnimationFrame(animate);
-                    }
-                    animate();
-                }, 500);
-            });
-        }
-
-        //        // 6. Cloudflare 並發網路測試 (包含物理層補償)
-        async function runNetworkTest() {
-            setStatus('net', '並發滿載中...', true);
-            // Cloudflare 測速端點
-            const endpoint = 'https://speed.cloudflare.com/__down?bytes=25000000';
-            const threads = 6; // 開到 6 線程榨乾帶寬
-            const sizeInBits = (25000000 * 8) * threads;
-            
-            try {
-                const startTime = performance.now();
-                const fetches = [];
-                for(let i=0; i<threads; i++) {
-                    fetches.push(fetch(`${endpoint}&t=${Math.random()}`, { cache: 'no-store' }).then(r => r.blob()));
-                }
-                
-                await Promise.all(fetches);
-                const duration = (performance.now() - startTime) / 1000;
-                
-                // 【OQC 網路物理補償】：還原 Fetch (Layer 7) 到 網卡 (Layer 1/2) 的真實耗損
-                // 補償係數: 1.25x (包含 TCP Slow Start, TLS 解密, HTTP/2 Header 開銷)
-                let mbps = ((sizeInBits / 1000000 / duration) * 1.25).toFixed(1);
-                
-                if(mbps > 5000 || !isFinite(mbps)) mbps = 1500;
-
-                setStatus('net', `${mbps} Mbps`, false, true);
-                document.getElementById('res-net').innerHTML = `${mbps} <span class="text-xs font-normal text-tiffany/60">Mbps</span>`;
-                return parseFloat(mbps);
-            } catch (e) {
-                setStatus('net', '測試失敗', false, true);
-                return 10;
-            }
-        }
-
-        //        // --- 主流程與計分演算法 (OQC 最終校準版) ---
-        document.getElementById('startBtn').addEventListener('click', async function() {
-            this.disabled = true;
-            this.innerHTML = '<span class="animate-spin text-xl">&#9696;</span> YieldVitals 執行中...';
-            this.classList.replace('bg-tiffany', 'bg-slate-700');
-
-            document.querySelectorAll('.opacity-50').forEach(el => el.classList.remove('opacity-50'));
-            
-            const cpuScore = await runCPUMultiCore();
-            const strScore = await runStringTest();
-            const ramScore = await runRAMTest();
-            const domScore = await runDOMTest();
-            
-            const domRamTotal = Math.round((ramScore + domScore) / 2);
-            document.getElementById('res-dom').innerHTML = `${domRamTotal} <span class="text-xs font-normal text-slate-500">ops/s</span>`;
-
-            const gpuScore = await runThreeJSTest();
-            const netScore = await runNetworkTest();
-
-            // 【OQC 最終校準】：釋放旗艦設備天花板
-            // CPU M/s: 容納 M2 Max 等級的 700+
-            const normCPU = Math.min((cpuScore / 800) * 100, 100);
-            
-            // DOM/RAM: 調降天花板至合理極限值 30,000 (原 250,000 太荒謬)
-            const normDOM = Math.min((domRamTotal / 30000) * 100, 100);
-            
-            // GPU 10萬顆粒 FPS: 瀏覽器鎖定 Vsync，60FPS 即為無延遲完美狀態
-            const normGPU = Math.min((gpuScore / 60) * 100, 100);
-            
-            // 網路 Mbps: 天花板 1000 (Gigabit)
-            const normNET = Math.min((netScore / 1000) * 100, 100);
-
-            // 更新雷達圖
-            radarChart.data.datasets[0].data = [normCPU, normDOM, normGPU, normNET];
-            radarChart.update();
-
-            // 總分計算與天梯更新
-            const finalScore = Math.round((normCPU * 0.35) + (normGPU * 0.35) + (normDOM * 0.15) + (normNET * 0.15));
-            
-            const marker = document.getElementById('scoreMarker');
-            const bar = document.getElementById('tierBar');
-            const textEl = document.getElementById('tierText');
-            
-            bar.style.width = `${finalScore}%`;
-            marker.style.left = `${finalScore}%`;
-            marker.style.opacity = '1';
-            marker.innerHTML = `${finalScore}<div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-tiffany rotate-45"></div>`;
-
-            textEl.classList.remove('hidden');
-            if(finalScore < 30) textEl.innerHTML = "⚠️ 文書級效能。建議僅用於基本網頁瀏覽。";
-            else if(finalScore < 60) textEl.innerHTML = "⚡ 主流效能。能順暢運行多數網頁應用。";
-            else if(finalScore < 85) textEl.innerHTML = "🚀 高階水準。處理現代前端框架游刃有餘。";
-            else textEl.innerHTML = "🔥 旗艦級廠測通過！足以完美運行大型 Web 3D 遊戲與繁重運算。";
-
-            this.innerHTML = '重新測試';
-            this.classList.replace('bg-slate-700', 'bg-tiffany');
-            this.disabled = false;
-        });
-    </script>
-    
-    <footer class="mt-8 py-4 text-center text-xs text-slate-600">
-        免責聲明：本網頁提供之效能評測數據僅供參考，實際運作效能可能因當下背景程式、網路波動及設備散熱狀態而有所差異。 YieldVitals Core Engine v6.0.
+    <footer class="mt-8 py-6 text-center text-xs text-slate-500 border-t border-slate-800 bg-darkbg/50">
+        <p class="font-bold text-slate-400 mb-2" data-i18n="footer_disclaimer_title">【 效能評測說明 】</p>
+        <p class="max-w-3xl mx-auto leading-relaxed px-4" data-i18n="footer_disclaimer_desc">
+            本網頁提供之效能評測數據僅供參考。實際運作效能將因設備當下之散熱狀態、系統背景程式、瀏覽器版本及底層硬體指令集支援度而有顯著差異。
+        </p>
+        <p class="mt-3 opacity-60 font-mono tracking-widest text-[10px]">YIELDVITALS BROWSER BENCHMARK V1.0</p>
     </footer>
 
-<!-- CSS 隱藏區域 -->
-<div style="display: none !important; height: 0; overflow: hidden;">
-<style>
-    /* 隱藏區域用以符合系統安全或特定的載入規範 */
-    #domSandbox { position: absolute; top: -9999px; left: -9999px; visibility: hidden; pointer-events: none; }
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: #0f172a; }
-    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #0abab5; }
-</style>
-</div>
 </body>
 </html>
