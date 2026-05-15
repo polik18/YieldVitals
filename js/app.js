@@ -1035,8 +1035,17 @@
                     const controller = new AbortController();
                     const timeoutId = setTimeout(() => controller.abort(), 3000);
                     try {
-                        // HEAD on 0-byte download = RTT only, always CORS-allowed
-                        await fetch(`https://speed.cloudflare.com/__down?bytes=0&t=${Date.now()}`, { method: 'HEAD', cache: 'no-store', signal: controller.signal });
+                        // 防緩存：多重時間戳 + 隨機數
+                        const noCacheParam = `t=${Date.now()}_r${Math.random().toString(36).substr(2)}_${crypto.getRandomValues(new Uint32Array(1))[0]}`;
+                        const resp = await fetch(`https://speed.cloudflare.com/__down?bytes=0&${noCacheParam}`, {
+                            method: 'HEAD',
+                            cache: 'no-store',
+                            signal: controller.signal,
+                            headers: {
+                                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                                'Pragma': 'no-cache'
+                            }
+                        });
                         pings.push(performance.now() - pStart);
                     } catch(e) {}
                     clearTimeout(timeoutId);
@@ -1046,17 +1055,48 @@
 
                 // 2. Download Test — use larger file for fast connections (>100Mbps)
                 setStatus('network', t('network_downloading'), 'running');
-                // Progressive file size: quick=25MB, others=100MB, to saturate fast links
-                const dlSize = selectedMode === 'quick' ? 25000000 : 100000000;
+                
+                // 根據 Ping 動態調整文件大小和超時
+                const adaptiveParams = {
+                    high: { dlSize: 5000000, dlTimeout: 45000, ulSize: 500000, ulTimeout: 20000 },
+                    medium: { dlSize: 25000000, dlTimeout: 30000, ulSize: 1000000, ulTimeout: 15000 },
+                    low: { dlSize: 100000000, dlTimeout: 20000, ulSize: 3000000, ulTimeout: 10000 }
+                };
+                let latencyLevel = 'medium';
+                if (ping !== null) {
+                    latencyLevel = ping > 500 ? 'high' : ping > 100 ? 'medium' : 'low';
+                }
+                const params = adaptiveParams[latencyLevel];
+                const dlSize = selectedMode === 'quick' ? Math.min(params.dlSize, 25000000) : params.dlSize;
+                
                 let dlStart = performance.now();
                 const dlController = new AbortController();
-                // Extend timeout: 100MB @ 100Mbps = 8s, give 20s headroom
-                const dlTimeoutId = setTimeout(() => dlController.abort(), 20000);
+                const dlTimeoutId = setTimeout(() => dlController.abort(), params.dlTimeout);
                 let dlMbps = 0;
                 let receivedLength = 0;
                 try {
-                    const dlResp = await fetch(`https://speed.cloudflare.com/__down?bytes=${dlSize}&t=${Date.now()}`, { cache: 'no-store', signal: dlController.signal });
-                    if (!dlResp.ok) throw new Error('DL Fetch failed');
+                    // 防緩存：多重時間戳 + 隨機數
+                    const noCacheParam = `t=${Date.now()}_r${Math.random().toString(36).substr(2)}_${crypto.getRandomValues(new Uint32Array(1))[0]}`;
+                    const dlResp = await fetch(
+                        `https://speed.cloudflare.com/__down?bytes=${dlSize}&${noCacheParam}`,
+                        {
+                            cache: 'no-store',
+                            signal: dlController.signal,
+                            headers: {
+                                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                                'Pragma': 'no-cache'
+                            }
+                        }
+                    );
+                    if (!dlResp.ok) throw new Error(`DL HTTP ${dlResp.status}`);
+                    
+                    // 取得預期大小
+                    let expectedSize = dlSize;
+                    const contentLength = dlResp.headers.get('content-length');
+                    if (contentLength) {
+                        expectedSize = parseInt(contentLength, 10);
+                    }
+                    
                     const reader = dlResp.body.getReader();
                     while(true) {
                         if (isCancelledRun(runId)) { dlController.abort(); return Promise.reject(new Error(t('error_cancelled'))); }
@@ -1064,34 +1104,64 @@
                         if (done) break;
                         receivedLength += value.length;
                     }
+                    
+                    // 驗證數據完整性
+                    const completionRate = receivedLength / expectedSize;
+                    if (completionRate < 0.9) {
+                        console.warn(`DL completion: ${(completionRate*100).toFixed(1)}%, data may be incomplete`);
+                    }
+                    
                     const dlDurationSec = (performance.now() - dlStart) / 1000;
                     dlMbps = parseFloat(((receivedLength * 8) / (1024 * 1024) / dlDurationSec).toFixed(1));
                 } catch(e) {
                     if (e.name === 'AbortError' && receivedLength > 0) {
                         const dlDurationSec = (performance.now() - dlStart) / 1000;
                         dlMbps = parseFloat(((receivedLength * 8) / (1024 * 1024) / dlDurationSec).toFixed(1));
+                    } else {
+                        console.error('DL test failed:', e.message);
+                        dlMbps = null;
                     }
                 }
                 clearTimeout(dlTimeoutId);
 
                 // 3. Upload Test
                 setStatus('network', t('network_uploading'), 'running');
-                const ulSize = selectedMode === 'quick' ? 1000000 : 3000000; 
+                const ulSize = selectedMode === 'quick' ? params.ulSize * 0.3 : params.ulSize;
+                
+                // 生成更好的隨機數據
                 const ulData = new Uint8Array(ulSize);
-                for(let i=0; i<ulSize; i+=4096) ulData[i] = Math.random() * 255;
+                const seedBuffer = crypto.getRandomValues(new Uint8Array(4096));
+                for(let i = 0; i < ulSize; i += 4096) {
+                    ulData.set(seedBuffer.subarray(0, Math.min(4096, ulSize - i)), i);
+                }
+                
                 let ulStart = performance.now();
                 const ulController = new AbortController();
-                const ulTimeoutId = setTimeout(() => ulController.abort(), 8000);
+                const ulTimeoutId = setTimeout(() => ulController.abort(), params.ulTimeout);
                 let ulMbps = 0;
                 try {
-                    const ulResp = await fetch(`https://speed.cloudflare.com/__up?t=${Date.now()}`, {
-                        method: 'POST', body: ulData, cache: 'no-store', signal: ulController.signal
+                    // 防緩存：多重時間戳 + 隨機數
+                    const noCacheParam = `t=${Date.now()}_r${Math.random().toString(36).substr(2)}_${crypto.getRandomValues(new Uint32Array(1))[0]}`;
+                    const ulResp = await fetch(`https://speed.cloudflare.com/__up?${noCacheParam}`, {
+                        method: 'POST',
+                        body: ulData,
+                        cache: 'no-store',
+                        signal: ulController.signal,
+                        headers: {
+                            'Cache-Control': 'no-cache, no-store, must-revalidate',
+                            'Pragma': 'no-cache',
+                            'Content-Type': 'application/octet-stream'
+                        }
                     });
                     if (ulResp.ok) {
                         const ulDurationSec = (performance.now() - ulStart) / 1000;
                         ulMbps = parseFloat(((ulSize * 8) / (1024 * 1024) / ulDurationSec).toFixed(1));
+                    } else {
+                        console.error(`UL HTTP ${ulResp.status}`);
                     }
-                } catch(e) {}
+                } catch(e) {
+                    console.error('UL test failed:', e.message);
+                }
                 clearTimeout(ulTimeoutId);
 
                 return { value: dlMbps, dl: dlMbps, ul: ulMbps, ping: ping };
@@ -1139,8 +1209,27 @@
             if(name === 'dom') { unit = 'ops/s'; formattedVal = Math.round(finalVal); }
             if(name === 'canvas2d') { unit = 'ops/s'; formattedVal = Math.round(finalVal); }
             if(name === 'network') { 
-                // Network returns an object with dl, ul, ping; run once
+                // Network returns an object with dl, ul, ping
+                // 如果有多個結果，計算中位數
                 let resObj = fullResults[0];
+                
+                if (iterations > 1) {
+                    const dls = fullResults.map(r => r && r.dl).filter(v => v > 0);
+                    const uls = fullResults.map(r => r && r.ul).filter(v => v > 0);
+                    const pings = fullResults.map(r => r && r.ping).filter(v => v > 0);
+                    
+                    if (dls.length > 0) dls.sort((a, b) => a - b);
+                    if (uls.length > 0) uls.sort((a, b) => a - b);
+                    if (pings.length > 0) pings.sort((a, b) => a - b);
+                    
+                    resObj = {
+                        dl: dls.length > 0 ? dls[Math.floor(dls.length / 2)] : fullResults[0].dl,
+                        ul: uls.length > 0 ? uls[Math.floor(uls.length / 2)] : fullResults[0].ul,
+                        ping: pings.length > 0 ? pings[Math.floor(pings.length / 2)] : fullResults[0].ping,
+                        value: dls.length > 0 ? dls[Math.floor(dls.length / 2)] : (fullResults[0] && fullResults[0].value)
+                    };
+                }
+                
                 if (resObj && typeof resObj === 'object' && resObj.dl !== null && resObj.dl > 0) {
                     const dlStr = resObj.dl != null ? resObj.dl : 'N/A';
                     const ulStr = resObj.ul != null ? resObj.ul : 'N/A';
@@ -1537,7 +1626,7 @@
                         results.gpu = await withTimeout(runWithSampling('gpu', runThreeJSTest, 1, config, myRunId), config.gpuTimeLimit + 5000, 'GPU');
                         results.crypto = await withTimeout(runWithSampling('crypto', runCryptoTest, iters, config.otherTime, myRunId), config.otherTime*iters + 5000, 'Crypto');
                         results.storage = await withTimeout(runWithSampling('storage', runStorageTest, 1, config.otherTime, myRunId), config.otherTime + 10000, 'Storage');
-                        results.network = await withTimeout(runWithSampling('network', runNetworkTest, 1, 0, myRunId, true), 40000, 'Network'); // Download takes too long, run once
+                        results.network = await withTimeout(runWithSampling('network', runNetworkTest, 3, 0, myRunId, true), 60000, 'Network'); // 改為 3 次迭代，超時 60s
                     } catch (e) {
                         errorOccurred = true;
                         if (e.message !== t('error_cancelled') && e.message !== '使用者取消測試') {
