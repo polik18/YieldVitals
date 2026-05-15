@@ -33,13 +33,13 @@
             canvas2d: 5000// ops/s — mid Chrome ~2000-4000, M4 ~6000
         };
 
-        // 模式設定 (分級策略)
+        // 模式設定: labelKey/descKey 存 i18n key，在執行時再用 t() 取得翻譯（避免定義時 i18n 尚未載入）
         const MODE_SETTINGS = {
-            quick: { gpuMax: 50000, gpuTimeLimit: 10000, cpuTime: 1500, otherTime: 1000, label: t('mode_quick'), desc: t('mode_quick_desc') },
-            standard: { gpuMax: 150000, gpuTimeLimit: 20000, cpuTime: 3000, otherTime: 2000, label: t('mode_standard'), desc: t('mode_standard_desc') },
-            extreme: { gpuMax: 500000, gpuTimeLimit: 30000, cpuTime: 5000, otherTime: 3000, label: t('mode_extreme'), desc: t('mode_extreme_desc') },
-            stability: { gpuMax: 150000, gpuTimeLimit: 20000, cpuTime: 2000, otherTime: 1500, iterations: 3, label: t('mode_stability'), desc: t('mode_stability_desc') },
-            burnin: { gpuMax: 500000, gpuTimeLimit: 120000, cpuTime: 15000, otherTime: 5000, label: t('mode_burnin'), desc: t('mode_burnin_desc') }
+            quick:     { gpuMax: 50000,  gpuTimeLimit: 10000,  cpuTime: 1500, otherTime: 1000, labelKey: 'mode_quick',     descKey: 'mode_quick_desc' },
+            standard:  { gpuMax: 150000, gpuTimeLimit: 20000,  cpuTime: 3000, otherTime: 2000, labelKey: 'mode_standard',  descKey: 'mode_standard_desc' },
+            extreme:   { gpuMax: 500000, gpuTimeLimit: 30000,  cpuTime: 5000, otherTime: 3000, labelKey: 'mode_extreme',   descKey: 'mode_extreme_desc' },
+            stability: { gpuMax: 150000, gpuTimeLimit: 20000,  cpuTime: 2000, otherTime: 1500, iterations: 3, labelKey: 'mode_stability', descKey: 'mode_stability_desc' },
+            burnin:    { gpuMax: 500000, gpuTimeLimit: 120000, cpuTime: 15000,otherTime: 5000, labelKey: 'mode_burnin',    descKey: 'mode_burnin_desc' }
         };
 
         function getDeviceSpecs() {
@@ -80,7 +80,7 @@
             radio.addEventListener('change', (e) => {
                 const mode = MODE_SETTINGS[e.target.value];
                 const descEl = document.getElementById('modeDesc');
-                descEl.textContent = t('mode_' + e.target.value + '_desc') || mode.desc;
+                descEl.textContent = t(mode.descKey);
                 if (e.target.value === 'burnin') descEl.className = 'text-purple-400 font-bold';
                 else if (e.target.value === 'extreme') descEl.className = 'text-red-400 font-bold';
                 else if (e.target.value === 'standard') descEl.className = 'text-yellow-400 font-normal';
@@ -1000,13 +1000,14 @@
                 pings.sort((a,b) => a - b);
                 const ping = pings.length >= 3 ? Math.round(pings[Math.floor(pings.length/2)]) : (pings[0] ? Math.round(pings[0]) : 0);
 
-                // 2. Download Test
+                // 2. Download Test — use larger file for fast connections (>100Mbps)
                 setStatus('network', t('network_downloading'), 'running');
-                const selectedMode = document.querySelector('input[name="testMode"]:checked')?.value;
-                const dlSize = selectedMode === 'quick' ? 5000000 : 25000000;
+                // Progressive file size: quick=25MB, others=100MB, to saturate fast links
+                const dlSize = selectedMode === 'quick' ? 25000000 : 100000000;
                 let dlStart = performance.now();
                 const dlController = new AbortController();
-                const dlTimeoutId = setTimeout(() => dlController.abort(), 8000);
+                // Extend timeout: 100MB @ 100Mbps = 8s, give 20s headroom
+                const dlTimeoutId = setTimeout(() => dlController.abort(), 20000);
                 let dlMbps = 0;
                 let receivedLength = 0;
                 try {
@@ -1272,8 +1273,7 @@
             text += `- ${t('canvas2d_render')}: ${results.canvas2d || 0} ops/s\n`;
             
             const valGPU = typeof results.gpu === 'object' ? results.gpu.value : (results.gpu || 0);
-            const lowFPS = typeof results.gpu === 'object' && results.gpu.onePercentLow ? ` (1% Low: ${results.gpu.onePercentLow} FPS)` : '';
-            text += `- ${t('gpu_webgl')}: ${valGPU > 0 ? Math.floor(valGPU / 1000) + 'k objs' + lowFPS : 'N/A'}\n`;
+            text += `- ${t('gpu_webgl')}: ${valGPU > 0 ? Math.round(valGPU) + ' Pts' : 'N/A'}\n`;
             
             let cryptoVal = typeof results.crypto === 'object' ? results.crypto.value : (results.crypto || 0);
             let cryptoWarn = typeof results.crypto === 'object' && results.crypto.warning ? ' (!)' : '';
@@ -1524,13 +1524,13 @@
                         relReason.textContent = rel.reason;
 
                         // 產生報告文字並顯示複製按鈕
-                        reportText = generateReportText(results, finalScore, rel, config.label, diag);
+                        reportText = generateReportText(results, finalScore, rel, t(config.labelKey), diag);
                         document.getElementById('copyReportBtn').classList.remove('hidden');
                         
                         // 準備 JSON 匯出資料
                         lastJsonExport = {
                             timestamp: new Date().toISOString(),
-                            mode: config.label,
+                            mode: t(config.labelKey),
                             score: finalScore,
                             reliability: rel,
                             results: results,
