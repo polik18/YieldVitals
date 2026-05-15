@@ -65,7 +65,8 @@
     "Storan (Tempatan)",
     "Rangkaian (DL)",
     "Grafik (DOM)",
-    "Grafik (GPU)"
+    "Grafik (GPU)",
+    "Grafik (2D)"
   ],
   "fitness_very_smooth": "Sangat Lancar",
   "fitness_smooth": "lancar",
@@ -84,5 +85,7 @@
   "advice_ram_pc": "RAM tidak mencukupi untuk beban kerja yang berat. Syorkan menaik taraf RAM fizikal kepada 16GB atau 32GB.",
   "advice_storage_mobile": "Storan telefon mungkin hampir penuh, menyebabkan I/O jatuh teruk. Kosongkan fail atau apl yang tidak diperlukan.",
   "advice_storage_pc": "Cakera I/O kesesakan. Pertimbangkan untuk menaik taraf kepada SSD NVMe peringkat lebih tinggi, atau semak sama ada ruang cakera rendah.",
-  "lang_selector": "🌐 Bahasa"
+  "lang_selector": "🌐 Bahasa",
+  "canvas2d_render": "Grafik 2D Kanvas",
+  "mode_stability": "Kestabilan"
 }

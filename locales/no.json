@@ -65,7 +65,8 @@
     "Lagring (lokal)",
     "Nettverk (DL)",
     "Grafikk (DOM)",
-    "Grafikk (GPU)"
+    "Grafikk (GPU)",
+    "Grafikk (2D)"
   ],
   "fitness_very_smooth": "Veldig glatt",
   "fitness_smooth": "Glatt",
@@ -84,5 +85,7 @@
   "advice_ram_pc": "RAM er utilstrekkelig for store arbeidsbelastninger. Anbefaler å oppgradere fysisk RAM til 16 GB eller 32 GB.",
   "advice_storage_mobile": "Telefonlagringen kan være nesten full, noe som kan forårsake alvorlige I/O-fall. Fjern unødvendige filer eller apper.",
   "advice_storage_pc": "Disk I/O flaskehals. Vurder å oppgradere til en høyere NVMe SSD, eller sjekk om det er lite diskplass.",
-  "lang_selector": "🌐 Språk"
+  "lang_selector": "🌐 Språk",
+  "canvas2d_render": "Canvas 2D-grafikk",
+  "mode_stability": "Stabilitet"
 }

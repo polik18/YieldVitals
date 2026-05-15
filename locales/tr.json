@@ -65,7 +65,8 @@
     "Depolama (Yerel)",
     "Ağ (DL)",
     "Grafik (DOM)",
-    "Grafik (GPU)"
+    "Grafik (GPU)",
+    "Grafik (2D)"
   ],
   "fitness_very_smooth": "Çok Pürüzsüz",
   "fitness_smooth": "Pürüzsüz",
@@ -84,5 +85,7 @@
   "advice_ram_pc": "Ağır iş yükleri için RAM yetersizdir. Fiziksel RAM'i 16 GB veya 32 GB'a yükseltmenizi öneririz.",
   "advice_storage_mobile": "Telefon depolama alanı neredeyse dolu olabilir ve ciddi G/Ç düşüşlerine neden olabilir. Gereksiz dosyaları veya uygulamaları temizleyin.",
   "advice_storage_pc": "Disk G/Ç darboğazı. Daha yüksek seviyeli bir NVMe SSD'ye yükseltmeyi düşünün veya disk alanının az olup olmadığını kontrol edin.",
-  "lang_selector": "🌐 Dil"
+  "lang_selector": "🌐 Dil",
+  "canvas2d_render": "Kanvas 2D Grafikler",
+  "mode_stability": "Kararlılık"
 }

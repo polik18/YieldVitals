@@ -65,7 +65,8 @@
     "Tallennustila (paikallinen)",
     "Verkko (DL)",
     "Grafiikka (DOM)",
-    "Grafiikka (GPU)"
+    "Grafiikka (GPU)",
+    "Grafiikka (2D)"
   ],
   "fitness_very_smooth": "Erittäin sileä",
   "fitness_smooth": "Tasainen",
@@ -84,5 +85,7 @@
   "advice_ram_pc": "RAM ei riitä suurille työkuormille. Suosittelemme päivittämään fyysisen RAM-muistin 16 Gt:ksi tai 32 Gt:ksi.",
   "advice_storage_mobile": "Puhelimen tallennustila voi olla lähes täynnä, mikä aiheuttaa vakavia I/O-pudotuksia. Tyhjennä tarpeettomat tiedostot tai sovellukset.",
   "advice_storage_pc": "Levyn I/O pullonkaula. Harkitse päivittämistä korkeamman tason NVMe SSD:hen tai tarkista, onko levytila ​​vähissä.",
-  "lang_selector": "🌐 Kieli"
+  "lang_selector": "🌐 Kieli",
+  "canvas2d_render": "Canvas 2D-grafiikka",
+  "mode_stability": "Vakaus"
 }

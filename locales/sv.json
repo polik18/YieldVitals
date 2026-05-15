@@ -65,7 +65,8 @@
     "Lagring (lokal)",
     "Nätverk (DL)",
     "Grafik (DOM)",
-    "Grafik (GPU)"
+    "Grafik (GPU)",
+    "Grafik (2D)"
   ],
   "fitness_very_smooth": "Mycket smidig",
   "fitness_smooth": "Smidig",
@@ -84,5 +85,7 @@
   "advice_ram_pc": "RAM-minnet är otillräckligt för tunga arbetsbelastningar. Rekommenderar att uppgradera fysiskt RAM till 16 GB eller 32 GB.",
   "advice_storage_mobile": "Telefonlagringen kan vara nästan full, vilket orsakar allvarliga I/O-fall. Rensa onödiga filer eller appar.",
   "advice_storage_pc": "Disk I/O flaskhals. Överväg att uppgradera till en högre nivå NVMe SSD, eller kontrollera om diskutrymmet är litet.",
-  "lang_selector": "🌐 Språk"
+  "lang_selector": "🌐 Språk",
+  "canvas2d_render": "Canvas 2D-grafik",
+  "mode_stability": "Stabilitet"
 }

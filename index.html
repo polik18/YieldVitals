@@ -161,6 +161,11 @@
                                 極限</div>
                         </label>
                         <label class="relative cursor-pointer">
+                            <input type="radio" name="testMode" value="stability" class="peer sr-only">
+                            <div data-i18n="mode_stability" class="text-center py-2 px-1 rounded-md border border-slate-600 text-slate-400 peer-checked:border-teal-400 peer-checked:text-teal-400 peer-checked:bg-teal-400/10 transition-all">
+                                穩定</div>
+                        </label>
+                        <label class="relative cursor-pointer">
                             <input type="radio" name="testMode" value="burnin" class="peer sr-only">
                             <div data-i18n="mode_burnin" class="text-center py-2 px-1 rounded-md border border-slate-600 text-slate-400 peer-checked:border-purple-400 peer-checked:text-purple-400 peer-checked:bg-purple-400/10 transition-all">
                                 燒機</div>
@@ -209,6 +214,12 @@
                     <li class="flex justify-between items-center opacity-50" id="item-dom">
                         <span class="flex items-center gap-2">
                             <div class="w-2 h-2 rounded-full bg-slate-600 indicator"></div> <span data-i18n="dom_layout">DOM 佈局重繪</span>
+                        </span>
+                        <span class="text-right w-24 value" data-i18n="status_waiting">等待中</span>
+                    </li>
+                    <li class="flex justify-between items-center opacity-50" id="item-canvas2d">
+                        <span class="flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-slate-600 indicator"></div> <span data-i18n="canvas2d_render">Canvas 2D 繪圖</span>
                         </span>
                         <span class="text-right w-24 value" data-i18n="status_waiting">等待中</span>
                     </li>
@@ -331,6 +342,10 @@
                         <div>
                             <div class="text-xs text-slate-400 mb-1 font-mono" data-i18n="dom_layout">DOM 重繪 (Layout)</div>
                             <div class="text-2xl font-bold text-white" id="res-dom">-- <span class="text-xs font-normal text-slate-500">ops/s</span></div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-400 mb-1 font-mono" data-i18n="canvas2d_render">Canvas 2D 繪圖</div>
+                            <div class="text-2xl font-bold text-white" id="res-canvas2d">-- <span class="text-xs font-normal text-slate-500">ops/s</span></div>
                         </div>
                         <div>
                             <div class="text-xs text-slate-400 mb-1 font-mono" data-i18n="gpu_webgl">WebGL 渲染 (GPU)</div>

@@ -65,7 +65,8 @@
     "Lưu trữ (Cục bộ)",
     "Mạng (DL)",
     "Đồ họa (DOM)",
-    "Đồ họa (GPU)"
+    "Đồ họa (GPU)",
+    "Đồ họa (2D)"
   ],
   "fitness_very_smooth": "Rất mịn",
   "fitness_smooth": "mịn màng",
@@ -84,5 +85,7 @@
   "advice_ram_pc": "RAM không đủ cho khối lượng công việc nặng. Khuyến nghị nâng cấp RAM vật lý lên 16GB hoặc 32GB.",
   "advice_storage_mobile": "Bộ nhớ điện thoại có thể gần đầy, gây ra sụt giảm I/O nghiêm trọng. Xóa các tập tin hoặc ứng dụng không cần thiết.",
   "advice_storage_pc": "Nút cổ chai I/O đĩa. Hãy cân nhắc nâng cấp lên ổ SSD NVMe cấp cao hơn hoặc kiểm tra xem dung lượng ổ đĩa có sắp hết hay không.",
-  "lang_selector": "🌐 Ngôn ngữ"
+  "lang_selector": "🌐 Ngôn ngữ",
+  "canvas2d_render": "Đồ họa canvas 2D",
+  "mode_stability": "Sự ổn định"
 }

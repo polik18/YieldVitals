@@ -57,7 +57,17 @@
   "env_mem_cores": "Memory / Cores",
   "env_gpu": "GPU Renderer",
   "btn_cancel": "Cancel",
-  "radar_labels": ["Compute (CPU)", "Compute (String)", "Compute (Crypto)", "Memory (RAM)", "Storage (Local)", "Network (DL)", "Graphics (DOM)", "Graphics (GPU)"],
+  "radar_labels": [
+    "Compute (CPU)",
+    "Compute (String)",
+    "Compute (Crypto)",
+    "Memory (RAM)",
+    "Storage (Local)",
+    "Network (DL)",
+    "Graphics (DOM)",
+    "Graphics (GPU)",
+    "Graphics (2D)"
+  ],
   "fitness_very_smooth": "Very Smooth",
   "fitness_smooth": "Smooth",
   "fitness_stutter": "May Stutter",
@@ -75,5 +85,7 @@
   "advice_ram_pc": "RAM is insufficient for heavy workloads. Recommend upgrading physical RAM to 16GB or 32GB.",
   "advice_storage_mobile": "Phone storage may be nearly full, causing severe I/O drops. Clear unneeded files or apps.",
   "advice_storage_pc": "Disk I/O bottleneck. Consider upgrading to a higher-tier NVMe SSD, or check if disk space is low.",
-  "lang_selector": "🌐 Language"
+  "lang_selector": "🌐 Language",
+  "canvas2d_render": "Canvas 2D Graphics",
+  "mode_stability": "Stability"
 }

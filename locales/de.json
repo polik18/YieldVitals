@@ -65,7 +65,8 @@
     "Lagerung (lokal)",
     "Netzwerk (DL)",
     "Grafiken (DOM)",
-    "Grafik (GPU)"
+    "Grafik (GPU)",
+    "Grafiken (2D)"
   ],
   "fitness_very_smooth": "Sehr glatt",
   "fitness_smooth": "Glatt",
@@ -84,5 +85,7 @@
   "advice_ram_pc": "Der Arbeitsspeicher reicht für hohe Arbeitslasten nicht aus. Wir empfehlen ein Upgrade des physischen RAM auf 16 GB oder 32 GB.",
   "advice_storage_mobile": "Der Telefonspeicher ist möglicherweise fast voll, was zu erheblichen E/A-Einbrüchen führt. Löschen Sie nicht benötigte Dateien oder Apps.",
   "advice_storage_pc": "Festplatten-E/A-Engpass. Erwägen Sie ein Upgrade auf eine NVMe-SSD höherer Stufe oder prüfen Sie, ob der Speicherplatz knapp wird.",
-  "lang_selector": "🌐 Sprache"
+  "lang_selector": "🌐 Sprache",
+  "canvas2d_render": "Canvas 2D-Grafiken",
+  "mode_stability": "Stabilität"
 }

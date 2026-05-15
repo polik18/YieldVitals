@@ -65,7 +65,8 @@
     "Armazenamento (local)",
     "Rede (DL)",
     "Gráficos (DOM)",
-    "Gráficos (GPU)"
+    "Gráficos (GPU)",
+    "Gráficos (2D)"
   ],
   "fitness_very_smooth": "Muito Suave",
   "fitness_smooth": "Suave",
@@ -84,5 +85,7 @@
   "advice_ram_pc": "A RAM é insuficiente para cargas de trabalho pesadas. Recomendamos atualizar a RAM física para 16 GB ou 32 GB.",
   "advice_storage_mobile": "O armazenamento do telefone pode estar quase cheio, causando graves quedas de E/S. Limpe arquivos ou aplicativos desnecessários.",
   "advice_storage_pc": "Gargalo de E/S de disco. Considere atualizar para um SSD NVMe de nível superior ou verifique se o espaço em disco está baixo.",
-  "lang_selector": "🌐 Idioma"
+  "lang_selector": "🌐 Idioma",
+  "canvas2d_render": "Gráficos 2D em tela",
+  "mode_stability": "Estabilidade"
 }

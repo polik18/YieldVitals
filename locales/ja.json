@@ -65,7 +65,8 @@
     "ストレージ (ローカル)",
     "ネットワーク(DL)",
     "グラフィックス (DOM)",
-    "グラフィックス (GPU)"
+    "グラフィックス (GPU)",
+    "グラフィックス (2D)"
   ],
   "fitness_very_smooth": "とてもスムーズ",
   "fitness_smooth": "スムーズ",
@@ -84,5 +85,7 @@
   "advice_ram_pc": "RAM が重いワークロードには不十分です。物理 RAM を 16GB または 32GB にアップグレードすることをお勧めします。",
   "advice_storage_mobile": "電話機のストレージがほぼ満杯になり、深刻な I/O 低下が発生する可能性があります。不要なファイルやアプリを削除します。",
   "advice_storage_pc": "ディスク I/O のボトルネック。上位層の NVMe SSD へのアップグレードを検討するか、ディスク容量が不足していないか確認してください。",
-  "lang_selector": "🌐 言語"
+  "lang_selector": "🌐 言語",
+  "canvas2d_render": "キャンバス 2D グラフィックス",
+  "mode_stability": "安定性"
 }

@@ -65,7 +65,8 @@
     "Úložiště (místní)",
     "Síť (DL)",
     "grafika (DOM)",
-    "Grafika (GPU)"
+    "Grafika (GPU)",
+    "Grafika (2D)"
   ],
   "fitness_very_smooth": "Velmi hladké",
   "fitness_smooth": "Hladký",
@@ -84,5 +85,7 @@
   "advice_ram_pc": "RAM je nedostatečná pro velké pracovní zatížení. Doporučujeme upgradovat fyzickou paměť RAM na 16 GB nebo 32 GB.",
   "advice_storage_mobile": "Úložiště telefonu může být téměř plné, což způsobuje vážné výpadky I/O. Vymažte nepotřebné soubory nebo aplikace.",
   "advice_storage_pc": "Úzké hrdlo disku I/O. Zvažte upgrade na vyšší úroveň NVMe SSD nebo zkontrolujte, zda je na disku málo místa.",
-  "lang_selector": "🌐 Jazyk"
+  "lang_selector": "🌐 Jazyk",
+  "canvas2d_render": "2D grafika na plátně",
+  "mode_stability": "Stabilita"
 }

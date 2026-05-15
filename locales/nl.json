@@ -65,7 +65,8 @@
     "Opslag (lokaal)",
     "Netwerk (DL)",
     "Grafisch (DOM)",
-    "Grafisch (GPU)"
+    "Grafisch (GPU)",
+    "Grafisch (2D)"
   ],
   "fitness_very_smooth": "Zeer soepel",
   "fitness_smooth": "Glad",
@@ -84,5 +85,7 @@
   "advice_ram_pc": "RAM is onvoldoende voor zware werklasten. Aanbevolen wordt om het fysieke RAM-geheugen te upgraden naar 16 GB of 32 GB.",
   "advice_storage_mobile": "Het telefoongeheugen is mogelijk bijna vol, waardoor ernstige I/O-dalingen kunnen optreden. Wis onnodige bestanden of apps.",
   "advice_storage_pc": "Schijf-I/O-knelpunt. Overweeg een upgrade naar een NVMe SSD van een hoger niveau, of controleer of er weinig schijfruimte is.",
-  "lang_selector": "🌐 Taal"
+  "lang_selector": "🌐 Taal",
+  "canvas2d_render": "Canvas 2D-afbeeldingen",
+  "mode_stability": "Stabiliteit"
 }

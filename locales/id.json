@@ -65,7 +65,8 @@
     "Penyimpanan (Lokal)",
     "Jaringan (DL)",
     "Grafik (DOM)",
-    "Grafik (GPU)"
+    "Grafik (GPU)",
+    "Grafik (2D)"
   ],
   "fitness_very_smooth": "Sangat Halus",
   "fitness_smooth": "Halus",
@@ -84,5 +85,7 @@
   "advice_ram_pc": "RAM tidak cukup untuk beban kerja yang berat. Merekomendasikan untuk meningkatkan RAM fisik menjadi 16GB atau 32GB.",
   "advice_storage_mobile": "Penyimpanan ponsel mungkin hampir penuh, sehingga menyebabkan penurunan I/O yang parah. Hapus file atau aplikasi yang tidak diperlukan.",
   "advice_storage_pc": "Kemacetan I/O disk. Pertimbangkan untuk meningkatkan ke SSD NVMe tingkat yang lebih tinggi, atau periksa apakah ruang disk hampir habis.",
-  "lang_selector": "🌐 Bahasa"
+  "lang_selector": "🌐 Bahasa",
+  "canvas2d_render": "Grafik 2D Kanvas",
+  "mode_stability": "Stabilitas"
 }

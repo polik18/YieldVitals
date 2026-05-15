@@ -27,7 +27,8 @@
             gpu: 300000,   // objs
             crypto: 4000,  // MB/s
             storage: 800,  // MB/s
-            network: 1000  // Mbps
+            network: 1000, // Mbps
+            canvas2d: 8000 // ops/s
         };
 
         // 模式設定 (分級策略)
@@ -35,6 +36,7 @@
             quick: { gpuMax: 50000, gpuTimeLimit: 10000, cpuTime: 1500, otherTime: 1000, label: '快速', desc: '適合手機或輕度測試' },
             standard: { gpuMax: 150000, gpuTimeLimit: 20000, cpuTime: 3000, otherTime: 2000, label: '標準', desc: '適合一般筆電或桌機' },
             extreme: { gpuMax: 500000, gpuTimeLimit: 30000, cpuTime: 5000, otherTime: 3000, label: '極限', desc: '適合高階桌機 (不建議手機使用)' },
+            stability: { gpuMax: 150000, gpuTimeLimit: 20000, cpuTime: 2000, otherTime: 1500, iterations: 3, label: '穩定', desc: '多次取樣，減少波動與系統干擾' },
             burnin: { gpuMax: 500000, gpuTimeLimit: 120000, cpuTime: 15000, otherTime: 5000, label: '燒機', desc: '長時間壓力測試 (測量散熱與穩定度)' }
         };
 
@@ -146,7 +148,7 @@
 
         function resetUI() {
             // 清空列表狀態
-            ['cpu', 'string', 'ram', 'dom', 'gpu', 'crypto'].forEach(id => {
+            ['cpu', 'string', 'ram', 'dom', 'canvas2d', 'gpu', 'crypto', 'storage', 'network'].forEach(id => {
                 setStatus(id, t('status_waiting'), 'idle');
                 document.getElementById(`res-${id}`).innerHTML = `-- <span class="text-xs font-normal text-slate-500"></span>`;
             });
@@ -189,7 +191,7 @@
             errDiv.textContent = `⚠️ 測試中斷: ${message}`;
             errDiv.classList.remove('-translate-y-full');
             // 掃描並標記失敗項目
-            ['cpu', 'string', 'ram', 'dom', 'gpu', 'crypto', 'storage', 'network'].forEach(id => {
+            ['cpu', 'string', 'ram', 'dom', 'canvas2d', 'gpu', 'crypto', 'storage', 'network'].forEach(id => {
                 const el = document.getElementById(`item-${id}`);
                 if (el.querySelector('.indicator').classList.contains('bg-yellow-400')) {
                     setStatus(id, '失敗/中斷', 'error');
@@ -385,6 +387,40 @@
             });
         }
 
+
+        // Canvas 2D 繪圖測試
+        async function runCanvas2DTest(duration, runId) {
+            setStatus('canvas2d', '繪製中...', 'running');
+            const box = document.getElementById('domSandbox');
+            const canvas = document.createElement('canvas');
+            canvas.width = 800; canvas.height = 600;
+            box.appendChild(canvas);
+            const ctx = canvas.getContext('2d');
+            const start = performance.now();
+            let frames = 0;
+
+            return new Promise((resolve, reject) => {
+                function step() {
+                    if (isCancelledRun(runId)) return reject(new Error('使用者取消測試'));
+                    for (let i = 0; i < 100; i++) {
+                        ctx.fillStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                        ctx.beginPath();
+                        ctx.arc(Math.random() * 800, Math.random() * 600, Math.random() * 50, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    frames++;
+                    if (performance.now() - start < duration) {
+                        requestAnimationFrame(step);
+                    } else {
+                        box.innerHTML = '';
+                        const durationSec = duration / 1000;
+                        const score = Math.round((frames * 100) / durationSec);
+                        resolve(score);
+                    }
+                }
+                requestAnimationFrame(step);
+            });
+        }
         // 4. DOM 重繪測試 (分段執行以防卡死)
         async function runDOMTest(duration, runId) {
             setStatus('dom', '重繪中...', 'running');
@@ -814,6 +850,65 @@
             }
         }
 
+
+        async function runWithSampling(name, testFn, iterations, durationPerIter, runId, isNetwork=false) {
+            let results = [];
+            for(let i=0; i<iterations; i++) {
+                if (isCancelledRun(runId)) throw new Error('使用者取消測試');
+                let res = await testFn(durationPerIter, runId);
+                let val = (typeof res === 'object') ? (res.value || res.score || res) : res;
+                results.push(val);
+                if (iterations > 1 && i < iterations - 1) {
+                    await new Promise(r => setTimeout(r, 100)); // Let CPU breathe
+                }
+            }
+            
+            let finalVal;
+            if (iterations === 1) finalVal = results[0];
+            else {
+                results.sort((a,b) => a - b);
+                if (isNetwork) {
+                    let sum = results.reduce((a,b) => a+b, 0);
+                    finalVal = sum / iterations;
+                } else {
+                    finalVal = results[Math.floor(iterations/2)]; // Median
+                }
+            }
+            
+            // UI Update for median
+            let unit = '';
+            let formattedVal = finalVal;
+            if(name === 'cpu') { unit = 'M/s'; formattedVal = Number(finalVal).toFixed(2); }
+            if(name === 'string') { unit = 'k ops'; formattedVal = Number(finalVal).toFixed(1); }
+            if(name === 'ram') { unit = 'cyc/s'; formattedVal = Math.round(finalVal); }
+            if(name === 'dom') { unit = 'ops/s'; formattedVal = Math.round(finalVal); }
+            if(name === 'canvas2d') { unit = 'ops/s'; formattedVal = Math.round(finalVal); }
+            if(name === 'network') { unit = 'Mbps'; formattedVal = Number(finalVal).toFixed(1); }
+            
+            if(name !== 'gpu' && name !== 'storage' && name !== 'crypto') {
+                setStatus(name, `${formattedVal} ${unit}`, 'done');
+                document.getElementById(`res-${name}`).innerHTML = `${formattedVal} <span class="text-xs font-normal text-slate-500">${unit}</span>`;
+            } else if (name === 'gpu') {
+                setStatus('gpu', `${Math.floor(finalVal / 1000)}k objs`, 'done');
+                document.getElementById('res-gpu').innerHTML = `${Math.floor(finalVal / 1000)} <span class="text-xs font-normal text-slate-500">k objs</span>`;
+            } else if (name === 'storage') {
+                setStatus('storage', `${finalVal} MB/s`, 'done');
+                document.getElementById('res-storage').innerHTML = `${finalVal} <span class="text-xs font-normal text-slate-500">MB/s</span>`;
+            } else if (name === 'crypto') {
+                setStatus('crypto', `${finalVal} MB/s`, 'done');
+                let resEl = document.getElementById('res-crypto');
+                if (finalVal > 10000) {
+                    resEl.innerHTML = `${finalVal} <span class="text-xs font-normal text-primary/60">MB/s</span>`;
+                    resEl.classList.replace('text-primary', 'text-yellow-400');
+                    document.getElementById('cryptoWarning').classList.remove('hidden');
+                } else {
+                    resEl.innerHTML = `${finalVal} <span class="text-xs font-normal text-primary/60">MB/s</span>`;
+                }
+            }
+            
+            return finalVal;
+        }
+
         function calculateReliability(results, isCancelled, errorOccurred) {
             let score = '高';
             let reason = '所有測試項目皆順利完成，無異常波動。';
@@ -853,6 +948,7 @@
             const normString = normalize(results.string || 0, BENCHMARK_BASELINE.string);
             const normMemory = normalize(results.memory || 0, BENCHMARK_BASELINE.memory); // Fixed RAM key to memory
             const normDOM = normalize(results.dom || 0, BENCHMARK_BASELINE.dom);
+            const normCanvas2D = normalize(results.canvas2d || 0, BENCHMARK_BASELINE.canvas2d);
             const normGPU = normalize(valGPU, BENCHMARK_BASELINE.gpu);
             const normCrypto = normalize(valCrypto, BENCHMARK_BASELINE.crypto);
             const normStorage = normalize(valStorage, BENCHMARK_BASELINE.storage);
@@ -860,15 +956,16 @@
 
             if (radarChart) {
                 // 依據相近性質分組，讓雷達圖形狀更平滑 (Compute -> Memory/IO -> Render)
-                radarChart.data.datasets[0].data = [normCPU, normString, normCrypto, normMemory, normStorage, normNetwork, normDOM, normGPU];
+                radarChart.data.datasets[0].data = [normCPU, normString, normCrypto, normMemory, normStorage, normNetwork, normDOM, normGPU, normCanvas2D];
                 radarChart.update();
             }
 
             // 7 項硬體加權計分 (Network 不計分)
             return Math.round(
                 normCPU * 0.25 +
-                normGPU * 0.25 +
-                normDOM * 0.15 +
+                normGPU * 0.20 +
+                normCanvas2D * 0.10 +
+                normDOM * 0.10 +
                 normStorage * 0.10 +
                 normMemory * 0.10 +
                 normString * 0.10 +
@@ -956,6 +1053,7 @@
             text += `- 字串解析: ${results.string || 0} k ops\n`;
             text += `- 記憶體與GC: ${results.memory || 0} cyc/s\n`;
             text += `- DOM 重繪: ${results.dom || 0} ops/s\n`;
+            text += `- Canvas2D 繪圖: ${results.canvas2d || 0} ops/s\n`;
             
             const valGPU = typeof results.gpu === 'object' ? results.gpu.value : (results.gpu || 0);
             const lowFPS = typeof results.gpu === 'object' && results.gpu.onePercentLow ? ` (1% Low: ${results.gpu.onePercentLow} FPS)` : '';
@@ -1059,7 +1157,7 @@
                         labels: t('radar_labels'),
                         datasets: [{
                             label: '效能指標',
-                            data: [0, 0, 0, 0, 0, 0, 0, 0],
+                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0],
                             backgroundColor: 'rgba(59, 130, 246, 0.25)',
                             borderColor: '#3b82f6',
                             pointBackgroundColor: '#fff',
@@ -1143,14 +1241,16 @@
                     let errorOccurred = false;
 
                     try {
-                        results.cpu = await withTimeout(runCPUMultiCore(config.cpuTime, myRunId), config.cpuTime + 5000, 'CPU');
-                        results.string = await withTimeout(runStringTest(config.otherTime, myRunId), config.otherTime + 3000, 'String');
-                        results.memory = await withTimeout(runRAMTest(config.otherTime, myRunId), config.otherTime + 3000, 'RAM');
-                        results.dom = await withTimeout(runDOMTest(config.otherTime, myRunId), config.otherTime + 3000, 'DOM');
-                        results.gpu = await withTimeout(runThreeJSTest(config, myRunId), config.gpuTimeLimit + 5000, 'GPU');
-                        results.crypto = await withTimeout(runCryptoTest(config.otherTime, myRunId), config.otherTime + 3000, 'Crypto');
-                        results.storage = await withTimeout(runStorageTest(config.otherTime, myRunId), config.otherTime + 10000, 'Storage');
-                        results.network = await withTimeout(runNetworkTest(myRunId), 15000, 'Network');
+                        let iters = config.iterations || 1;
+                        results.cpu = await withTimeout(runWithSampling('cpu', runCPUMultiCore, iters, config.cpuTime, myRunId), config.cpuTime*iters + 10000, 'CPU');
+                        results.string = await withTimeout(runWithSampling('string', runStringTest, iters, config.otherTime, myRunId), config.otherTime*iters + 5000, 'String');
+                        results.memory = await withTimeout(runWithSampling('ram', runRAMTest, iters, config.otherTime, myRunId), config.otherTime*iters + 5000, 'RAM');
+                        results.dom = await withTimeout(runWithSampling('dom', runDOMTest, iters, config.otherTime, myRunId), config.otherTime*iters + 5000, 'DOM');
+                        results.canvas2d = await withTimeout(runWithSampling('canvas2d', runCanvas2DTest, iters, config.otherTime, myRunId), config.otherTime*iters + 5000, 'Canvas2D');
+                        results.gpu = await withTimeout(runWithSampling('gpu', runThreeJSTest, 1, config, myRunId), config.gpuTimeLimit + 5000, 'GPU');
+                        results.crypto = await withTimeout(runWithSampling('crypto', runCryptoTest, iters, config.otherTime, myRunId), config.otherTime*iters + 5000, 'Crypto');
+                        results.storage = await withTimeout(runWithSampling('storage', runStorageTest, 1, config.otherTime, myRunId), config.otherTime + 10000, 'Storage');
+                        results.network = await withTimeout(runWithSampling('network', runNetworkTest, 1, 0, myRunId, true), 30000, 'Network'); // Download takes too long, run once
                     } catch (e) {
                         errorOccurred = true;
                         if (e.message !== '使用者取消測試') {

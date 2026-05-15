@@ -65,7 +65,8 @@
     "Stockage (local)",
     "Réseau (DL)",
     "Graphiques (DOM)",
-    "Graphiques (GPU)"
+    "Graphiques (GPU)",
+    "Graphiques (2D)"
   ],
   "fitness_very_smooth": "Très lisse",
   "fitness_smooth": "Lisse",
@@ -84,5 +85,7 @@
   "advice_ram_pc": "La RAM est insuffisante pour les charges de travail lourdes. Il est recommandé de mettre à niveau la RAM physique vers 16 Go ou 32 Go.",
   "advice_storage_mobile": "La mémoire du téléphone peut être presque pleine, provoquant de graves baisses d'E/S. Effacez les fichiers ou les applications inutiles.",
   "advice_storage_pc": "Goulet d’étranglement des E/S disque. Envisagez de passer à un SSD NVMe de niveau supérieur ou vérifiez si l'espace disque est faible.",
-  "lang_selector": "🌐 Langue"
+  "lang_selector": "🌐 Langue",
+  "canvas2d_render": "Graphiques 2D sur toile",
+  "mode_stability": "Stabilité"
 }

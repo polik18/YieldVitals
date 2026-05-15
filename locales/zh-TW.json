@@ -57,7 +57,17 @@
   "env_mem_cores": "Memory / Cores",
   "env_gpu": "GPU Renderer",
   "btn_cancel": "取消",
-  "radar_labels": ["運算 (CPU)", "運算 (字串)", "運算 (加密)", "記憶體 (RAM)", "本機存取 (Storage)", "網路 (Network)", "圖形 (DOM)", "圖形 (GPU)"],
+  "radar_labels": [
+    "邏輯運算 (CPU)",
+    "字串解析 (String)",
+    "加密吞吐 (Crypto)",
+    "記憶體 (RAM)",
+    "本機存取 (Storage)",
+    "網路下載 (Network)",
+    "DOM 重繪 (DOM)",
+    "WebGL 渲染 (GPU)",
+    "Canvas 2D (2D)"
+  ],
   "fitness_very_smooth": "非常順暢",
   "fitness_smooth": "順暢",
   "fitness_stutter": "可能卡頓",
@@ -75,5 +85,7 @@
   "advice_ram_pc": "記憶體容量不足以應付高負載工作。強烈建議加裝實體記憶體至 16GB 或 32GB 以上。",
   "advice_storage_mobile": "手機儲存空間可能接近全滿，導致讀寫嚴重掉速。建議清理不需要的照片與 App 以釋放空間。",
   "advice_storage_pc": "硬碟讀寫速度遭遇瓶頸。建議升級為更高階的 NVMe SSD，或檢查硬碟剩餘空間是否不足。",
-  "lang_selector": "🌐 語言"
+  "lang_selector": "🌐 語言",
+  "canvas2d_render": "Canvas 2D 繪圖",
+  "mode_stability": "穩定"
 }

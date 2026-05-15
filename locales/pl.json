@@ -65,7 +65,8 @@
     "Przechowywanie (lokalne)",
     "Sieć (DL)",
     "Grafika (DOM)",
-    "Grafika (GPU)"
+    "Grafika (GPU)",
+    "Grafika (2D)"
   ],
   "fitness_very_smooth": "Bardzo gładka",
   "fitness_smooth": "Gładka",
@@ -84,5 +85,7 @@
   "advice_ram_pc": "Pamięć RAM jest niewystarczająca do dużych obciążeń. Zalecamy aktualizację fizycznej pamięci RAM do 16 GB lub 32 GB.",
   "advice_storage_mobile": "Pamięć telefonu może być prawie pełna, co powoduje poważne spadki we/wy. Usuń niepotrzebne pliki lub aplikacje.",
   "advice_storage_pc": "Wąskie gardło we/wy dysku. Rozważ wymianę na wyższy poziom dysku SSD NVMe lub sprawdź, czy na dysku jest mało miejsca.",
-  "lang_selector": "🌐 Język"
+  "lang_selector": "🌐 Język",
+  "canvas2d_render": "Płótno grafiki 2D",
+  "mode_stability": "Stabilność"
 }

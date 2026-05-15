@@ -65,7 +65,8 @@
     "存储（本地）",
     "网络（下行）",
     "图形（DOM）",
-    "图形（GPU）"
+    "图形（GPU）",
+    "图形（2D）"
   ],
   "fitness_very_smooth": "非常光滑",
   "fitness_smooth": "光滑",
@@ -84,5 +85,7 @@
   "advice_ram_pc": "RAM 不足以满足繁重的工作负载。建议将物理 RAM 升级至 16GB 或 32GB。",
   "advice_storage_mobile": "手机存储空间可能几乎已满，导致 I/O 严重下降。清除不需要的文件或应用程序。",
   "advice_storage_pc": "磁盘 I/O 瓶颈。考虑升级到更高级别的 NVMe SSD，或检查磁盘空间是否不足。",
-  "lang_selector": "🌐 语言"
+  "lang_selector": "🌐 语言",
+  "canvas2d_render": "画布 2D 图形",
+  "mode_stability": "稳定"
 }

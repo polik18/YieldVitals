@@ -65,7 +65,8 @@
     "Archiviazione (locale)",
     "Rete (DL)",
     "Grafica (DOM)",
-    "Grafica (GPU)"
+    "Grafica (GPU)",
+    "Grafica (2D)"
   ],
   "fitness_very_smooth": "Molto liscio",
   "fitness_smooth": "Liscio",
@@ -84,5 +85,7 @@
   "advice_ram_pc": "La RAM è insufficiente per carichi di lavoro pesanti. Consiglia di aggiornare la RAM fisica a 16 GB o 32 GB.",
   "advice_storage_mobile": "La memoria del telefono potrebbe essere quasi piena, causando gravi interruzioni di I/O. Cancella file o app non necessari.",
   "advice_storage_pc": "Collo di bottiglia I/O del disco. Prendi in considerazione l'aggiornamento a un SSD NVMe di livello superiore o controlla se lo spazio su disco è insufficiente.",
-  "lang_selector": "🌐 Linguaggio"
+  "lang_selector": "🌐 Linguaggio",
+  "canvas2d_render": "Grafica 2D su tela",
+  "mode_stability": "Stabilità"
 }
