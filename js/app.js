@@ -19,18 +19,18 @@
         function isCancelledRun(runId) { return runId !== currentRunId; }
 
         // 基準天花板設定 (集中管理)
-        // Calibrated against real devices: Apple M4, Intel Core Ultra 7, Ryzen 5 7600, Snapdragon 8 Gen 3
-        // Targets: ~80-90 for flagship desktop, ~50-70 for mainstream laptop, ~30-50 for mobile flagship
+        // Calibrated against real hardware (M4, Core Ultra 7, Ryzen 7600, Snapdragon 8 Gen 3)
+        // With hyperbolic norm: at baseline = ~67 score, 2x = ~80, 0.5x = ~50
         const BENCHMARK_BASELINE = {
-            cpu: 900,      // M/s  — M4/Ryzen 7600 hits ~800-1000
-            string: 120,   // k ops/s — mainstream Chrome ~60-150k, was 1200 (too high!)
-            memory: 800,   // cyc/s — M4 hits ~1100, mainstream ~400-600
-            dom: 5000,     // ops/s — Chrome on macOS ~2000-4000, was 30000 (way too high!)
-            gpu: 2000,     // Pts — unified GPU score; Phase1+2+3 composite
-            crypto: 3500,  // MB/s — M4 AES-NI ~3000-4000, x86 ~2000-3500
-            storage: 2000, // MB/s — NVMe ~2000-5000, OPFS varies wildly
-            network: 500,  // Mbps — typical fast home broadband
-            canvas2d: 6000 // ops/s — M4 ~6000, mainstream ~3000-5000
+            cpu: 900,     // M/s  — M4 ~780, Ryzen 7600 ~900, mid-laptop ~400
+            string: 40,   // k ops/s — M4 Chrome ~35k, mid-PC ~20-40k (was 120, way too high)
+            memory: 700,  // cyc/s — mid-range ~300-500, M4 ~1100 (was 200, causing 100% cap)
+            dom: 4000,    // ops/s — Chrome macOS ~2000-5000 (was 30000, 10x too high)
+            gpu: 1500,    // Pts — composite score; mid GPU ~800, high-end ~2000+
+            crypto: 3000, // MB/s — x86 AES-NI ~2000-3500, M4 ~3200
+            storage: 1500,// MB/s — OPFS NVMe ~1000-3000, mid SSD ~500-1000
+            network: 300, // Mbps — typical broadband; highly variable, low weight
+            canvas2d: 5000// ops/s — mid Chrome ~2000-4000, M4 ~6000
         };
 
         // 模式設定 (分級策略)
@@ -228,19 +228,14 @@
             ]);
         }
 
-        // Log-sigmoid normalization: maps any value to 0-100 smoothly.
-        // Scores near the baseline (~1x) land around 70-75.
-        // 0.5x baseline → ~50, 2x baseline → ~90, 4x → ~97.
-        // This prevents the "all zeros or all hundreds" radar spike problem.
+        // Hyperbolic saturation normalization: score = 100 * ratio / (ratio + 0.5)
+        // This is a Michaelis-Menten curve — smooth, never extreme, no log instability.
+        // At baseline (ratio=1.0) → 67,  at 2x → 80,  at 0.5x → 50,  at 0.25x → 33
+        // Much gentler than sigmoid — avoids the "all-zeros or all-100s" radar problem.
         function normalize(value, baseline) {
             if (!value || value <= 0) return 0;
-            // Ratio vs baseline, then log2 transform to compress outliers
             const ratio = value / baseline;
-            // logistic curve: sigmoid centered so ratio=1 → ~70
-            // k controls steepness, center controls midpoint
-            const k = 2.5;
-            const center = 0.8; // ratio at which score = 50
-            const score = 100 / (1 + Math.exp(-k * (Math.log2(ratio) - Math.log2(center))));
+            const score = 100 * ratio / (ratio + 0.5);
             return Math.round(Math.min(Math.max(score, 0), 100));
         }
 
@@ -505,14 +500,16 @@
                 };
 
                 try {
-                    // Detect Apple Silicon / ANGLE Metal path to avoid context loss
-                    const isAppleMetal = /Apple|ANGLE Metal/i.test(navigator.userAgent + (document.createElement('canvas').getContext('webgl')?.getExtension('WEBGL_debug_renderer_info') ? document.createElement('canvas').getContext('webgl').getParameter(document.createElement('canvas').getContext('webgl').getExtension('WEBGL_debug_renderer_info').UNMASKED_RENDERER_WEBGL) : ''));
-                    
+                    // Use already-captured GPU renderer string to detect Apple ANGLE/Metal
+                    // This is more reliable than parsing the User-Agent string.
+                    const gpuStr = (typeof deviceSpecs !== 'undefined' && deviceSpecs.gpuRenderer) || '';
+                    const isAppleMetal = /ANGLE Metal|Apple M\d/i.test(gpuStr) || /Mac/.test(navigator.platform);
+
                     renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
                     renderer.setSize(window.innerWidth, window.innerHeight);
-                    // Apple Metal: cap pixel ratio at 1 to prevent VRAM exhaustion causing context loss
+                    // Apple Metal: cap pixel ratio at 1 to prevent VRAM exhaustion / context loss
                     renderer.setPixelRatio(isAppleMetal ? 1 : (window.devicePixelRatio > 1 ? 1.5 : 1));
-                    // Disable shadows on Apple ANGLE path to avoid Metal driver bugs
+                    // Disable shadow maps on Apple ANGLE to avoid Metal driver instability
                     renderer.shadowMap.enabled = !isAppleMetal;
                     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
                     container.appendChild(renderer.domElement);
