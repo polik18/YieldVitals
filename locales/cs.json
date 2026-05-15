@@ -1,6 +1,6 @@
 {
-  "title": "YieldVitals V1.01 | Benchmark prohlížeče",
-  "subtitle": "V1.01 | Benchmark prohlížeče | QC diagnostika",
+  "title": "YieldVitals V1.011 | Benchmark prohlížeče",
+  "subtitle": "V1.011 | Benchmark prohlížeče | QC diagnostika",
   "error_msg": "Během testování došlo k chybě, zkuste to prosím znovu.",
   "run_test": "Spusťte test výkonu prohlížeče",
   "test_desc": "Tento test hodnotí komplexní výpočetní schopnosti vašeho zařízení v prostředí prohlížeče. Zařízení se může během testování zahřívat, nechte stránku otevřenou.",
@@ -30,7 +30,7 @@
   "tier_mainstream": "Běžný mobilní proud",
   "tier_high_laptop": "Špičkový notebook",
   "tier_flagship": "Vlajková pracovní stanice",
-  "report_title": "Srovnávací zpráva YieldVitals V1.01",
+  "report_title": "Srovnávací zpráva YieldVitals V1.011",
   "report_mode": "Režim",
   "report_score": "Celkové skóre",
   "report_reliability": "Spolehlivost",
@@ -63,7 +63,6 @@
     "Compute (Crypto)",
     "Paměť (RAM)",
     "Úložiště (místní)",
-    "Síť (DL)",
     "grafika (DOM)",
     "Grafika (GPU)",
     "Grafika (2D)"

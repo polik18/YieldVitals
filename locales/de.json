@@ -1,6 +1,6 @@
 {
-  "title": "YieldVitals V1.01 | Browser-Benchmark",
-  "subtitle": "V1.01 | Browser-Benchmark | QC-Diagnose",
+  "title": "YieldVitals V1.011 | Browser-Benchmark",
+  "subtitle": "V1.011 | Browser-Benchmark | QC-Diagnose",
   "error_msg": "Beim Testen ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
   "run_test": "Führen Sie einen Browser-Leistungstest durch",
   "test_desc": "Dieser Test bewertet die umfassende Rechenleistung Ihres Geräts in der Browserumgebung. Während des Tests kann es zu einer Erwärmung des Geräts kommen. Bitte lassen Sie die Seite geöffnet.",
@@ -30,7 +30,7 @@
   "tier_mainstream": "Mainstream-Mobilfunk",
   "tier_high_laptop": "High-End-Laptop",
   "tier_flagship": "Flaggschiff-Workstation",
-  "report_title": "YieldVitals V1.01 Benchmark-Bericht",
+  "report_title": "YieldVitals V1.011 Benchmark-Bericht",
   "report_mode": "Modus",
   "report_score": "Gesamtpunktzahl",
   "report_reliability": "Zuverlässigkeit",
@@ -63,7 +63,6 @@
     "Berechnen (Krypto)",
     "Speicher (RAM)",
     "Lagerung (lokal)",
-    "Netzwerk (DL)",
     "Grafiken (DOM)",
     "Grafik (GPU)",
     "Grafiken (2D)"

@@ -397,40 +397,79 @@
         }
 
 
-        // Canvas 2D 繪圖測試
+        // Canvas 2D 繪圖測試 — OffscreenCanvas Worker (不受 rAF 60fps 天花板限制)
+        const canvas2dWorkerCode = `
+            self.onmessage = function(e) {
+                const duration = e.data.duration || 1000;
+                const useOffscreen = typeof OffscreenCanvas !== 'undefined';
+                let ops = 0;
+                const start = performance.now();
+
+                if (useOffscreen) {
+                    const canvas = new OffscreenCanvas(800, 600);
+                    const ctx = canvas.getContext('2d');
+                    while (performance.now() - start < duration) {
+                        for (let i = 0; i < 100; i++) {
+                            // Deterministic values prevent JIT over-optimisation
+                            ctx.fillStyle = 'hsl(' + ((ops * 7 + i * 37) % 360) + ',85%,55%)';
+                            ctx.beginPath();
+                            ctx.arc(
+                                (ops * 13 + i * 79) % 800,
+                                (ops * 17 + i * 53) % 600,
+                                8 + (i % 42),
+                                0, Math.PI * 2
+                            );
+                            ctx.fill();
+                        }
+                        ops++;
+                    }
+                    const durationSec = (performance.now() - start) / 1000;
+                    self.postMessage({ ops, durationSec, method: 'OffscreenCanvas' });
+                } else {
+                    // Fallback: pure computation (pixel math without canvas)
+                    let sum = 0;
+                    while (performance.now() - start < duration) {
+                        for (let i = 0; i < 100; i++) {
+                            const x = (ops * 13 + i * 79) % 800;
+                            const y = (ops * 17 + i * 53) % 600;
+                            sum += Math.sqrt(x * x + y * y);
+                        }
+                        ops++;
+                    }
+                    const durationSec = (performance.now() - start) / 1000;
+                    self.postMessage({ ops, durationSec, sum, method: 'Fallback' });
+                }
+            };
+        `;
+
         async function runCanvas2DTest(duration, runId) {
             setStatus('canvas2d', t('status_running_canvas2d'), 'running');
-            const box = document.getElementById('domSandbox');
-            const canvas = document.createElement('canvas');
-            canvas.width = 800; canvas.height = 600;
-            box.appendChild(canvas);
-            const ctx = canvas.getContext('2d');
-            const start = performance.now();
-            let frames = 0;
+            const blob = new Blob([canvas2dWorkerCode], { type: 'application/javascript' });
+            const workerUrl = URL.createObjectURL(blob);
 
             return new Promise((resolve, reject) => {
-                function step() {
+                const worker = new Worker(workerUrl);
+                worker.onmessage = (e) => {
+                    worker.terminate();
+                    URL.revokeObjectURL(workerUrl);
                     if (isCancelledRun(runId)) return reject(new Error(t('error_cancelled')));
-                    for (let i = 0; i < 100; i++) {
-                        ctx.fillStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                        ctx.beginPath();
-                        ctx.arc(Math.random() * 800, Math.random() * 600, Math.random() * 50, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                    frames++;
-                    if (performance.now() - start < duration) {
-                        requestAnimationFrame(step);
-                    } else {
-                        box.innerHTML = '';
-                        const durationSec = duration / 1000;
-                        const score = Math.round((frames * 100) / durationSec);
-                        resolve(score);
-                    }
-                }
-                requestAnimationFrame(step);
+                    // ops × 100 draws per op, normalised to per-second
+                    const score = Math.round((e.data.ops * 100) / e.data.durationSec);
+                    setStatus('canvas2d', `${score} ops/s`, 'done');
+                    document.getElementById('res-canvas2d').innerHTML =
+                        `${score} <span class="text-xs font-normal text-slate-500">ops/s</span>`;
+                    resolve(score);
+                };
+                worker.onerror = (err) => {
+                    worker.terminate();
+                    URL.revokeObjectURL(workerUrl);
+                    reject(err);
+                };
+                worker.postMessage({ duration });
             });
         }
-        // 4. DOM 重繪測試 (分段執行以防卡死)
+
+        // 4. DOM 重繪測試 — setTimeout 批次迴圈 (不受 rAF 60fps 天花板限制)
         async function runDOMTest(duration, runId) {
             setStatus('dom', t('status_running_dom'), 'running');
             const box = document.getElementById('domSandbox');
@@ -439,27 +478,31 @@
 
             return new Promise((resolve, reject) => {
                 function step() {
-                    if (isCancelledRun(runId)) return reject(new Error(t('error_cancelled')));
-
-                    // 每幀執行 50 次重繪
-                    for (let i = 0; i < 50; i++) {
-                        box.innerHTML = `<div style="padding:${ops % 10}px"><span>${ops}</span></div>`;
-                        box.offsetHeight; // Force Layout Thrashing
+                    if (isCancelledRun(runId)) {
+                        box.innerHTML = '';
+                        return reject(new Error(t('error_cancelled')));
+                    }
+                    // 每個 task slice 執行 4ms 的 DOM 重繪，再 yield 給瀏覽器
+                    const sliceEnd = performance.now() + 4;
+                    while (performance.now() < sliceEnd) {
+                        box.innerHTML = `<div style="padding:${ops % 10}px;margin:${ops % 5}px"><span>${ops}</span></div>`;
+                        box.offsetHeight; // Force synchronous reflow
                         ops++;
                     }
 
                     if (performance.now() - start < duration) {
-                        requestAnimationFrame(step);
+                        setTimeout(step, 0); // Yield, then continue
                     } else {
                         box.innerHTML = '';
-                        const durationSec = duration / 1000;
+                        const durationSec = (performance.now() - start) / 1000;
                         const score = Math.round(ops / durationSec);
                         setStatus('dom', `${score} ops/s`, 'done');
-                        document.getElementById('res-dom').innerHTML = `${score} <span class="text-xs font-normal text-slate-500">ops/s</span>`;
+                        document.getElementById('res-dom').innerHTML =
+                            `${score} <span class="text-xs font-normal text-slate-500">ops/s</span>`;
                         resolve(score);
                     }
                 }
-                requestAnimationFrame(step);
+                setTimeout(step, 0);
             });
         }
 
@@ -980,25 +1023,26 @@
             });
         }
 
-        // 8. 網路下載測速 (Network Fetch)
+        // 8. 網路測速 (Ping / Download / Upload)
         async function runNetworkTest(duration, runId) {
             try {
                 let pings = [];
-                // 1. Ping Test
+                // 1. Ping Test — use speed.cloudflare.com (CORS-friendly, 0-byte payload = pure RTT)
                 setStatus('network', t('network_pinging'), 'running');
                 for (let i = 0; i < 5; i++) {
                     if (isCancelledRun(runId)) return Promise.reject(new Error(t('error_cancelled')));
-                    let pStart = performance.now();
+                    const pStart = performance.now();
                     const controller = new AbortController();
                     const timeoutId = setTimeout(() => controller.abort(), 3000);
                     try {
-                        await fetch(`https://cloudflare.com/cdn-cgi/trace?t=${Date.now()}`, { method: 'GET', cache: 'no-store', signal: controller.signal });
+                        // HEAD on 0-byte download = RTT only, always CORS-allowed
+                        await fetch(`https://speed.cloudflare.com/__down?bytes=0&t=${Date.now()}`, { method: 'HEAD', cache: 'no-store', signal: controller.signal });
                         pings.push(performance.now() - pStart);
                     } catch(e) {}
                     clearTimeout(timeoutId);
                 }
-                pings.sort((a,b) => a - b);
-                const ping = pings.length >= 3 ? Math.round(pings[Math.floor(pings.length/2)]) : (pings[0] ? Math.round(pings[0]) : 0);
+                pings.sort((a, b) => a - b);
+                const ping = pings.length >= 3 ? Math.round(pings[Math.floor(pings.length / 2)]) : (pings[0] ? Math.round(pings[0]) : null);
 
                 // 2. Download Test — use larger file for fast connections (>100Mbps)
                 setStatus('network', t('network_downloading'), 'running');
@@ -1052,10 +1096,10 @@
 
                 return { value: dlMbps, dl: dlMbps, ul: ulMbps, ping: ping };
             } catch (e) {
-                if (e.message === "使用者取消測試") throw e;
+                if (e.message === t('error_cancelled') || e.message === '使用者取消測試') throw e;
                 setStatus('network', t('error_network_failed'), 'error');
                 document.getElementById('res-network').innerHTML = `N/A`;
-                return { value: 0, dl: 0, ul: 0, ping: 0, error: '無法連線測試節點' };
+                return { value: 0, dl: null, ul: null, ping: null, error: '無法連線測試節點' };
             }
         }
 
@@ -1095,20 +1139,25 @@
             if(name === 'dom') { unit = 'ops/s'; formattedVal = Math.round(finalVal); }
             if(name === 'canvas2d') { unit = 'ops/s'; formattedVal = Math.round(finalVal); }
             if(name === 'network') { 
-                // Because network returns an object with dl, ul, ping, and we run iterations=1
+                // Network returns an object with dl, ul, ping; run once
                 let resObj = fullResults[0];
-                if (resObj && typeof resObj === 'object' && resObj.dl !== undefined) {
-                    setStatus('network', `D: ${resObj.dl} | U: ${resObj.ul}`, 'done');
+                if (resObj && typeof resObj === 'object' && resObj.dl !== null && resObj.dl > 0) {
+                    const dlStr = resObj.dl != null ? resObj.dl : 'N/A';
+                    const ulStr = resObj.ul != null ? resObj.ul : 'N/A';
+                    const pingStr = resObj.ping != null ? `${resObj.ping} ms` : 'N/A';
+                    setStatus('network', `D: ${dlStr} | U: ${ulStr}`, 'done');
                     document.getElementById('res-network').innerHTML = `
                         <div class="flex flex-col">
-                            <span class="text-lg">${resObj.dl} <span class="text-[10px] text-slate-500">DL</span> / ${resObj.ul} <span class="text-[10px] text-slate-500">UL</span></span>
-                            <span class="text-xs text-slate-500 mt-1">Ping: ${resObj.ping} ms</span>
+                            <span class="text-lg">${dlStr} <span class="text-[10px] text-slate-500">DL</span> / ${ulStr} <span class="text-[10px] text-slate-500">UL</span></span>
+                            <span class="text-xs text-slate-500 mt-1">Ping: ${pingStr}</span>
                         </div>
                     `;
                     return resObj;
                 } else {
-                    setStatus('network', `0 Mbps`, 'error');
-                    return 0;
+                    // Connection failed or returned zero — show N/A, don't affect score
+                    setStatus('network', t('error_network_failed'), 'error');
+                    document.getElementById('res-network').innerHTML = `<span class="text-red-400">N/A</span>`;
+                    return { value: 0, dl: null, ul: null, ping: null };
                 }
             }
             
@@ -1182,8 +1231,8 @@
             const normNetwork = normalize(valNetwork, BENCHMARK_BASELINE.network);
 
             if (radarChart) {
-                // 依據相近性質分組，讓雷達圖形狀更平滑 (Compute -> Memory/IO -> Render)
-                radarChart.data.datasets[0].data = [normCPU, normString, normCrypto, normMemory, normStorage, normNetwork, normDOM, normGPU, normCanvas2D];
+                // 8 axes (Network excluded from radar — shown separately as info)
+                radarChart.data.datasets[0].data = [normCPU, normString, normCrypto, normMemory, normStorage, normDOM, normGPU, normCanvas2D];
                 radarChart.update();
             }
 
@@ -1395,7 +1444,7 @@
                         labels: t('radar_labels'),
                         datasets: [{
                             label: t('radar_dataset'),
-                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            data: [0, 0, 0, 0, 0, 0, 0, 0],
                             backgroundColor: 'rgba(59, 130, 246, 0.25)',
                             borderColor: '#3b82f6',
                             pointBackgroundColor: '#fff',

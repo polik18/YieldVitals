@@ -1,6 +1,6 @@
 {
-  "title": "YieldVitals V1.01 | 瀏覽器效能基準測試",
-  "subtitle": "V1.01 | Browser Benchmark | QC Diagnostics",
+  "title": "YieldVitals V1.011 | 瀏覽器效能基準測試",
+  "subtitle": "V1.011 | Browser Benchmark | QC Diagnostics",
   "error_msg": "測試過程中發生錯誤，請重試。",
   "run_test": "執行瀏覽器效能測試",
   "test_desc": "此測試將評估設備在瀏覽器環境下的綜合運算能力。測試期間設備可能會發熱，請保持頁面開啟。",
@@ -30,7 +30,7 @@
   "tier_mainstream": "主流行動裝置",
   "tier_high_laptop": "高階效能筆電",
   "tier_flagship": "旗艦級工作站",
-  "report_title": "YieldVitals V1.01 瀏覽器效能測試報告",
+  "report_title": "YieldVitals V1.011 瀏覽器效能測試報告",
   "report_mode": "模式",
   "report_score": "綜合評分",
   "report_reliability": "結果可信度",
@@ -63,7 +63,6 @@
     "加密吞吐 (Crypto)",
     "記憶體 (RAM)",
     "本機存取 (Storage)",
-    "網路下載 (Network)",
     "DOM 重繪 (DOM)",
     "WebGL 渲染 (GPU)",
     "Canvas 2D (2D)"

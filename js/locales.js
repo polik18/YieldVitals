@@ -64,7 +64,6 @@ window.YIELDVITALS_LOCALES = {
       "حساب (التشفير)",
       "الذاكرة (رام)",
       "التخزين (محلي)",
-      "الشبكة (DL)",
       "الرسومات (دوم)",
       "الرسومات (وحدة معالجة الرسومات)",
       "الرسومات (2D)"
@@ -216,7 +215,6 @@ window.YIELDVITALS_LOCALES = {
       "গণনা (ক্রিপ্টো)",
       "মেমরি (RAM)",
       "স্টোরেজ (স্থানীয়)",
-      "নেটওয়ার্ক (DL)",
       "গ্রাফিক্স (DOM)",
       "গ্রাফিক্স (GPU)",
       "গ্রাফিক্স (2D)"
@@ -368,7 +366,6 @@ window.YIELDVITALS_LOCALES = {
       "Compute (Crypto)",
       "Paměť (RAM)",
       "Úložiště (místní)",
-      "Síť (DL)",
       "grafika (DOM)",
       "Grafika (GPU)",
       "Grafika (2D)"
@@ -520,7 +517,6 @@ window.YIELDVITALS_LOCALES = {
       "Beregn (krypto)",
       "Hukommelse (RAM)",
       "Lagerplads (lokal)",
-      "Netværk (DL)",
       "Grafik (DOM)",
       "Grafik (GPU)",
       "Grafik (2D)"
@@ -672,7 +668,6 @@ window.YIELDVITALS_LOCALES = {
       "Berechnen (Krypto)",
       "Speicher (RAM)",
       "Lagerung (lokal)",
-      "Netzwerk (DL)",
       "Grafiken (DOM)",
       "Grafik (GPU)",
       "Grafiken (2D)"
@@ -824,7 +819,6 @@ window.YIELDVITALS_LOCALES = {
       "Υπολογισμός (Crypto)",
       "Μνήμη (RAM)",
       "Αποθηκευτικός χώρος (Τοπικός)",
-      "Δίκτυο (DL)",
       "Γραφικά (DOM)",
       "Γραφικά (GPU)",
       "Γραφικά (2D)"
@@ -976,7 +970,6 @@ window.YIELDVITALS_LOCALES = {
       "Compute (Crypto)",
       "Memory (RAM)",
       "Storage (Local)",
-      "Network (DL)",
       "Graphics (DOM)",
       "Graphics (GPU)",
       "Graphics (2D)"
@@ -1128,7 +1121,6 @@ window.YIELDVITALS_LOCALES = {
       "Computar (cripto)",
       "Memoria (RAM)",
       "Almacenamiento (local)",
-      "Red (DL)",
       "Gráficos (DOM)",
       "Gráficos (GPU)",
       "Gráficos (2D)"
@@ -1280,7 +1272,6 @@ window.YIELDVITALS_LOCALES = {
       "Laske (salaus)",
       "Muisti (RAM)",
       "Tallennustila (paikallinen)",
-      "Verkko (DL)",
       "Grafiikka (DOM)",
       "Grafiikka (GPU)",
       "Grafiikka (2D)"
@@ -1432,7 +1423,6 @@ window.YIELDVITALS_LOCALES = {
       "Calculer (crypto)",
       "Mémoire (RAM)",
       "Stockage (local)",
-      "Réseau (DL)",
       "Graphiques (DOM)",
       "Graphiques (GPU)",
       "Graphiques (2D)"
@@ -1584,7 +1574,6 @@ window.YIELDVITALS_LOCALES = {
       "מחשב (קריפטו)",
       "זיכרון (RAM)",
       "אחסון (מקומי)",
-      "רשת (DL)",
       "גרפיקה (DOM)",
       "גרפיקה (GPU)",
       "גרפיקה (2D)"
@@ -1736,7 +1725,6 @@ window.YIELDVITALS_LOCALES = {
       "गणना (क्रिप्टो)",
       "मेमोरी (रैम)",
       "भंडारण (स्थानीय)",
-      "नेटवर्क (डीएल)",
       "ग्राफ़िक्स (डीओएम)",
       "ग्राफ़िक्स (जीपीयू)",
       "ग्राफ़िक्स (2डी)"
@@ -1888,7 +1876,6 @@ window.YIELDVITALS_LOCALES = {
       "Komputasi (Kripto)",
       "Memori (RAM)",
       "Penyimpanan (Lokal)",
-      "Jaringan (DL)",
       "Grafik (DOM)",
       "Grafik (GPU)",
       "Grafik (2D)"
@@ -2040,7 +2027,6 @@ window.YIELDVITALS_LOCALES = {
       "Calcolo (Cripto)",
       "Memoria (RAM)",
       "Archiviazione (locale)",
-      "Rete (DL)",
       "Grafica (DOM)",
       "Grafica (GPU)",
       "Grafica (2D)"
@@ -2192,7 +2178,6 @@ window.YIELDVITALS_LOCALES = {
       "コンピューティング (暗号化)",
       "メモリ(RAM)",
       "ストレージ (ローカル)",
-      "ネットワーク(DL)",
       "グラフィックス (DOM)",
       "グラフィックス (GPU)",
       "グラフィックス (2D)"
@@ -2344,7 +2329,6 @@ window.YIELDVITALS_LOCALES = {
       "컴퓨팅(암호화)",
       "메모리(RAM)",
       "스토리지(로컬)",
-      "네트워크(DL)",
       "그래픽(DOM)",
       "그래픽(GPU)",
       "그래픽(2D)"
@@ -2496,7 +2480,6 @@ window.YIELDVITALS_LOCALES = {
       "Pengiraan (Crypto)",
       "Memori (RAM)",
       "Storan (Tempatan)",
-      "Rangkaian (DL)",
       "Grafik (DOM)",
       "Grafik (GPU)",
       "Grafik (2D)"
@@ -2648,7 +2631,6 @@ window.YIELDVITALS_LOCALES = {
       "Berekenen (Crypto)",
       "Geheugen (RAM)",
       "Opslag (lokaal)",
-      "Netwerk (DL)",
       "Grafisch (DOM)",
       "Grafisch (GPU)",
       "Grafisch (2D)"
@@ -2800,7 +2782,6 @@ window.YIELDVITALS_LOCALES = {
       "Compute (krypto)",
       "Minne (RAM)",
       "Lagring (lokal)",
-      "Nettverk (DL)",
       "Grafikk (DOM)",
       "Grafikk (GPU)",
       "Grafikk (2D)"
@@ -2952,7 +2933,6 @@ window.YIELDVITALS_LOCALES = {
       "Obliczenia (kryptograficzne)",
       "Pamięć (RAM)",
       "Przechowywanie (lokalne)",
-      "Sieć (DL)",
       "Grafika (DOM)",
       "Grafika (GPU)",
       "Grafika (2D)"
@@ -3104,7 +3084,6 @@ window.YIELDVITALS_LOCALES = {
       "Computação (criptografia)",
       "Memória (RAM)",
       "Armazenamento (local)",
-      "Rede (DL)",
       "Gráficos (DOM)",
       "Gráficos (GPU)",
       "Gráficos (2D)"
@@ -3256,7 +3235,6 @@ window.YIELDVITALS_LOCALES = {
       "Вычисление (криптовалюта)",
       "Память (ОЗУ)",
       "Хранилище (локальное)",
-      "Сеть (DL)",
       "Графика (ДОМ)",
       "Графика (графический процессор)",
       "Графика (2D)"
@@ -3408,7 +3386,6 @@ window.YIELDVITALS_LOCALES = {
       "Beräkna (krypto)",
       "Minne (RAM)",
       "Lagring (lokal)",
-      "Nätverk (DL)",
       "Grafik (DOM)",
       "Grafik (GPU)",
       "Grafik (2D)"
@@ -3560,7 +3537,6 @@ window.YIELDVITALS_LOCALES = {
       "คำนวณ (คริปโต)",
       "หน่วยความจำ (แรม)",
       "ที่เก็บข้อมูล (ในพื้นที่)",
-      "เครือข่าย (DL)",
       "กราฟิก (DOM)",
       "กราฟิก (จีพียู)",
       "กราฟิก (2D)"
@@ -3712,7 +3688,6 @@ window.YIELDVITALS_LOCALES = {
       "Hesaplama (Kripto)",
       "Bellek (RAM)",
       "Depolama (Yerel)",
-      "Ağ (DL)",
       "Grafik (DOM)",
       "Grafik (GPU)",
       "Grafik (2D)"
@@ -3864,7 +3839,6 @@ window.YIELDVITALS_LOCALES = {
       "Обчислення (крипто)",
       "Пам'ять (RAM)",
       "Зберігання (локальне)",
-      "Мережа (DL)",
       "Графіка (DOM)",
       "Графіка (GPU)",
       "Графіка (2D)"
@@ -4016,7 +3990,6 @@ window.YIELDVITALS_LOCALES = {
       "کمپیوٹ (کرپٹو)",
       "میموری (RAM)",
       "ذخیرہ (مقامی)",
-      "نیٹ ورک (DL)",
       "گرافکس (DOM)",
       "گرافکس (GPU)",
       "گرافکس (2D)"
@@ -4168,7 +4141,6 @@ window.YIELDVITALS_LOCALES = {
       "Điện toán (Tiền điện tử)",
       "Bộ nhớ (RAM)",
       "Lưu trữ (Cục bộ)",
-      "Mạng (DL)",
       "Đồ họa (DOM)",
       "Đồ họa (GPU)",
       "Đồ họa (2D)"
@@ -4320,7 +4292,6 @@ window.YIELDVITALS_LOCALES = {
       "计算（加密）",
       "内存（RAM）",
       "存储（本地）",
-      "网络（下行）",
       "图形（DOM）",
       "图形（GPU）",
       "图形（2D）"
@@ -4472,7 +4443,6 @@ window.YIELDVITALS_LOCALES = {
       "加密吞吐 (Crypto)",
       "記憶體 (RAM)",
       "本機存取 (Storage)",
-      "網路下載 (Network)",
       "DOM 重繪 (DOM)",
       "WebGL 渲染 (GPU)",
       "Canvas 2D (2D)"

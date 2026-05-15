@@ -1,6 +1,6 @@
 {
-  "title": "YieldVitals V1.01 | Benchmark del browser",
-  "subtitle": "V1.01 | Benchmark del browser | Diagnostica del controllo di qualità",
+  "title": "YieldVitals V1.011 | Benchmark del browser",
+  "subtitle": "V1.011 | Benchmark del browser | Diagnostica del controllo di qualità",
   "error_msg": "Si è verificato un errore durante il test, riprova.",
   "run_test": "Esegui il test delle prestazioni del browser",
   "test_desc": "Questo test valuta la capacità di calcolo completa del tuo dispositivo nell'ambiente del browser. Il dispositivo potrebbe surriscaldarsi durante il test, tieni la pagina aperta.",
@@ -30,7 +30,7 @@
   "tier_mainstream": "Cellulare tradizionale",
   "tier_high_laptop": "Computer portatile di fascia alta",
   "tier_flagship": "Stazione di lavoro di punta",
-  "report_title": "Rapporto benchmark YieldVitals V1.01",
+  "report_title": "Rapporto benchmark YieldVitals V1.011",
   "report_mode": "Modalità",
   "report_score": "Punteggio complessivo",
   "report_reliability": "Affidabilità",
@@ -63,7 +63,6 @@
     "Calcolo (Cripto)",
     "Memoria (RAM)",
     "Archiviazione (locale)",
-    "Rete (DL)",
     "Grafica (DOM)",
     "Grafica (GPU)",
     "Grafica (2D)"

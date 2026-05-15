@@ -1,6 +1,6 @@
 {
-  "title": "HasilVitals V1.01 | Tolok Ukur Peramban",
-  "subtitle": "V1.01 | Tolok Ukur Peramban | Diagnostik QC",
+  "title": "HasilVitals V1.011 | Tolok Ukur Peramban",
+  "subtitle": "V1.011 | Tolok Ukur Peramban | Diagnostik QC",
   "error_msg": "Terjadi kesalahan saat pengujian, silakan coba lagi.",
   "run_test": "Jalankan Tes Kinerja Browser",
   "test_desc": "Tes ini mengevaluasi kemampuan komputasi komprehensif perangkat Anda di lingkungan browser. Perangkat mungkin memanas selama pengujian, harap biarkan halaman tetap terbuka.",
@@ -30,7 +30,7 @@
   "tier_mainstream": "Ponsel Arus Utama",
   "tier_high_laptop": "Laptop Kelas Atas",
   "tier_flagship": "Stasiun Kerja Unggulan",
-  "report_title": "Laporan Tolok Ukur YieldVitals V1.01",
+  "report_title": "Laporan Tolok Ukur YieldVitals V1.011",
   "report_mode": "Modus",
   "report_score": "Skor Keseluruhan",
   "report_reliability": "Keandalan",
@@ -63,7 +63,6 @@
     "Komputasi (Kripto)",
     "Memori (RAM)",
     "Penyimpanan (Lokal)",
-    "Jaringan (DL)",
     "Grafik (DOM)",
     "Grafik (GPU)",
     "Grafik (2D)"

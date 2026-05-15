@@ -1,6 +1,6 @@
 {
-  "title": "YieldVitals V1.01 | Browserbenchmark",
-  "subtitle": "V1.01 | Browserbenchmark | QC-diagnostiek",
+  "title": "YieldVitals V1.011 | Browserbenchmark",
+  "subtitle": "V1.011 | Browserbenchmark | QC-diagnostiek",
   "error_msg": "Er is een fout opgetreden tijdens het testen. Probeer het opnieuw.",
   "run_test": "Voer de browserprestatietest uit",
   "test_desc": "Deze test evalueert de uitgebreide computermogelijkheden van uw apparaat in de browseromgeving. Het apparaat kan tijdens het testen warm worden. Houd de pagina open.",
@@ -30,7 +30,7 @@
   "tier_mainstream": "Mainstream mobiel",
   "tier_high_laptop": "Hoogwaardige laptop",
   "tier_flagship": "Vlaggenschip werkstation",
-  "report_title": "YieldVitals V1.01 Benchmarkrapport",
+  "report_title": "YieldVitals V1.011 Benchmarkrapport",
   "report_mode": "Modus",
   "report_score": "Totaalscore",
   "report_reliability": "Betrouwbaarheid",
@@ -63,7 +63,6 @@
     "Berekenen (Crypto)",
     "Geheugen (RAM)",
     "Opslag (lokaal)",
-    "Netwerk (DL)",
     "Grafisch (DOM)",
     "Grafisch (GPU)",
     "Grafisch (2D)"
