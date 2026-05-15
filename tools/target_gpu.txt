@@ -1,0 +1,158 @@
+        async function runThreeJSTest(config, runId) {
+            if (!supportsWebGL()) {
+                setStatus('gpu', '不支援 WebGL', 'error');
+                document.getElementById('res-gpu').innerHTML = `N/A`;
+                return 0; // 不拋錯，讓後續能結算
+            }
+
+            setStatus('gpu', '渲染探測中...', 'running');
+            const container = document.getElementById('threeContainer');
+            const fpsEl = document.getElementById('fpsCounter');
+            const gpuStatusEl = document.getElementById('gpuStatus');
+            container.classList.remove('hidden'); // Fix 3-C: 只操作 hidden，保留 flex-col 由 CSS 處理
+
+            return new Promise((resolve, reject) => {
+                let renderer, scene, camera, mesh, geometry, material;
+                let rafHandle = null; // Fix 1-A: 儲存 rAF handle 以便取消
+
+                const cleanup = () => {
+                    // Fix 1-A: 先取消動畫，確保 animate() 不再執行
+                    if (rafHandle !== null) {
+                        cancelAnimationFrame(rafHandle);
+                        rafHandle = null;
+                    }
+                    if (renderer) {
+                        renderer.dispose();
+                        if (renderer.domElement.parentNode === container) {
+                            container.removeChild(renderer.domElement);
+                        }
+                    }
+                    if (geometry) geometry.dispose();
+                    if (material) material.dispose();
+                    container.classList.add('hidden');
+                };
+
+                setTimeout(() => {
+                    try {
+                        scene = new THREE.Scene();
+                        scene.fog = new THREE.FogExp2(0x000000, 0.002);
+                        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                        renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
+
+                        renderer.domElement.addEventListener('webglcontextlost', function (event) {
+                            event.preventDefault();
+                            cleanup();
+                            reject(new Error('WebGL 記憶體耗盡或馨動崩潰'));
+                        });
+
+                        renderer.setSize(window.innerWidth, window.innerHeight);
+                        renderer.setPixelRatio(window.devicePixelRatio > 1 ? 1.5 : 1);
+                        container.appendChild(renderer.domElement);
+
+                        const ambientLight = new THREE.AmbientLight(0x404040);
+                        scene.add(ambientLight);
+                        const dirLight = new THREE.DirectionalLight(0x0abab5, 1);
+                        dirLight.position.set(1, 1, 1);
+                        scene.add(dirLight);
+
+                        const maxInstances = config.gpuMax;
+                        let currentInstances = 2000; // 降低初始負載保護弱設備
+                        geometry = new THREE.IcosahedronGeometry(1, 0);
+                        material = new THREE.MeshPhongMaterial({ color: 0x222222, specular: 0x0abab5, shininess: 50 });
+                        mesh = new THREE.InstancedMesh(geometry, material, maxInstances);
+
+                        const dummy = new THREE.Object3D();
+                        for (let i = 0; i < maxInstances; i++) {
+                            dummy.position.set(
+                                (Math.random() - 0.5) * 400,
+                                (Math.random() - 0.5) * 400,
+                                (Math.random() - 0.5) * 400
+                            );
+                            dummy.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+                            dummy.scale.setScalar(Math.random() * 2 + 0.5);
+                            dummy.updateMatrix();
+                            mesh.setMatrixAt(i, dummy.matrix);
+                        }
+                        mesh.count = currentInstances;
+                        scene.add(mesh);
+                        camera.position.z = 150;
+
+                        let frames = 0;
+                        let lastTime = performance.now();
+                        const startTime = performance.now();
+
+                        let phase = 'warmup';
+                        let baselineFPS = 0;
+                        let dropCount = 0;
+                        let stressFrameCount = 0;
+                        let frameTimes = []; // For 1% Low calculation
+                        let lastFrameTime = performance.now();
+
+                        function animate() {
+                            if (isCancelledRun(runId)) {
+                                cleanup();
+                                return reject(new Error('使用者取消測試'));
+                            }
+
+                            const now = performance.now();
+                            if (phase === 'stress') {
+                                frameTimes.push(now - lastFrameTime);
+                            }
+                            lastFrameTime = now;
+
+                            mesh.rotation.y += 0.005;
+                            mesh.rotation.x += 0.002;
+
+                            renderer.render(scene, camera);
+                            frames++;
+
+                            if (now - lastTime >= 250) {
+                                let currentFPS = Math.round((frames * 1000) / (now - lastTime));
+                                fpsEl.textContent = `${currentFPS} FPS`;
+
+                                if (phase === 'warmup') {
+                                    gpuStatusEl.textContent = `測量 Vsync 基準線...`;
+                                    if (now - startTime > 1000) {
+                                        baselineFPS = currentFPS;
+                                        phase = 'stress';
+                                    }
+                                } else if (phase === 'stress') {
+                                    stressFrameCount++;
+                                    gpuStatusEl.textContent = `壓力遞增: ${(currentInstances / 1000).toFixed(1)}k 實體 | 基準: ${baselineFPS} FPS`;
+
+                                    if (stressFrameCount > 3 && (currentFPS < baselineFPS * 0.85 || currentFPS < 30)) {
+                                        dropCount++;
+                                    } else if (stressFrameCount <= 3 || (currentFPS >= baselineFPS * 0.85 && currentFPS >= 30)) {
+                                        dropCount = 0;
+                                        currentInstances += 5000; // 平緩增加
+                                        if (currentInstances > maxInstances) currentInstances = maxInstances;
+                                        mesh.count = currentInstances;
+                                    }
+
+                                    if (dropCount >= 2 || currentInstances >= maxInstances || now - startTime > config.gpuTimeLimit) {
+                                        cleanup();
+                                        // Calculate 1% Low FPS
+                                        let onePercentLow = 0;
+                                        if (frameTimes.length > 0) {
+                                            frameTimes.sort((a, b) => b - a); // Sort descending (longest frame times first)
+                                            const onePercentCount = Math.max(1, Math.floor(frameTimes.length * 0.01));
+                                            const worstFrames = frameTimes.slice(0, onePercentCount);
+                                            const avgWorstFrameTime = worstFrames.reduce((a, b) => a + b, 0) / worstFrames.length;
+                                            onePercentLow = Math.round(1000 / avgWorstFrameTime);
+                                        }
+                                        setStatus('gpu', `${Math.floor(currentInstances / 1000)}k objs`, 'done');
+                                        document.getElementById('res-gpu').innerHTML = `${Math.floor(currentInstances / 1000)} <span class="text-xs font-normal text-slate-500">k objs</span>`;
+                                        // Return object instead of number
+                                        return resolve({ value: currentInstances, onePercentLow: onePercentLow });
+                                    }
+                                }
+                            }
+                            rafHandle = requestAnimationFrame(animate);
+                        }
+                        animate();
+                    } catch (e) {
+                        cleanup();
+                        reject(new Error('WebGL 測試執行時發生錯誤'));
+                    }
+                }, 500);
+            });
