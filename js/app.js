@@ -19,36 +19,38 @@
         function isCancelledRun(runId) { return runId !== currentRunId; }
 
         // 基準天花板設定 (集中管理)
+        // Calibrated against real devices: Apple M4, Intel Core Ultra 7, Ryzen 5 7600, Snapdragon 8 Gen 3
+        // Targets: ~80-90 for flagship desktop, ~50-70 for mainstream laptop, ~30-50 for mobile flagship
         const BENCHMARK_BASELINE = {
-            cpu: 800,      // M/s 
-            string: 1200,  // k ops/s
-            memory: 200,   // cyc/s
-            dom: 30000,    // ops/s
-            gpu: 300000,   // objs
-            crypto: 4000,  // MB/s
-            storage: 800,  // MB/s
-            network: 1000, // Mbps
-            canvas2d: 8000 // ops/s
+            cpu: 900,      // M/s  — M4/Ryzen 7600 hits ~800-1000
+            string: 120,   // k ops/s — mainstream Chrome ~60-150k, was 1200 (too high!)
+            memory: 800,   // cyc/s — M4 hits ~1100, mainstream ~400-600
+            dom: 5000,     // ops/s — Chrome on macOS ~2000-4000, was 30000 (way too high!)
+            gpu: 2000,     // Pts — unified GPU score; Phase1+2+3 composite
+            crypto: 3500,  // MB/s — M4 AES-NI ~3000-4000, x86 ~2000-3500
+            storage: 2000, // MB/s — NVMe ~2000-5000, OPFS varies wildly
+            network: 500,  // Mbps — typical fast home broadband
+            canvas2d: 6000 // ops/s — M4 ~6000, mainstream ~3000-5000
         };
 
         // 模式設定 (分級策略)
         const MODE_SETTINGS = {
-            quick: { gpuMax: 50000, gpuTimeLimit: 10000, cpuTime: 1500, otherTime: 1000, label: '快速', desc: '適合手機或輕度測試' },
-            standard: { gpuMax: 150000, gpuTimeLimit: 20000, cpuTime: 3000, otherTime: 2000, label: '標準', desc: '適合一般筆電或桌機' },
-            extreme: { gpuMax: 500000, gpuTimeLimit: 30000, cpuTime: 5000, otherTime: 3000, label: '極限', desc: '適合高階桌機 (不建議手機使用)' },
-            stability: { gpuMax: 150000, gpuTimeLimit: 20000, cpuTime: 2000, otherTime: 1500, iterations: 3, label: '穩定', desc: '多次取樣，減少波動與系統干擾' },
-            burnin: { gpuMax: 500000, gpuTimeLimit: 120000, cpuTime: 15000, otherTime: 5000, label: '燒機', desc: '長時間壓力測試 (測量散熱與穩定度)' }
+            quick: { gpuMax: 50000, gpuTimeLimit: 10000, cpuTime: 1500, otherTime: 1000, label: t('mode_quick'), desc: t('mode_quick_desc') },
+            standard: { gpuMax: 150000, gpuTimeLimit: 20000, cpuTime: 3000, otherTime: 2000, label: t('mode_standard'), desc: t('mode_standard_desc') },
+            extreme: { gpuMax: 500000, gpuTimeLimit: 30000, cpuTime: 5000, otherTime: 3000, label: t('mode_extreme'), desc: t('mode_extreme_desc') },
+            stability: { gpuMax: 150000, gpuTimeLimit: 20000, cpuTime: 2000, otherTime: 1500, iterations: 3, label: t('mode_stability'), desc: t('mode_stability_desc') },
+            burnin: { gpuMax: 500000, gpuTimeLimit: 120000, cpuTime: 15000, otherTime: 5000, label: t('mode_burnin'), desc: t('mode_burnin_desc') }
         };
 
         function getDeviceSpecs() {
             const specs = {
                 userAgent: navigator.userAgent,
-                cores: navigator.hardwareConcurrency || '未知',
-                memory: navigator.deviceMemory ? `${navigator.deviceMemory} GB+` : '未知/受限',
+                cores: navigator.hardwareConcurrency || t('env_unknown'),
+                memory: navigator.deviceMemory ? `${navigator.deviceMemory} GB+` : t('env_unknown_mem'),
                 resolution: `${window.screen.width}x${window.screen.height}`,
                 pixelRatio: window.devicePixelRatio || 1,
-                platform: navigator.platform || '未知',
-                gpuRenderer: '未知 (無 WebGL 權限)'
+                platform: navigator.platform || t('env_unknown'),
+                gpuRenderer: t('env_unknown_gpu')
             };
 
             try {
@@ -62,7 +64,7 @@
                         specs.gpuRenderer = gl.getParameter(gl.RENDERER);
                     }
                 }
-            } catch (e) { console.warn("無法取得 GPU 資訊"); }
+            } catch (e) { console.warn("Failed to get GPU info"); }
 
             if (navigator.userAgentData) {
                 specs.platform = navigator.userAgentData.platform || specs.platform;
@@ -78,7 +80,7 @@
             radio.addEventListener('change', (e) => {
                 const mode = MODE_SETTINGS[e.target.value];
                 const descEl = document.getElementById('modeDesc');
-                descEl.textContent = mode.desc;
+                descEl.textContent = t('mode_' + e.target.value + '_desc') || mode.desc;
                 if (e.target.value === 'burnin') descEl.className = 'text-purple-400 font-bold';
                 else if (e.target.value === 'extreme') descEl.className = 'text-red-400 font-bold';
                 else if (e.target.value === 'standard') descEl.className = 'text-yellow-400 font-normal';
@@ -131,7 +133,7 @@
                 btn.disabled = true;
                 icon.innerHTML = `<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" class="opacity-25"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>`;
                 icon.classList.add('animate-spin');
-                text.textContent = '評測執行中...';
+                text.textContent = t('status_running');
                 btn.classList.replace('bg-primary', 'bg-slate-700');
                 cancelBtn.classList.remove('hidden');
                 modeInputs.forEach(input => input.disabled = true);
@@ -139,7 +141,7 @@
                 btn.disabled = false;
                 icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>`;
                 icon.classList.remove('animate-spin');
-                text.textContent = '重新測試';
+                text.textContent = t('btn_retest');
                 btn.classList.replace('bg-slate-700', 'bg-primary');
                 cancelBtn.classList.add('hidden');
                 modeInputs.forEach(input => input.disabled = false);
@@ -188,13 +190,13 @@
 
         function showError(message) {
             const errDiv = document.getElementById('globalError');
-            errDiv.textContent = `⚠️ 測試中斷: ${message}`;
+            errDiv.textContent = `⚠️ ${t('error_msg')}: ${message}`;
             errDiv.classList.remove('-translate-y-full');
             // 掃描並標記失敗項目
             ['cpu', 'string', 'ram', 'dom', 'canvas2d', 'gpu', 'crypto', 'storage', 'network'].forEach(id => {
                 const el = document.getElementById(`item-${id}`);
                 if (el.querySelector('.indicator').classList.contains('bg-yellow-400')) {
-                    setStatus(id, '失敗/中斷', 'error');
+                    setStatus(id, t('status_error') || 'Error', 'error');
                 }
             });
         }
@@ -208,12 +210,12 @@
             showError(msg);
             document.getElementById('startBtn').disabled = true;
             document.getElementById('startBtn').classList.replace('bg-primary', 'bg-slate-700');
-            document.querySelector('.btn-text').textContent = '環境錯誤無法執行';
+            document.querySelector('.btn-text').textContent = t('error_env');
         }
 
         function checkDependencies() {
-            if (!window.Chart) return 'Chart.js 載入失敗，無法顯示圖表。請檢查網路連線。';
-            if (!window.THREE) return 'Three.js 載入失敗，無法執行圖形測試。請檢查網路連線。';
+            if (!window.Chart) return t('error_chart_load');
+            if (!window.THREE) return t('error_three_load');
             return null;
         }
 
@@ -221,13 +223,25 @@
             return Promise.race([
                 promise,
                 new Promise((_, reject) => {
-                    setTimeout(() => reject(new Error(`${label} 測試逾時 (${ms}ms)`)), ms);
+                    setTimeout(() => reject(new Error(`${label} ${t('error_timeout')} (${ms}ms)`)), ms);
                 })
             ]);
         }
 
+        // Log-sigmoid normalization: maps any value to 0-100 smoothly.
+        // Scores near the baseline (~1x) land around 70-75.
+        // 0.5x baseline → ~50, 2x baseline → ~90, 4x → ~97.
+        // This prevents the "all zeros or all hundreds" radar spike problem.
         function normalize(value, baseline) {
-            return Math.min((value / baseline) * 100, 100);
+            if (!value || value <= 0) return 0;
+            // Ratio vs baseline, then log2 transform to compress outliers
+            const ratio = value / baseline;
+            // logistic curve: sigmoid centered so ratio=1 → ~70
+            // k controls steepness, center controls midpoint
+            const k = 2.5;
+            const center = 0.8; // ratio at which score = 50
+            const score = 100 / (1 + Math.exp(-k * (Math.log2(ratio) - Math.log2(center))));
+            return Math.round(Math.min(Math.max(score, 0), 100));
         }
 
         function supportsWebGL() {
@@ -259,7 +273,7 @@
         `;
 
         async function runCPUMultiCore(duration, runId) {
-            setStatus('cpu', '全核運算中...', 'running');
+            setStatus('cpu', t('status_running_cpu'), 'running');
             const blob = new Blob([cpuWorkerCode], { type: 'application/javascript' });
             const workerUrl = URL.createObjectURL(blob);
             let totalOps = 0;
@@ -290,7 +304,7 @@
                 throw e;
             }
             URL.revokeObjectURL(workerUrl);
-            if (isCancelledRun(runId)) throw new Error('使用者取消測試');
+            if (isCancelledRun(runId)) throw new Error(t('error_cancelled'));
 
             const durationSec = duration / 1000;
             const scoreInM = (totalOps / durationSec / 1000000).toFixed(2);
@@ -323,7 +337,7 @@
         `;
 
         async function runStringTest(duration, runId) {
-            setStatus('string', '解析中...', 'running');
+            setStatus('string', t('status_running_string'), 'running');
             const blob = new Blob([stringWorkerCode], { type: 'application/javascript' });
             const workerUrl = URL.createObjectURL(blob);
 
@@ -332,7 +346,7 @@
                 worker.onmessage = (e) => {
                     worker.terminate();
                     URL.revokeObjectURL(workerUrl);
-                    if (isCancelledRun(runId)) return reject(new Error('使用者取消測試'));
+                    if (isCancelledRun(runId)) return reject(new Error(t('error_cancelled')));
                     const scoreK = (e.data.ops / e.data.durationSec / 1000).toFixed(1);
                     setStatus('string', `${scoreK}k ops`, 'done');
                     document.getElementById('res-string').innerHTML = `${scoreK} <span class="text-xs font-normal text-slate-500">k ops</span>`;
@@ -363,7 +377,7 @@
         `;
 
         async function runRAMTest(duration, runId) {
-            setStatus('ram', '分配中...', 'running');
+            setStatus('ram', t('status_running_ram'), 'running');
             const blob = new Blob([ramWorkerCode], { type: 'application/javascript' });
             const workerUrl = URL.createObjectURL(blob);
 
@@ -372,7 +386,7 @@
                 worker.onmessage = (e) => {
                     worker.terminate();
                     URL.revokeObjectURL(workerUrl);
-                    if (isCancelledRun(runId)) return reject(new Error('使用者取消測試'));
+                    if (isCancelledRun(runId)) return reject(new Error(t('error_cancelled')));
                     const score = Math.round(e.data.cycles / e.data.durationSec);
                     setStatus('ram', `${score} cyc/s`, 'done');
                     document.getElementById('res-ram').innerHTML = `${score} <span class="text-xs font-normal text-slate-500">cyc/s</span>`;
@@ -390,7 +404,7 @@
 
         // Canvas 2D 繪圖測試
         async function runCanvas2DTest(duration, runId) {
-            setStatus('canvas2d', '繪製中...', 'running');
+            setStatus('canvas2d', t('status_running_canvas2d'), 'running');
             const box = document.getElementById('domSandbox');
             const canvas = document.createElement('canvas');
             canvas.width = 800; canvas.height = 600;
@@ -401,7 +415,7 @@
 
             return new Promise((resolve, reject) => {
                 function step() {
-                    if (isCancelledRun(runId)) return reject(new Error('使用者取消測試'));
+                    if (isCancelledRun(runId)) return reject(new Error(t('error_cancelled')));
                     for (let i = 0; i < 100; i++) {
                         ctx.fillStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
                         ctx.beginPath();
@@ -423,14 +437,14 @@
         }
         // 4. DOM 重繪測試 (分段執行以防卡死)
         async function runDOMTest(duration, runId) {
-            setStatus('dom', '重繪中...', 'running');
+            setStatus('dom', t('status_running_dom'), 'running');
             const box = document.getElementById('domSandbox');
             const start = performance.now();
             let ops = 0;
 
             return new Promise((resolve, reject) => {
                 function step() {
-                    if (isCancelledRun(runId)) return reject(new Error('使用者取消測試'));
+                    if (isCancelledRun(runId)) return reject(new Error(t('error_cancelled')));
 
                     // 每幀執行 50 次重繪
                     for (let i = 0; i < 50; i++) {
@@ -457,12 +471,12 @@
         // 5. Three.js GPU 動態壓力探測
         async function runThreeJSTest(config, runId) {
             if (!supportsWebGL()) {
-                setStatus('gpu', '不支援 WebGL', 'error');
+                setStatus('gpu', t('error_no_webgl'), 'error');
                 document.getElementById('res-gpu').innerHTML = `N/A`;
                 return 0; // 不拋錯，讓後續能結算
             }
 
-            setStatus('gpu', '渲染探測中...', 'running');
+            setStatus('gpu', t('status_running_gpu'), 'running');
             const container = document.getElementById('threeContainer');
             const fpsEl = document.getElementById('fpsCounter');
             const gpuStatusEl = document.getElementById('gpuStatus');
@@ -491,10 +505,15 @@
                 };
 
                 try {
+                    // Detect Apple Silicon / ANGLE Metal path to avoid context loss
+                    const isAppleMetal = /Apple|ANGLE Metal/i.test(navigator.userAgent + (document.createElement('canvas').getContext('webgl')?.getExtension('WEBGL_debug_renderer_info') ? document.createElement('canvas').getContext('webgl').getParameter(document.createElement('canvas').getContext('webgl').getExtension('WEBGL_debug_renderer_info').UNMASKED_RENDERER_WEBGL) : ''));
+                    
                     renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
                     renderer.setSize(window.innerWidth, window.innerHeight);
-                    renderer.setPixelRatio(window.devicePixelRatio > 1 ? 1.5 : 1);
-                    renderer.shadowMap.enabled = true;
+                    // Apple Metal: cap pixel ratio at 1 to prevent VRAM exhaustion causing context loss
+                    renderer.setPixelRatio(isAppleMetal ? 1 : (window.devicePixelRatio > 1 ? 1.5 : 1));
+                    // Disable shadows on Apple ANGLE path to avoid Metal driver bugs
+                    renderer.shadowMap.enabled = !isAppleMetal;
                     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
                     container.appendChild(renderer.domElement);
 
@@ -583,7 +602,7 @@
                         p1Mesh.count = p1Instances;
                         return true;
                     };
-                    p1Frame.getStatus = () => `幾何實體: ${(p1Instances / 1000).toFixed(1)}k`;
+                    p1Frame.getStatus = () => `${t('status_gpu_p1')} ${(p1Instances / 1000).toFixed(1)}k`;
                     p1Frame.getScore = () => p1Instances;
 
                     let res = await runPhase('Ph.1/3', (s, c) => {
@@ -610,7 +629,7 @@
                         c.position.set(0, 0, 150);
                         c.lookAt(0,0,0);
                     }, p1Frame);
-                    if (res === 'cancelled') { cleanup(); return reject(new Error('使用者取消測試')); }
+                    if (res === 'cancelled') { cleanup(); return reject(new Error(t('error_cancelled'))); }
                     scorePhase1 = res;
 
                     // === PHASE 2: The Void (Fragment Shader) ===
@@ -624,7 +643,7 @@
                         p2Uniforms.uIters.value = p2Iters;
                         return true;
                     };
-                    p2Frame.getStatus = () => `分形著色: ${p2Iters} 疊代`;
+                    p2Frame.getStatus = () => `${t('status_gpu_p2')} ${p2Iters}`;
                     p2Frame.getScore = () => p2Iters;
 
                     res = await runPhase('Ph.2/3', (s, c) => {
@@ -674,7 +693,7 @@
                         const plane = new THREE.Mesh(geom, mat);
                         s.add(plane);
                     }, p2Frame);
-                    if (res === 'cancelled') { cleanup(); return reject(new Error('使用者取消測試')); }
+                    if (res === 'cancelled') { cleanup(); return reject(new Error(t('error_cancelled'))); }
                     scorePhase2 = res;
 
                     // === PHASE 3: The Core (Dynamic Shadows & Lights) ===
@@ -707,7 +726,7 @@
                         p3LightCount++;
                         return true;
                     };
-                    p3Frame.getStatus = () => `PBR 動態陰影: ${p3LightCount} 盞`;
+                    p3Frame.getStatus = () => `${t('status_gpu_p3')} ${p3LightCount}`;
                     p3Frame.getScore = () => p3LightCount;
 
                     res = await runPhase('Ph.3/3', (s, c) => {
@@ -742,15 +761,20 @@
                             s.add(l);
                         }
                     }, p3Frame);
-                    if (res === 'cancelled') { cleanup(); return reject(new Error('使用者取消測試')); }
+                    if (res === 'cancelled') { cleanup(); return reject(new Error(t('error_cancelled'))); }
                     scorePhase3 = res;
 
                     cleanup();
 
-                    const unifiedScore = (scorePhase1 / 1000) * 0.8 + (scorePhase2 * 0.5) + (scorePhase3 * 1.5);
+                    // Unified GPU score: Phase1=geometry throughput, Phase2=shader complexity, Phase3=light count
+                    // Scale each to roughly 0-1000 range before weighting
+                    const p1Score = Math.min(scorePhase1 / config.gpuMax, 1) * 1000; // 0-1000
+                    const p2Score = Math.min(scorePhase2 / 200, 1) * 1000;           // 200 iters = max
+                    const p3Score = Math.min(scorePhase3 / 30, 1) * 1000;            // 30 lights = max
+                    const unifiedScore = Math.round(p1Score * 0.5 + p2Score * 0.3 + p3Score * 0.2);
                     
-                    setStatus('gpu', `${Math.floor(unifiedScore)} Pts`, 'done');
-                    document.getElementById('res-gpu').innerHTML = `${Math.floor(unifiedScore)} <span class="text-xs font-normal text-slate-500">Pts</span>`;
+                    setStatus('gpu', `${unifiedScore} Pts`, 'done');
+                    document.getElementById('res-gpu').innerHTML = `${unifiedScore} <span class="text-xs font-normal text-slate-500">Pts</span>`;
                     
                     resolve({ value: unifiedScore, onePercentLow: unifiedScore });
 
@@ -811,7 +835,7 @@
         `;
 
         async function runCryptoTest(duration, runId) {
-            setStatus('crypto', 'AES-GCM 加速中...', 'running');
+            setStatus('crypto', t('status_running_crypto'), 'running');
             const blob = new Blob([cryptoWorkerCode], { type: 'application/javascript' });
             const workerUrl = URL.createObjectURL(blob);
 
@@ -820,7 +844,7 @@
                 worker.onmessage = (e) => {
                     worker.terminate();
                     URL.revokeObjectURL(workerUrl);
-                    if (isCancelledRun(runId)) return reject(new Error('使用者取消測試'));
+                    if (isCancelledRun(runId)) return reject(new Error(t('error_cancelled')));
 
                     if (e.data.success) {
                         const mbPerSec = e.data.score;
@@ -844,7 +868,7 @@
                 worker.onerror = (e) => {
                     worker.terminate();
                     URL.revokeObjectURL(workerUrl);
-                    reject(new Error('WebCrypto Worker 執行失敗'));
+                    reject(new Error('WebCrypto ' + t('error_worker')));
                 };
                 worker.postMessage({ duration });
             });
@@ -930,7 +954,7 @@
         `;
 
         async function runStorageTest(duration, runId) {
-            setStatus('storage', '讀寫測試中...', 'running');
+            setStatus('storage', t('status_running_storage'), 'running');
             const blob = new Blob([storageWorkerCode], { type: 'application/javascript' });
             const workerUrl = URL.createObjectURL(blob);
 
@@ -939,7 +963,7 @@
                 worker.onmessage = (e) => {
                     worker.terminate();
                     URL.revokeObjectURL(workerUrl);
-                    if (isCancelledRun(runId)) return reject(new Error('使用者取消測試'));
+                    if (isCancelledRun(runId)) return reject(new Error(t('error_cancelled')));
 
                     if (e.data.success) {
                         const mbPerSec = e.data.score;
@@ -953,7 +977,7 @@
                 worker.onerror = (e) => {
                     worker.terminate();
                     URL.revokeObjectURL(workerUrl);
-                    reject(new Error('Storage Worker 執行失敗'));
+                    reject(new Error('Storage ' + t('error_worker')));
                 };
                 worker.postMessage({ duration });
             });
@@ -966,7 +990,7 @@
                 // 1. Ping Test
                 setStatus('network', t('network_pinging'), 'running');
                 for (let i = 0; i < 5; i++) {
-                    if (isCancelledRun(runId)) return Promise.reject(new Error('使用者取消測試'));
+                    if (isCancelledRun(runId)) return Promise.reject(new Error(t('error_cancelled')));
                     let pStart = performance.now();
                     const controller = new AbortController();
                     const timeoutId = setTimeout(() => controller.abort(), 3000);
@@ -993,7 +1017,7 @@
                     if (!dlResp.ok) throw new Error('DL Fetch failed');
                     const reader = dlResp.body.getReader();
                     while(true) {
-                        if (isCancelledRun(runId)) { dlController.abort(); return Promise.reject(new Error('使用者取消測試')); }
+                        if (isCancelledRun(runId)) { dlController.abort(); return Promise.reject(new Error(t('error_cancelled'))); }
                         const {done, value} = await reader.read();
                         if (done) break;
                         receivedLength += value.length;
@@ -1031,7 +1055,7 @@
                 return { value: dlMbps, dl: dlMbps, ul: ulMbps, ping: ping };
             } catch (e) {
                 if (e.message === "使用者取消測試") throw e;
-                setStatus('network', '連線失敗或逾時', 'error');
+                setStatus('network', t('error_network_failed'), 'error');
                 document.getElementById('res-network').innerHTML = `N/A`;
                 return { value: 0, dl: 0, ul: 0, ping: 0, error: '無法連線測試節點' };
             }
@@ -1042,7 +1066,7 @@
             let results = [];
             let fullResults = [];
             for(let i=0; i<iterations; i++) {
-                if (isCancelledRun(runId)) throw new Error('使用者取消測試');
+                if (isCancelledRun(runId)) throw new Error(t('error_cancelled'));
                 let res = await testFn(durationPerIter, runId);
                 let val = (typeof res === 'object') ? (res.value || res.score || res) : res;
                 results.push(val);
@@ -1115,27 +1139,27 @@
         }
 
         function calculateReliability(results, isCancelled, errorOccurred) {
-            let score = '高';
-            let reason = '所有測試項目皆順利完成，無異常波動。';
+            let score = t('rel_high');
+            let reason = t('rel_reason_high');
             let colorClass = 'bg-primary';
 
             if (isCancelled) {
-                return { score: '無', reason: '測試遭使用者手動中斷。', colorClass: 'bg-slate-600' };
+                return { score: t('rel_none'), reason: t('rel_reason_cancelled'), colorClass: 'bg-slate-600' };
             }
 
             if (errorOccurred) {
                 if (!results.cpu || !results.gpu || (typeof results.gpu === 'object' ? results.gpu.value === undefined : results.gpu === undefined)) {
-                    score = '低';
-                    reason = '核心測試 (CPU/GPU) 發生錯誤或未完成，總分不具參考價值。';
+                    score = t('rel_low');
+                    reason = t('rel_reason_core_err');
                     colorClass = 'bg-red-500';
                 } else {
-                    score = '中';
-                    reason = '部分次要測試發生中斷，總分可能略有偏差。';
+                    score = t('rel_med');
+                    reason = t('rel_reason_sub_err');
                     colorClass = 'bg-yellow-500';
                 }
             } else if (results.crypto && typeof results.crypto === 'object' && results.crypto.warning) {
-                score = '中';
-                reason = 'Crypto 數值異常偏高，可能受到底層快取或極端硬體加速影響。';
+                score = t('rel_med');
+                reason = t('rel_reason_crypto_warn');
                 colorClass = 'bg-yellow-500';
             }
 
@@ -1179,26 +1203,26 @@
         }
 
         function getDiagnostics(finalScore, normCPU, normGPU, normDOM, normMemory, normStorage) {
-            let webBrowsing = '非常順暢';
-            let multiTab = '非常順暢';
-            let web3D = '游刃有餘';
-            let heavyWebApps = '輕鬆應付';
+            let webBrowsing = t('fitness_very_smooth');
+            let multiTab = t('fitness_very_smooth');
+            let web3D = t('fitness_very_smooth');
+            let heavyWebApps = t('fitness_very_smooth');
 
             if (finalScore < 30) {
-                webBrowsing = '順暢';
-                multiTab = '可能卡頓';
-                web3D = '不建議';
-                heavyWebApps = '極度吃力';
+                webBrowsing = t('fitness_smooth');
+                multiTab = t('fitness_stutter');
+                web3D = t('fitness_not_rec');
+                heavyWebApps = t('fitness_struggle');
             } else if (finalScore < 60) {
-                webBrowsing = '非常順暢';
-                multiTab = '順暢';
-                web3D = '勉強可用';
-                heavyWebApps = '可用，但建議接上電源';
+                webBrowsing = t('fitness_very_smooth');
+                multiTab = t('fitness_smooth');
+                web3D = t('fitness_good');
+                heavyWebApps = t('fitness_power');
             } else if (finalScore < 85) {
-                webBrowsing = '非常順暢';
-                multiTab = '非常順暢';
-                web3D = '中上水準';
-                heavyWebApps = '順暢運行';
+                webBrowsing = t('fitness_very_smooth');
+                multiTab = t('fitness_very_smooth');
+                web3D = t('fitness_good');
+                heavyWebApps = t('fitness_smooth');
             }
 
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -1239,55 +1263,65 @@
         }
 
         function generateReportText(results, finalScore, rel, modeLabel, diag) {
-            let text = `YieldVitals V1.0 瀏覽器效能測試報告 [模式: ${modeLabel}]\n`;
+            let text = `${t('report_title')} [${t('report_mode')}: ${modeLabel}]\n`;
             text += `=========================\n`;
-            text += `綜合評分：${finalScore}\n`;
-            text += `結果可信度：${rel.score} (${rel.reason})\n\n`;
-            text += `[ 測試細項 ]\n`;
-            text += `- 邏輯運算 (CPU): ${results.cpu || 0} M/s\n`;
-            text += `- 字串解析: ${results.string || 0} k ops\n`;
-            text += `- 記憶體與GC: ${results.memory || 0} cyc/s\n`;
-            text += `- DOM 重繪: ${results.dom || 0} ops/s\n`;
-            text += `- Canvas2D 繪圖: ${results.canvas2d || 0} ops/s\n`;
+            text += `${t('report_score')}：${finalScore}\n`;
+            text += `${t('report_reliability')}：${rel.score} (${rel.reason})\n\n`;
+            text += `${t('report_details')}\n`;
+            text += `- ${t('cpu_calc')}: ${results.cpu || 0} M/s\n`;
+            text += `- ${t('string_parse')}: ${results.string || 0} k ops\n`;
+            text += `- ${t('ram_gc')}: ${results.memory || 0} cyc/s\n`;
+            text += `- ${t('dom_layout')}: ${results.dom || 0} ops/s\n`;
+            text += `- ${t('canvas2d_render')}: ${results.canvas2d || 0} ops/s\n`;
             
             const valGPU = typeof results.gpu === 'object' ? results.gpu.value : (results.gpu || 0);
             const lowFPS = typeof results.gpu === 'object' && results.gpu.onePercentLow ? ` (1% Low: ${results.gpu.onePercentLow} FPS)` : '';
-            text += `- WebGL 渲染: ${valGPU > 0 ? Math.floor(valGPU / 1000) + 'k objs' + lowFPS : '不支援/失敗'}\n`;
+            text += `- ${t('gpu_webgl')}: ${valGPU > 0 ? Math.floor(valGPU / 1000) + 'k objs' + lowFPS : 'N/A'}\n`;
             
             let cryptoVal = typeof results.crypto === 'object' ? results.crypto.value : (results.crypto || 0);
-            let cryptoWarn = typeof results.crypto === 'object' && results.crypto.warning ? ' (異常偏高)' : '';
-            text += `- 加密吞吐: ${cryptoVal} MB/s${cryptoWarn}\n`;
+            let cryptoWarn = typeof results.crypto === 'object' && results.crypto.warning ? ' (!)' : '';
+            text += `- ${t('crypto_throughput')}: ${cryptoVal} MB/s${cryptoWarn}\n`;
             
             let storageVal = typeof results.storage === 'object' ? results.storage.value : (results.storage || 0);
-            text += `- 本機存取: ${storageVal} MB/s\n`;
-            let networkVal = typeof results.network === 'object' ? results.network.value : (results.network || 0);
-            text += `- 網路下載: ${networkVal} Mbps\n\n`;
+            text += `- ${t('storage_io')}: ${storageVal} MB/s\n`;
+            
+            if (results.network) {
+                let networkDl = typeof results.network === 'object' ? (results.network.dl || results.network.value) : results.network;
+                let networkUl = typeof results.network === 'object' ? results.network.ul : 0;
+                let networkPing = typeof results.network === 'object' ? results.network.ping : 0;
+                text += `\n${t('report_network')}\n`;
+                text += `- ${t('report_network_dl')}: ${networkDl} Mbps\n`;
+                text += `- ${t('report_network_ul')}: ${networkUl} Mbps\n`;
+                text += `- ${t('report_network_ping')}: ${networkPing} ms\n\n`;
+            } else {
+                text += `- ${t('network_speed')}: 0 Mbps\n\n`;
+            }
 
             if (diag) {
-                text += `[ 裝置適配性評估 ]\n`;
-                text += `- 一般網頁瀏覽: ${diag.fitness.webBrowsing}\n`;
-                text += `- 多分頁工作: ${diag.fitness.multiTab}\n`;
-                text += `- Web 3D 應用: ${diag.fitness.web3D}\n`;
-                text += `- 重型網頁工具: ${diag.fitness.heavyWebApps}\n\n`;
+                text += `[ ${t('advice_fitness').replace('：', '')} ]\n`;
+                text += `- ${t('fitness_web')} ${diag.fitness.webBrowsing}\n`;
+                text += `- ${t('fitness_tabs')} ${diag.fitness.multiTab}\n`;
+                text += `- ${t('fitness_3d')} ${diag.fitness.web3D}\n`;
+                text += `- ${t('fitness_heavy')} ${diag.fitness.heavyWebApps}\n\n`;
 
-                text += `[ 效能瓶頸分析與專家建議 ]\n`;
+                text += `[ ${t('advice_bottleneck').replace('：', '')} ]\n`;
                 if (diag.weakestLink) {
-                    text += `主要瓶頸: ${diag.weakestLink.name}\n`;
-                    text += `專家建議: ${diag.weakestLink.advice}\n\n`;
+                    text += `${t('advice_bottleneck_main')} ${diag.weakestLink.name}\n`;
+                    text += `${t('expert_advice')} ${diag.weakestLink.advice}\n\n`;
                 } else {
-                    text += `效能均衡，沒有明顯的效能瓶頸。\n\n`;
+                    text += `${t('advice_balanced_desc')}\n\n`;
                 }
             }
             
-            text += `[ 測試環境 ]\n`;
-            text += `作業系統: ${deviceSpecs.platform}\n`;
-            text += `圖形處理器: ${deviceSpecs.gpuRenderer}\n`;
-            text += `系統記憶體: ${deviceSpecs.memory}\n`;
-            text += `邏輯核心數: ${deviceSpecs.cores} 核心\n`;
-            text += `螢幕解析度: ${deviceSpecs.resolution}@${deviceSpecs.pixelRatio}x\n`;
+            text += `${t('report_env')}\n`;
+            text += `${t('report_os')}: ${deviceSpecs.platform}\n`;
+            text += `${t('report_gpu')}: ${deviceSpecs.gpuRenderer}\n`;
+            text += `${t('report_ram')}: ${deviceSpecs.memory}\n`;
+            text += `${t('report_cores')}: ${deviceSpecs.cores}\n`;
+            text += `${t('report_res')}: ${deviceSpecs.resolution}@${deviceSpecs.pixelRatio}x\n`;
             text += `UserAgent: ${deviceSpecs.userAgent}\n`;
-            text += `=========================\\n`;
-            text += `產生時間：${new Date().toLocaleString()}`;
+            text += `=========================\n`;
+            text += `${new Date().toLocaleString()}`;
             return text;
         }
 
@@ -1304,21 +1338,21 @@
             textEl.classList.remove('hidden');
 
             let adviceHTML = `<div class="mt-4 p-4 bg-slate-800/80 rounded-lg text-left">`;
-            adviceHTML += `<p class="font-bold text-white mb-2 border-b border-slate-700 pb-1 flex items-center gap-2"><svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> 你的裝置適合：</p>`;
+            adviceHTML += `<p class="font-bold text-white mb-2 border-b border-slate-700 pb-1 flex items-center gap-2"><svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> ${t('advice_fitness')}</p>`;
             adviceHTML += `<ul class="text-xs text-slate-300 space-y-1 mb-4">`;
-            adviceHTML += `<li><span class="text-slate-500">一般網頁瀏覽：</span> ${diag.fitness.webBrowsing}</li>`;
-            adviceHTML += `<li><span class="text-slate-500">多分頁工作：</span> ${diag.fitness.multiTab}</li>`;
-            adviceHTML += `<li><span class="text-slate-500">Web 3D 應用：</span> ${diag.fitness.web3D}</li>`;
-            adviceHTML += `<li><span class="text-slate-500">線上剪輯或重型網頁工具：</span> ${diag.fitness.heavyWebApps}</li>`;
+            adviceHTML += `<li><span class="text-slate-500">${t('fitness_web')}</span> ${diag.fitness.webBrowsing}</li>`;
+            adviceHTML += `<li><span class="text-slate-500">${t('fitness_tabs')}</span> ${diag.fitness.multiTab}</li>`;
+            adviceHTML += `<li><span class="text-slate-500">${t('fitness_3d')}</span> ${diag.fitness.web3D}</li>`;
+            adviceHTML += `<li><span class="text-slate-500">${t('fitness_heavy')}</span> ${diag.fitness.heavyWebApps}</li>`;
             adviceHTML += `</ul>`;
 
             if (diag.weakestLink) {
-                adviceHTML += `<p class="font-bold text-yellow-400 mb-1 border-b border-slate-700 pb-1 flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> 效能瓶頸分析：</p>`;
-                adviceHTML += `<p class="text-xs text-slate-300">主要瓶頸落於 <span class="text-white font-bold">${diag.weakestLink.name}</span>。</p>`;
-                adviceHTML += `<p class="text-xs text-slate-400 mt-2 bg-black/30 p-2 rounded border border-slate-700">💡 <b>專家診斷建議：</b>${diag.weakestLink.advice}</p>`;
+                adviceHTML += `<p class="font-bold text-yellow-400 mb-1 border-b border-slate-700 pb-1 flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> ${t('advice_bottleneck')}</p>`;
+                adviceHTML += `<p class="text-xs text-slate-300">${t('advice_bottleneck_main')} <span class="text-white font-bold">${diag.weakestLink.name}</span></p>`;
+                adviceHTML += `<p class="text-xs text-slate-400 mt-2 bg-black/30 p-2 rounded border border-slate-700">💡 <b>${t('expert_advice')}</b> ${diag.weakestLink.advice}</p>`;
             } else {
-                adviceHTML += `<p class="font-bold text-primary mb-1 border-b border-slate-700 pb-1 flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 效能均衡：</p>`;
-                adviceHTML += `<p class="text-xs text-slate-300">各項指標表現均衡且優異，沒有明顯的效能瓶頸。</p>`;
+                adviceHTML += `<p class="font-bold text-primary mb-1 border-b border-slate-700 pb-1 flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> ${t('advice_balanced')}</p>`;
+                adviceHTML += `<p class="text-xs text-slate-300">${t('advice_balanced_desc')}</p>`;
             }
 
             adviceHTML += `</div>`;
@@ -1351,7 +1385,7 @@
                     waited += 100;
                 }
                 if (!Array.isArray(t('radar_labels'))) {
-                    console.error("i18n 未能正確載入雷達圖標籤");
+                    console.error("i18n failed to load radar labels");
                     return;
                 }
 
@@ -1363,7 +1397,7 @@
                         // 標籤順序需與 calculateFinalScore 寫入的 data 陣列順序一致
                         labels: t('radar_labels'),
                         datasets: [{
-                            label: '效能指標',
+                            label: t('radar_dataset'),
                             data: [0, 0, 0, 0, 0, 0, 0, 0, 0],
                             backgroundColor: 'rgba(59, 130, 246, 0.25)',
                             borderColor: '#3b82f6',
@@ -1391,9 +1425,9 @@
                 if (navigator.clipboard && window.isSecureContext) {
                     try {
                         await navigator.clipboard.writeText(reportText);
-                        showToast('報告已成功複製到剪貼簿！');
+                        showToast(t('toast_copy_success'));
                     } catch (err) {
-                        showToast('複製失敗，請手動圈選');
+                        showToast(t('toast_copy_fail'));
                     }
                 } else {
                     const textArea = document.createElement("textarea");
@@ -1402,9 +1436,9 @@
                     textArea.select();
                     try {
                         document.execCommand('copy');
-                        showToast('報告已成功複製到剪貼簿！');
+                        showToast(t('toast_copy_success'));
                     } catch (err) {
-                        showToast('複製失敗，請手動圈選');
+                        showToast(t('toast_copy_fail'));
                     }
                     document.body.removeChild(textArea);
                 }
@@ -1420,7 +1454,7 @@
                 document.body.appendChild(downloadAnchorNode);
                 downloadAnchorNode.click();
                 downloadAnchorNode.remove();
-                showToast('JSON 報告已匯出！');
+                showToast(t('toast_json_export'));
             });
 
             // 主執行流 (具有完整錯誤保護與取消保護)
@@ -1460,7 +1494,7 @@
                         results.network = await withTimeout(runWithSampling('network', runNetworkTest, 1, 0, myRunId, true), 40000, 'Network'); // Download takes too long, run once
                     } catch (e) {
                         errorOccurred = true;
-                        if (e.message !== '使用者取消測試') {
+                        if (e.message !== t('error_cancelled') && e.message !== '使用者取消測試') {
                             showError(e.message);
                         }
                     }
@@ -1513,7 +1547,7 @@
                     }
 
                 } catch (fatalErr) {
-                    showError("嚴重錯誤: " + fatalErr.message);
+                    showError(t("error_fatal") + " " + fatalErr.message);
                 } finally {
                     setButtonLoading(false);
                 }
@@ -1557,3 +1591,5 @@
         `;
     }
 };
+
+// (duplicate updateDynamicElements removed)

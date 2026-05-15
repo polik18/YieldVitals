@@ -32,9 +32,15 @@ function detectLanguage() {
 
 async function loadLanguage(lang) {
     try {
-        const response = await fetch(`locales/${lang}.json`);
-        if (!response.ok) throw new Error('Language file not found');
-        currentLangData = await response.json();
+        if (window.YIELDVITALS_LOCALES && window.YIELDVITALS_LOCALES[lang]) {
+            currentLangData = window.YIELDVITALS_LOCALES[lang];
+        } else {
+            // Fallback to fetch if window.YIELDVITALS_LOCALES is missing (e.g. some environment without locales.js)
+            const response = await fetch(`locales/${lang}.json`);
+            if (!response.ok) throw new Error('Language file not found');
+            currentLangData = await response.json();
+        }
+        
         currentLang = lang;
         localStorage.setItem('yieldvitals_lang', lang);
         
