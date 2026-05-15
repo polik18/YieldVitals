@@ -87,5 +87,21 @@
   "advice_storage_pc": "Disk I/O bottleneck. Consider upgrading to a higher-tier NVMe SSD, or check if disk space is low.",
   "lang_selector": "🌐 Language",
   "canvas2d_render": "Canvas 2D Graphics",
-  "mode_stability": "Stability"
+  "mode_stability": "Stability",
+  "advice_diy_ram": "System memory is insufficient for heavy workloads. Upgrading physical RAM to 16GB or 32GB dual-channel is highly recommended.",
+  "advice_diy_storage": "Disk I/O is a bottleneck. Consider upgrading to a high-performance NVMe SSD or check if your disk space is low.",
+  "advice_diy_gpu": "Graphics performance is lacking. Ensure browser hardware acceleration is enabled, or consider installing a dedicated GPU for 3D tasks.",
+  "advice_diy_cpu": "Processing power is constrained. Consider upgrading your processor, closing heavy background apps, or ensuring adequate cooling.",
+  "advice_mobile_ram": "Mobile memory space is constrained. Clear background apps or consider a device with larger RAM capacity for better stability.",
+  "advice_mobile_storage": "Mobile storage may be almost full, dropping I/O speed. Clear unused apps/photos to free up space.",
+  "advice_mobile_gpu": "Mobile GPU is bottlenecking. Lower 3D game settings and ensure the device isn't overheating to prevent thermal throttling.",
+  "advice_mobile_cpu": "Mobile CPU is limited. Close battery-draining apps in the background or consider upgrading to a device with a stronger chip.",
+  "network_speed": "Network Speed",
+  "network_pinging": "Pinging...",
+  "network_downloading": "Testing DL...",
+  "network_uploading": "Testing UL...",
+  "report_network": "[ Network Details ]",
+  "report_network_dl": "Download Speed",
+  "report_network_ul": "Upload Speed",
+  "report_network_ping": "Latency (Ping)"
 }

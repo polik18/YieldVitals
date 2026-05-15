@@ -87,5 +87,21 @@
   "advice_storage_pc": "Disk I/O flaskhals. Överväg att uppgradera till en högre nivå NVMe SSD, eller kontrollera om diskutrymmet är litet.",
   "lang_selector": "🌐 Språk",
   "canvas2d_render": "Canvas 2D-grafik",
-  "mode_stability": "Stabilitet"
+  "mode_stability": "Stabilitet",
+  "advice_diy_ram": "Systemminnet är otillräckligt för tunga arbetsbelastningar. Uppgradering av fysiskt RAM-minne till 16 GB eller 32 GB dual-channel rekommenderas starkt.",
+  "advice_diy_storage": "Disk I/O är en flaskhals. Överväg att uppgradera till en högpresterande NVMe SSD eller kontrollera om ditt diskutrymme är litet.",
+  "advice_diy_gpu": "Grafikprestanda saknas. Se till att webbläsarens hårdvaruacceleration är aktiverad, eller överväg att installera en dedikerad GPU för 3D-uppgifter.",
+  "advice_diy_cpu": "Processorkraften är begränsad. Överväg att uppgradera din processor, stänga tunga bakgrundsappar eller säkerställa tillräcklig kylning.",
+  "advice_mobile_ram": "Det mobila minnesutrymmet är begränsat. Rensa bakgrundsappar eller överväg en enhet med större RAM-kapacitet för bättre stabilitet.",
+  "advice_mobile_storage": "Det mobila lagringsutrymmet kan vara nästan fullt, vilket minskar I/O-hastigheten. Rensa oanvända appar/foton för att frigöra utrymme.",
+  "advice_mobile_gpu": "Mobil GPU är flaskhalsar. Sänk inställningarna för 3D-spel och se till att enheten inte överhettas för att förhindra termisk strypning.",
+  "advice_mobile_cpu": "Mobil CPU är begränsad. Stäng batteritömda appar i bakgrunden eller överväg att uppgradera till en enhet med ett starkare chip.",
+  "network_speed": "Nätverkshastighet",
+  "network_pinging": "Pingar...",
+  "network_downloading": "Testar DL...",
+  "network_uploading": "Testar UL...",
+  "report_network": "[ Nätverksinformation ]",
+  "report_network_dl": "Ladda ner Speed",
+  "report_network_ul": "Uppladdningshastighet",
+  "report_network_ping": "Latens (ping)"
 }

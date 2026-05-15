@@ -87,5 +87,21 @@
   "advice_storage_pc": "Levyn I/O pullonkaula. Harkitse päivittämistä korkeamman tason NVMe SSD:hen tai tarkista, onko levytila ​​vähissä.",
   "lang_selector": "🌐 Kieli",
   "canvas2d_render": "Canvas 2D-grafiikka",
-  "mode_stability": "Vakaus"
+  "mode_stability": "Vakaus",
+  "advice_diy_ram": "Järjestelmämuisti ei riitä suurille työkuormille. Fyysisen RAM-muistin päivittäminen 16 Gt tai 32 Gt kaksikanavaiseen on erittäin suositeltavaa.",
+  "advice_diy_storage": "Levyn I/O on pullonkaula. Harkitse päivittämistä tehokkaaseen NVMe SSD:hen tai tarkista, onko levytila ​​vähissä.",
+  "advice_diy_gpu": "Graafinen suorituskyky puuttuu. Varmista, että selaimen laitteistokiihdytys on käytössä, tai harkitse erillisen GPU:n asentamista 3D-tehtäviä varten.",
+  "advice_diy_cpu": "Prosessointitehoa on rajoitettu. Harkitse prosessorin päivittämistä, raskaiden taustasovellusten sulkemista tai riittävän jäähdytyksen varmistamista.",
+  "advice_mobile_ram": "Mobiilimuistitila on rajallinen. Tyhjennä taustasovellukset tai harkitse laitetta suuremmalla RAM-kapasiteetilla vakauden parantamiseksi.",
+  "advice_mobile_storage": "Mobiilimuisti voi olla melkein täynnä, mikä laskee I/O-nopeutta. Vapauta tilaa tyhjentämällä käyttämättömät sovellukset/kuvat.",
+  "advice_mobile_gpu": "Mobiili GPU on pullonkaula. Pienennä 3D-peliasetuksia ja varmista, että laite ei ylikuumene lämpökuristuksen estämiseksi.",
+  "advice_mobile_cpu": "Mobiilisuoritin on rajoitettu. Sulje akkua kuluttavat sovellukset taustalla tai harkitse päivittämistä laitteeseen, jossa on vahvempi siru.",
+  "network_speed": "Verkon nopeus",
+  "network_pinging": "Pingataan...",
+  "network_downloading": "Testataan DL:ää...",
+  "network_uploading": "UL:n testaus...",
+  "report_network": "[Verkon tiedot]",
+  "report_network_dl": "Latausnopeus",
+  "report_network_ul": "Latausnopeus",
+  "report_network_ping": "Latenssi (Ping)"
 }

@@ -87,5 +87,21 @@
   "advice_storage_pc": "磁盘 I/O 瓶颈。考虑升级到更高级别的 NVMe SSD，或检查磁盘空间是否不足。",
   "lang_selector": "🌐 语言",
   "canvas2d_render": "画布 2D 图形",
-  "mode_stability": "稳定"
+  "mode_stability": "稳定",
+  "advice_diy_ram": "系统内存不足以满足繁重的工作负载。强烈建议将物理 RAM 升级至 16GB 或 32GB 双通道。",
+  "advice_diy_storage": "磁盘 I/O 是一个瓶颈。考虑升级到高性能 NVMe SSD 或检查您的磁盘空间是否不足。",
+  "advice_diy_gpu": "图形性能缺乏。确保启用浏览器硬件加速，或考虑安装用于 3D 任务的专用 GPU。",
+  "advice_diy_cpu": "处理能力受到限制。考虑升级处理器、关闭繁重的后台应用程序或确保足够的冷却。",
+  "advice_mobile_ram": "移动存储空间有限。清除后台应用程序或考虑具有更大 RAM 容量的设备以获得更好的稳定性。",
+  "advice_mobile_storage": "移动存储可能几乎已满，从而降低 I/O 速度。清除未使用的应用程序/照片以释放空间。",
+  "advice_mobile_gpu": "移动 GPU 正面临瓶颈。降低 3D 游戏设置并确保设备不会过热，以防止热节流。",
+  "advice_mobile_cpu": "移动CPU是有限的。在后台关闭耗电的应用程序或考虑升级到具有更强大芯片的设备。",
+  "network_speed": "网络速度",
+  "network_pinging": "正在ping...",
+  "network_downloading": "测试深度学习...",
+  "network_uploading": "测试UL...",
+  "report_network": "[ 网络详情 ]",
+  "report_network_dl": "下载速度",
+  "report_network_ul": "上传速度",
+  "report_network_ping": "延迟（Ping）"
 }

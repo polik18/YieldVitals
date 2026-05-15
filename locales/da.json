@@ -87,5 +87,21 @@
   "advice_storage_pc": "Disk I/O flaskehals. Overvej at opgradere til en højere niveau NVMe SSD, eller tjek om diskpladsen er lav.",
   "lang_selector": "🌐 Sprog",
   "canvas2d_render": "Lærred 2D grafik",
-  "mode_stability": "Stabilitet"
+  "mode_stability": "Stabilitet",
+  "advice_diy_ram": "Systemhukommelsen er utilstrækkelig til store arbejdsbelastninger. Opgradering af fysisk RAM til 16 GB eller 32 GB dual-channel anbefales stærkt.",
+  "advice_diy_storage": "Disk I/O er en flaskehals. Overvej at opgradere til en højtydende NVMe SSD eller tjek, om din diskplads er lav.",
+  "advice_diy_gpu": "Den grafiske ydeevne mangler. Sørg for, at browserhardwareacceleration er aktiveret, eller overvej at installere en dedikeret GPU til 3D-opgaver.",
+  "advice_diy_cpu": "Bearbejdningskraften er begrænset. Overvej at opgradere din processor, lukke tunge baggrundsapps eller sikre tilstrækkelig afkøling.",
+  "advice_mobile_ram": "Mobil hukommelsesplads er begrænset. Ryd baggrundsapps, eller overvej en enhed med større RAM-kapacitet for bedre stabilitet.",
+  "advice_mobile_storage": "Mobil lagerplads kan være næsten fuld, hvilket reducerer I/O-hastigheden. Ryd ubrugte apps/billeder for at frigøre plads.",
+  "advice_mobile_gpu": "Mobil GPU er en flaskehals. Sænk 3D-spilindstillingerne, og sørg for, at enheden ikke overophedes for at forhindre termisk drosling.",
+  "advice_mobile_cpu": "Mobil CPU er begrænset. Luk batteridrænende apps i baggrunden, eller overvej at opgradere til en enhed med en stærkere chip.",
+  "network_speed": "Netværkshastighed",
+  "network_pinging": "Pinger...",
+  "network_downloading": "Tester DL...",
+  "network_uploading": "Tester UL...",
+  "report_network": "[ Netværksdetaljer ]",
+  "report_network_dl": "Download hastighed",
+  "report_network_ul": "Upload hastighed",
+  "report_network_ping": "Latency (Ping)"
 }

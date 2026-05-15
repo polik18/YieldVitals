@@ -87,5 +87,21 @@
   "advice_storage_pc": "Goulet d’étranglement des E/S disque. Envisagez de passer à un SSD NVMe de niveau supérieur ou vérifiez si l'espace disque est faible.",
   "lang_selector": "🌐 Langue",
   "canvas2d_render": "Graphiques 2D sur toile",
-  "mode_stability": "Stabilité"
+  "mode_stability": "Stabilité",
+  "advice_diy_ram": "La mémoire système est insuffisante pour les charges de travail lourdes. La mise à niveau de la RAM physique vers 16 Go ou 32 Go double canal est fortement recommandée.",
+  "advice_diy_storage": "Les E/S disque constituent un goulot d'étranglement. Envisagez de passer à un SSD NVMe hautes performances ou vérifiez si votre espace disque est faible.",
+  "advice_diy_gpu": "Les performances graphiques font défaut. Assurez-vous que l'accélération matérielle du navigateur est activée ou envisagez d'installer un GPU dédié aux tâches 3D.",
+  "advice_diy_cpu": "La puissance de traitement est limitée. Pensez à mettre à niveau votre processeur, à fermer les applications lourdes en arrière-plan ou à assurer un refroidissement adéquat.",
+  "advice_mobile_ram": "L'espace mémoire mobile est limité. Effacez les applications en arrière-plan ou envisagez un appareil avec une plus grande capacité de RAM pour une meilleure stabilité.",
+  "advice_mobile_storage": "Le stockage mobile peut être presque plein, ce qui réduit la vitesse d'E/S. Effacez les applications/photos inutilisées pour libérer de l'espace.",
+  "advice_mobile_gpu": "Le GPU mobile constitue un goulot d'étranglement. Réduisez les paramètres du jeu 3D et assurez-vous que l’appareil ne surchauffe pas pour éviter toute limitation thermique.",
+  "advice_mobile_cpu": "Le processeur mobile est limité. Fermez les applications qui déchargent la batterie en arrière-plan ou envisagez de passer à un appareil doté d'une puce plus puissante.",
+  "network_speed": "Vitesse du réseau",
+  "network_pinging": "Cingler...",
+  "network_downloading": "Test de DL...",
+  "network_uploading": "Test UL...",
+  "report_network": "[ Détails du réseau ]",
+  "report_network_dl": "Vitesse de téléchargement",
+  "report_network_ul": "Vitesse de téléchargement",
+  "report_network_ping": "Latence (Ping)"
 }

@@ -87,5 +87,21 @@
   "advice_storage_pc": "Nút cổ chai I/O đĩa. Hãy cân nhắc nâng cấp lên ổ SSD NVMe cấp cao hơn hoặc kiểm tra xem dung lượng ổ đĩa có sắp hết hay không.",
   "lang_selector": "🌐 Ngôn ngữ",
   "canvas2d_render": "Đồ họa canvas 2D",
-  "mode_stability": "Sự ổn định"
+  "mode_stability": "Sự ổn định",
+  "advice_diy_ram": "Bộ nhớ hệ thống không đủ cho khối lượng công việc nặng. Nên nâng cấp RAM vật lý lên kênh đôi 16GB hoặc 32GB.",
+  "advice_diy_storage": "Đĩa I/O là một nút cổ chai. Hãy cân nhắc nâng cấp lên ổ SSD NVMe hiệu suất cao hoặc kiểm tra xem dung lượng ổ đĩa của bạn có sắp hết hay không.",
+  "advice_diy_gpu": "Hiệu suất đồ họa còn thiếu. Đảm bảo bật tính năng tăng tốc phần cứng của trình duyệt hoặc xem xét việc cài đặt GPU chuyên dụng cho tác vụ 3D.",
+  "advice_diy_cpu": "Sức mạnh xử lý bị hạn chế. Hãy cân nhắc việc nâng cấp bộ xử lý của bạn, đóng các ứng dụng nền nặng hoặc đảm bảo làm mát đầy đủ.",
+  "advice_mobile_ram": "Dung lượng bộ nhớ di động bị hạn chế. Xóa các ứng dụng nền hoặc xem xét một thiết bị có dung lượng RAM lớn hơn để có độ ổn định tốt hơn.",
+  "advice_mobile_storage": "Bộ nhớ di động có thể gần đầy, làm giảm tốc độ I/O. Xóa các ứng dụng/ảnh không sử dụng để giải phóng dung lượng.",
+  "advice_mobile_gpu": "GPU di động đang bị tắc nghẽn. Giảm cài đặt trò chơi 3D và đảm bảo thiết bị không quá nóng để tránh hiện tượng tiết lưu nhiệt.",
+  "advice_mobile_cpu": "CPU di động bị hạn chế. Đóng các ứng dụng gây hao pin ở chế độ nền hoặc xem xét nâng cấp lên thiết bị có chip mạnh hơn.",
+  "network_speed": "Tốc độ mạng",
+  "network_pinging": "Đang ping...",
+  "network_downloading": "Đang kiểm tra DL...",
+  "network_uploading": "Kiểm tra UL...",
+  "report_network": "[ Chi tiết mạng lưới ]",
+  "report_network_dl": "Tốc độ tải xuống",
+  "report_network_ul": "Tốc độ tải lên",
+  "report_network_ping": "Độ trễ (Ping)"
 }

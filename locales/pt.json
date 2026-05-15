@@ -87,5 +87,21 @@
   "advice_storage_pc": "Gargalo de E/S de disco. Considere atualizar para um SSD NVMe de nível superior ou verifique se o espaço em disco está baixo.",
   "lang_selector": "🌐 Idioma",
   "canvas2d_render": "Gráficos 2D em tela",
-  "mode_stability": "Estabilidade"
+  "mode_stability": "Estabilidade",
+  "advice_diy_ram": "A memória do sistema é insuficiente para cargas de trabalho pesadas. A atualização da RAM física para 16 GB ou 32 GB de canal duplo é altamente recomendada.",
+  "advice_diy_storage": "A E/S de disco é um gargalo. Considere atualizar para um SSD NVMe de alto desempenho ou verifique se o espaço em disco está baixo.",
+  "advice_diy_gpu": "Falta desempenho gráfico. Certifique-se de que a aceleração de hardware do navegador esteja habilitada ou considere instalar uma GPU dedicada para tarefas 3D.",
+  "advice_diy_cpu": "O poder de processamento é limitado. Considere atualizar seu processador, fechar aplicativos pesados ​​em segundo plano ou garantir um resfriamento adequado.",
+  "advice_mobile_ram": "O espaço de memória móvel é limitado. Limpe os aplicativos em segundo plano ou considere um dispositivo com maior capacidade de RAM para melhor estabilidade.",
+  "advice_mobile_storage": "O armazenamento móvel pode estar quase cheio, diminuindo a velocidade de E/S. Limpe aplicativos/fotos não utilizados para liberar espaço.",
+  "advice_mobile_gpu": "A GPU móvel está com gargalos. Reduza as configurações do jogo 3D e certifique-se de que o dispositivo não esteja superaquecendo para evitar o afogamento térmico.",
+  "advice_mobile_cpu": "A CPU móvel é limitada. Feche aplicativos que consomem bateria em segundo plano ou considere atualizar para um dispositivo com um chip mais potente.",
+  "network_speed": "Velocidade da rede",
+  "network_pinging": "Pingando...",
+  "network_downloading": "Testando DL...",
+  "network_uploading": "Testando UL...",
+  "report_network": "[Detalhes da rede]",
+  "report_network_dl": "Velocidade de download",
+  "report_network_ul": "Velocidade de upload",
+  "report_network_ping": "Latência (Ping)"
 }

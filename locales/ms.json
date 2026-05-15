@@ -87,5 +87,21 @@
   "advice_storage_pc": "Cakera I/O kesesakan. Pertimbangkan untuk menaik taraf kepada SSD NVMe peringkat lebih tinggi, atau semak sama ada ruang cakera rendah.",
   "lang_selector": "🌐 Bahasa",
   "canvas2d_render": "Grafik 2D Kanvas",
-  "mode_stability": "Kestabilan"
+  "mode_stability": "Kestabilan",
+  "advice_diy_ram": "Memori sistem tidak mencukupi untuk beban kerja yang berat. Menaik taraf RAM fizikal kepada 16GB atau 32GB dwi-saluran amat disyorkan.",
+  "advice_diy_storage": "Cakera I/O adalah halangan. Pertimbangkan untuk menaik taraf kepada NVMe SSD berprestasi tinggi atau semak sama ada ruang cakera anda rendah.",
+  "advice_diy_gpu": "Prestasi grafik kurang. Pastikan pecutan perkakasan penyemak imbas didayakan atau pertimbangkan untuk memasang GPU khusus untuk tugasan 3D.",
+  "advice_diy_cpu": "Kuasa pemprosesan adalah terhad. Pertimbangkan untuk meningkatkan pemproses anda, menutup apl latar belakang yang berat atau memastikan penyejukan yang mencukupi.",
+  "advice_mobile_ram": "Ruang memori mudah alih dikekang. Kosongkan apl latar belakang atau pertimbangkan peranti dengan kapasiti RAM yang lebih besar untuk kestabilan yang lebih baik.",
+  "advice_mobile_storage": "Storan mudah alih mungkin hampir penuh, menurunkan kelajuan I/O. Kosongkan apl/foto yang tidak digunakan untuk mengosongkan ruang.",
+  "advice_mobile_gpu": "GPU mudah alih mengalami kesesakan. Turunkan tetapan permainan 3D dan pastikan peranti tidak terlalu panas untuk mengelakkan pendikit terma.",
+  "advice_mobile_cpu": "CPU mudah alih adalah terhad. Tutup apl yang menguras bateri di latar belakang atau pertimbangkan untuk menaik taraf kepada peranti dengan cip yang lebih kuat.",
+  "network_speed": "Kelajuan Rangkaian",
+  "network_pinging": "Ping...",
+  "network_downloading": "Menguji DL...",
+  "network_uploading": "Menguji UL...",
+  "report_network": "[ Butiran Rangkaian ]",
+  "report_network_dl": "Kelajuan Muat Turun",
+  "report_network_ul": "Kelajuan Muat Naik",
+  "report_network_ping": "Latensi (Ping)"
 }

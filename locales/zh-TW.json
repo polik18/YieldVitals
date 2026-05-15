@@ -87,5 +87,21 @@
   "advice_storage_pc": "硬碟讀寫速度遭遇瓶頸。建議升級為更高階的 NVMe SSD，或檢查硬碟剩餘空間是否不足。",
   "lang_selector": "🌐 語言",
   "canvas2d_render": "Canvas 2D 繪圖",
-  "mode_stability": "穩定"
+  "mode_stability": "穩定",
+  "advice_diy_ram": "系統記憶體不足以應付高負載工作。強烈建議擴充實體記憶體 (RAM) 至 16GB 或 32GB 雙通道。",
+  "advice_diy_storage": "硬碟讀寫速度遭遇瓶頸。建議升級為更高階的 NVMe SSD，或檢查硬碟剩餘空間是否不足。",
+  "advice_diy_gpu": "圖形效能遭遇瓶頸。建議檢查是否已開啟瀏覽器的「硬體加速」。若長期有 3D 需求，建議加裝獨立外接顯示卡。",
+  "advice_diy_cpu": "處理器運算受限。建議升級具備更高時脈的處理器，或關閉背景佔用資源的常駐程式、清理風扇散熱。",
+  "advice_mobile_ram": "手機記憶體空間不足，容易導致背景 App 被強制重新載入。建議定期清理後台程式，或選購 RAM 容量更大的機型。",
+  "advice_mobile_storage": "手機儲存空間可能接近全滿，導致讀寫嚴重掉速。建議清理不需要的照片與 App 以釋放空間。",
+  "advice_mobile_gpu": "行動裝置圖形效能遭遇瓶頸。玩 3D 遊戲時建議調低畫質與特效，若經常發熱降頻，可考慮使用手機散熱器。",
+  "advice_mobile_cpu": "運算晶片效能有限。建議關閉背景耗電的應用程式，或考慮更換為具備更強處理晶片的手機/平板。",
+  "network_speed": "網路測速",
+  "network_pinging": "Ping 測試中...",
+  "network_downloading": "下載測速中...",
+  "network_uploading": "上傳測速中...",
+  "report_network": "[ 網路詳細數據 ]",
+  "report_network_dl": "下載速度",
+  "report_network_ul": "上傳速度",
+  "report_network_ping": "延遲 (Ping)"
 }

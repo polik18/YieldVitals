@@ -87,5 +87,21 @@
   "advice_storage_pc": "디스크 I/O 병목 현상. 상위 계층 NVMe SSD로 업그레이드하는 것을 고려하거나 디스크 공간이 부족한지 확인하세요.",
   "lang_selector": "🌐 언어",
   "canvas2d_render": "캔버스 2D 그래픽",
-  "mode_stability": "안정"
+  "mode_stability": "안정",
+  "advice_diy_ram": "과도한 작업 부하에는 시스템 메모리가 부족합니다. 물리적 RAM을 16GB 또는 32GB 듀얼 채널로 업그레이드하는 것이 좋습니다.",
+  "advice_diy_storage": "디스크 I/O에 병목 현상이 발생합니다. 고성능 NVMe SSD로 업그레이드하거나 디스크 공간이 부족한지 확인해보세요.",
+  "advice_diy_gpu": "그래픽 성능이 부족합니다. 브라우저 하드웨어 가속이 활성화되어 있는지 확인하거나 3D 작업을 위한 전용 GPU 설치를 고려하십시오.",
+  "advice_diy_cpu": "처리 능력이 제한되어 있습니다. 프로세서를 업그레이드하거나, 무거운 백그라운드 앱을 닫거나, 적절한 냉각을 보장하는 것을 고려해보세요.",
+  "advice_mobile_ram": "모바일 메모리 공간이 제한되어 있습니다. 더 나은 안정성을 위해 백그라운드 앱을 지우거나 RAM 용량이 더 큰 장치를 고려하십시오.",
+  "advice_mobile_storage": "모바일 저장소가 거의 가득 차서 I/O 속도가 떨어질 수 있습니다. 사용하지 않는 앱/사진을 삭제하여 공간을 확보하세요.",
+  "advice_mobile_gpu": "모바일 GPU에 병목 현상이 발생합니다. 3D 게임 설정을 낮추고 장치가 과열되지 않도록 하여 열 조절을 방지하세요.",
+  "advice_mobile_cpu": "모바일 CPU는 제한되어 있습니다. 백그라운드에서 배터리를 많이 소모하는 앱을 닫거나 더 강력한 칩이 탑재된 기기로 업그레이드하는 것을 고려해 보세요.",
+  "network_speed": "네트워크 속도",
+  "network_pinging": "핑...",
+  "network_downloading": "DL 테스트 중...",
+  "network_uploading": "UL 테스트...",
+  "report_network": "[ 네트워크 세부정보 ]",
+  "report_network_dl": "다운로드 속도",
+  "report_network_ul": "업로드 속도",
+  "report_network_ping": "대기 시간(핑)"
 }

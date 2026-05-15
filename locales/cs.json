@@ -87,5 +87,21 @@
   "advice_storage_pc": "Úzké hrdlo disku I/O. Zvažte upgrade na vyšší úroveň NVMe SSD nebo zkontrolujte, zda je na disku málo místa.",
   "lang_selector": "🌐 Jazyk",
   "canvas2d_render": "2D grafika na plátně",
-  "mode_stability": "Stabilita"
+  "mode_stability": "Stabilita",
+  "advice_diy_ram": "Systémová paměť je pro velké pracovní zatížení nedostatečná. Důrazně se doporučuje upgradovat fyzickou paměť RAM na 16 GB nebo 32 GB dvoukanálový.",
+  "advice_diy_storage": "Disk I/O je úzkým hrdlem. Zvažte upgrade na vysoce výkonný NVMe SSD nebo zkontrolujte, zda je na vašem disku málo místa.",
+  "advice_diy_gpu": "Chybí grafický výkon. Ujistěte se, že je povolena hardwarová akcelerace prohlížeče, nebo zvažte instalaci vyhrazeného GPU pro 3D úlohy.",
+  "advice_diy_cpu": "Výkon zpracování je omezený. Zvažte upgrade procesoru, ukončení náročných aplikací na pozadí nebo zajištění dostatečného chlazení.",
+  "advice_mobile_ram": "Mobilní paměťový prostor je omezený. Vymažte aplikace na pozadí nebo zvažte zařízení s větší kapacitou RAM pro lepší stabilitu.",
+  "advice_mobile_storage": "Mobilní úložiště může být téměř plné a rychlost I/O klesá. Vymažte nepoužívané aplikace/fotografie, abyste uvolnili místo.",
+  "advice_mobile_gpu": "Mobilní GPU je úzký profil. Snižte nastavení 3D hry a zajistěte, aby se zařízení nepřehřívalo, aby nedošlo k tepelnému škrcení.",
+  "advice_mobile_cpu": "Mobilní CPU je omezený. Zavřete na pozadí aplikace vybíjející baterii nebo zvažte upgrade na zařízení se silnějším čipem.",
+  "network_speed": "Rychlost sítě",
+  "network_pinging": "Ping...",
+  "network_downloading": "Testování DL...",
+  "network_uploading": "Testování UL...",
+  "report_network": "[ Podrobnosti o síti ]",
+  "report_network_dl": "Rychlost stahování",
+  "report_network_ul": "Rychlost nahrávání",
+  "report_network_ping": "Latence (ping)"
 }

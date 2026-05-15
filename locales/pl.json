@@ -87,5 +87,21 @@
   "advice_storage_pc": "Wąskie gardło we/wy dysku. Rozważ wymianę na wyższy poziom dysku SSD NVMe lub sprawdź, czy na dysku jest mało miejsca.",
   "lang_selector": "🌐 Język",
   "canvas2d_render": "Płótno grafiki 2D",
-  "mode_stability": "Stabilność"
+  "mode_stability": "Stabilność",
+  "advice_diy_ram": "Pamięć systemowa jest niewystarczająca do obsługi dużych obciążeń. Zdecydowanie zaleca się wymianę fizycznej pamięci RAM na 16 GB lub 32 GB w trybie dwukanałowym.",
+  "advice_diy_storage": "Dyskowe wejścia/wyjścia stanowią wąskie gardło. Rozważ wymianę na wysokowydajny dysk SSD NVMe lub sprawdź, czy na dysku jest mało miejsca.",
+  "advice_diy_gpu": "Brakuje wydajności graficznej. Upewnij się, że akceleracja sprzętowa przeglądarki jest włączona lub rozważ zainstalowanie dedykowanego procesora graficznego do zadań 3D.",
+  "advice_diy_cpu": "Moc obliczeniowa jest ograniczona. Rozważ modernizację procesora, zamknięcie obciążających aplikacji działających w tle lub zapewnienie odpowiedniego chłodzenia.",
+  "advice_mobile_ram": "Przestrzeń pamięci mobilnej jest ograniczona. Wyczyść aplikacje działające w tle lub rozważ urządzenie z większą pojemnością pamięci RAM, aby uzyskać lepszą stabilność.",
+  "advice_mobile_storage": "Pamięć mobilna może być prawie pełna, co powoduje spadek szybkości operacji we/wy. Usuń nieużywane aplikacje/zdjęcia, aby zwolnić miejsce.",
+  "advice_mobile_gpu": "Mobilny procesor graficzny stanowi wąskie gardło. Obniż ustawienia gry 3D i upewnij się, że urządzenie się nie przegrzewa, aby zapobiec dławieniu termicznemu.",
+  "advice_mobile_cpu": "Procesor mobilny jest ograniczony. Zamknij aplikacje zużywające baterię w tle lub rozważ wymianę na urządzenie z mocniejszym chipem.",
+  "network_speed": "Szybkość sieci",
+  "network_pinging": "Pingowanie...",
+  "network_downloading": "Testowanie DL...",
+  "network_uploading": "Testowanie UL...",
+  "report_network": "[Szczegóły sieci]",
+  "report_network_dl": "Pobierz prędkość",
+  "report_network_ul": "Szybkość przesyłania",
+  "report_network_ping": "Opóźnienie (ping)"
 }

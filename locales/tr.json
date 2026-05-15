@@ -87,5 +87,21 @@
   "advice_storage_pc": "Disk G/Ç darboğazı. Daha yüksek seviyeli bir NVMe SSD'ye yükseltmeyi düşünün veya disk alanının az olup olmadığını kontrol edin.",
   "lang_selector": "🌐 Dil",
   "canvas2d_render": "Kanvas 2D Grafikler",
-  "mode_stability": "Kararlılık"
+  "mode_stability": "Kararlılık",
+  "advice_diy_ram": "Sistem belleği ağır iş yükleri için yetersizdir. Fiziksel RAM'in 16 GB veya 32 GB çift kanala yükseltilmesi önemle tavsiye edilir.",
+  "advice_diy_storage": "Disk G/Ç'si bir darboğazdır. Yüksek performanslı bir NVMe SSD'ye yükseltmeyi düşünün veya disk alanınızın az olup olmadığını kontrol edin.",
+  "advice_diy_gpu": "Grafik performansı yetersiz. Tarayıcı donanım hızlandırmasının etkinleştirildiğinden emin olun veya 3D görevler için özel bir GPU kurmayı düşünün.",
+  "advice_diy_cpu": "İşleme gücü sınırlıdır. İşlemcinizi yükseltmeyi, ağır arka plan uygulamalarını kapatmayı veya yeterli soğutmayı sağlamayı düşünün.",
+  "advice_mobile_ram": "Mobil bellek alanı sınırlıdır. Daha iyi kararlılık için arka plan uygulamalarını temizleyin veya daha büyük RAM kapasitesine sahip bir cihazı düşünün.",
+  "advice_mobile_storage": "Mobil depolama neredeyse dolu olabilir ve G/Ç hızı düşebilir. Yer açmak için kullanılmayan uygulamaları/fotoğrafları temizleyin.",
+  "advice_mobile_gpu": "Mobil GPU darboğaz yapıyor. Termal kısıtlamayı önlemek için 3D oyun ayarlarını düşürün ve cihazın aşırı ısınmadığından emin olun.",
+  "advice_mobile_cpu": "Mobil CPU sınırlıdır. Arka planda pil tüketen uygulamaları kapatın veya daha güçlü çipe sahip bir cihaza geçmeyi düşünün.",
+  "network_speed": "Ağ Hızı",
+  "network_pinging": "Ping atılıyor...",
+  "network_downloading": "DL test ediliyor...",
+  "network_uploading": "UL test ediliyor...",
+  "report_network": "[ Ağ Ayrıntıları ]",
+  "report_network_dl": "İndirme Hızı",
+  "report_network_ul": "Yükleme Hızı",
+  "report_network_ping": "Gecikme (Ping)"
 }

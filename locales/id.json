@@ -87,5 +87,21 @@
   "advice_storage_pc": "Kemacetan I/O disk. Pertimbangkan untuk meningkatkan ke SSD NVMe tingkat yang lebih tinggi, atau periksa apakah ruang disk hampir habis.",
   "lang_selector": "🌐 Bahasa",
   "canvas2d_render": "Grafik 2D Kanvas",
-  "mode_stability": "Stabilitas"
+  "mode_stability": "Stabilitas",
+  "advice_diy_ram": "Memori sistem tidak cukup untuk beban kerja yang berat. Sangat disarankan untuk meningkatkan RAM fisik menjadi 16GB atau 32GB dual-channel.",
+  "advice_diy_storage": "Disk I/O merupakan hambatan. Pertimbangkan untuk meningkatkan ke SSD NVMe berperforma tinggi atau periksa apakah ruang disk Anda hampir habis.",
+  "advice_diy_gpu": "Performa grafisnya kurang. Pastikan akselerasi perangkat keras browser diaktifkan, atau pertimbangkan untuk memasang GPU khusus untuk tugas 3D.",
+  "advice_diy_cpu": "Kekuatan pemrosesan dibatasi. Pertimbangkan untuk meningkatkan prosesor Anda, menutup aplikasi berat di latar belakang, atau memastikan pendinginan yang memadai.",
+  "advice_mobile_ram": "Ruang memori seluler terbatas. Hapus aplikasi latar belakang atau pertimbangkan perangkat dengan kapasitas RAM lebih besar untuk stabilitas yang lebih baik.",
+  "advice_mobile_storage": "Penyimpanan seluler mungkin hampir penuh, sehingga menurunkan kecepatan I/O. Hapus aplikasi/foto yang tidak digunakan untuk mengosongkan ruang.",
+  "advice_mobile_gpu": "GPU seluler mengalami hambatan. Turunkan pengaturan game 3D dan pastikan perangkat tidak terlalu panas untuk mencegah pelambatan termal.",
+  "advice_mobile_cpu": "CPU Seluler terbatas. Tutup aplikasi yang menguras baterai di latar belakang atau pertimbangkan untuk meningkatkan ke perangkat dengan chip yang lebih kuat.",
+  "network_speed": "Kecepatan Jaringan",
+  "network_pinging": "Ping...",
+  "network_downloading": "Menguji DL...",
+  "network_uploading": "Menguji UL...",
+  "report_network": "[Rincian Jaringan]",
+  "report_network_dl": "Kecepatan Unduh",
+  "report_network_ul": "Kecepatan Unggah",
+  "report_network_ping": "Latensi (Ping)"
 }

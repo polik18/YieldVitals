@@ -87,5 +87,21 @@
   "advice_storage_pc": "Disk I/O flaskehals. Vurder å oppgradere til en høyere NVMe SSD, eller sjekk om det er lite diskplass.",
   "lang_selector": "🌐 Språk",
   "canvas2d_render": "Canvas 2D-grafikk",
-  "mode_stability": "Stabilitet"
+  "mode_stability": "Stabilitet",
+  "advice_diy_ram": "Systemminnet er utilstrekkelig for store arbeidsbelastninger. Det anbefales sterkt å oppgradere fysisk RAM til 16 GB eller 32 GB dual-channel.",
+  "advice_diy_storage": "Disk I/O er en flaskehals. Vurder å oppgradere til en høyytelses NVMe SSD eller sjekk om det er lite diskplass.",
+  "advice_diy_gpu": "Grafisk ytelse mangler. Sørg for at nettlesermaskinvareakselerasjon er aktivert, eller vurder å installere en dedikert GPU for 3D-oppgaver.",
+  "advice_diy_cpu": "Prosessorkraften er begrenset. Vurder å oppgradere prosessoren din, lukke tunge bakgrunnsapper eller sørge for tilstrekkelig kjøling.",
+  "advice_mobile_ram": "Mobilminneplass er begrenset. Fjern bakgrunnsapper eller vurder en enhet med større RAM-kapasitet for bedre stabilitet.",
+  "advice_mobile_storage": "Mobillagring kan være nesten full, noe som reduserer I/O-hastigheten. Fjern ubrukte apper/bilder for å frigjøre plass.",
+  "advice_mobile_gpu": "Mobil GPU er flaskehalser. Senk 3D-spillinnstillingene og sørg for at enheten ikke overopphetes for å forhindre termisk struping.",
+  "advice_mobile_cpu": "Mobil CPU er begrenset. Lukk batteritømmende apper i bakgrunnen eller vurder å oppgradere til en enhet med en sterkere brikke.",
+  "network_speed": "Nettverkshastighet",
+  "network_pinging": "Pinger...",
+  "network_downloading": "Tester DL...",
+  "network_uploading": "Tester UL...",
+  "report_network": "[ Nettverksdetaljer ]",
+  "report_network_dl": "Last ned Speed",
+  "report_network_ul": "Opplastingshastighet",
+  "report_network_ping": "Latens (ping)"
 }

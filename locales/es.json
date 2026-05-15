@@ -87,5 +87,21 @@
   "advice_storage_pc": "Cuello de botella de E/S de disco. Considere actualizar a un SSD NVMe de nivel superior o verifique si hay poco espacio en el disco.",
   "lang_selector": "🌐 Idioma",
   "canvas2d_render": "Gráficos 2D en lienzo",
-  "mode_stability": "Estabilidad"
+  "mode_stability": "Estabilidad",
+  "advice_diy_ram": "La memoria del sistema es insuficiente para cargas de trabajo pesadas. Se recomienda encarecidamente actualizar la RAM física a 16 GB o 32 GB de doble canal.",
+  "advice_diy_storage": "La E/S de disco es un cuello de botella. Considere actualizar a un SSD NVMe de alto rendimiento o verifique si tiene poco espacio en disco.",
+  "advice_diy_gpu": "Falta rendimiento gráfico. Asegúrese de que la aceleración del hardware del navegador esté habilitada o considere instalar una GPU dedicada para tareas 3D.",
+  "advice_diy_cpu": "El poder de procesamiento está limitado. Considere actualizar su procesador, cerrar aplicaciones pesadas en segundo plano o garantizar una refrigeración adecuada.",
+  "advice_mobile_ram": "El espacio de la memoria móvil es limitado. Borre las aplicaciones en segundo plano o considere un dispositivo con mayor capacidad de RAM para una mejor estabilidad.",
+  "advice_mobile_storage": "El almacenamiento móvil puede estar casi lleno, lo que reduce la velocidad de E/S. Borre aplicaciones/fotos no utilizadas para liberar espacio.",
+  "advice_mobile_gpu": "La GPU móvil tiene cuellos de botella. Reduzca la configuración del juego 3D y asegúrese de que el dispositivo no se sobrecaliente para evitar la aceleración térmica.",
+  "advice_mobile_cpu": "La CPU móvil es limitada. Cierre las aplicaciones que agotan la batería en segundo plano o considere actualizar a un dispositivo con un chip más potente.",
+  "network_speed": "Velocidad de la red",
+  "network_pinging": "Haciendo ping...",
+  "network_downloading": "Probando DL...",
+  "network_uploading": "Prueba UL...",
+  "report_network": "[Detalles de la red]",
+  "report_network_dl": "Velocidad de descarga",
+  "report_network_ul": "Velocidad de carga",
+  "report_network_ping": "Latencia (ping)"
 }

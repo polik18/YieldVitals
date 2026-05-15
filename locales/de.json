@@ -87,5 +87,21 @@
   "advice_storage_pc": "Festplatten-E/A-Engpass. Erwägen Sie ein Upgrade auf eine NVMe-SSD höherer Stufe oder prüfen Sie, ob der Speicherplatz knapp wird.",
   "lang_selector": "🌐 Sprache",
   "canvas2d_render": "Canvas 2D-Grafiken",
-  "mode_stability": "Stabilität"
+  "mode_stability": "Stabilität",
+  "advice_diy_ram": "Der Systemspeicher reicht für hohe Arbeitslasten nicht aus. Es wird dringend empfohlen, den physischen RAM auf 16 GB oder 32 GB Dual-Channel aufzurüsten.",
+  "advice_diy_storage": "Festplatten-E/A ist ein Engpass. Erwägen Sie ein Upgrade auf eine leistungsstarke NVMe-SSD oder prüfen Sie, ob der Speicherplatz knapp wird.",
+  "advice_diy_gpu": "Die Grafikleistung ist mangelhaft. Stellen Sie sicher, dass die Hardwarebeschleunigung des Browsers aktiviert ist, oder erwägen Sie die Installation einer dedizierten GPU für 3D-Aufgaben.",
+  "advice_diy_cpu": "Die Rechenleistung ist begrenzt. Erwägen Sie ein Upgrade Ihres Prozessors, das Schließen umfangreicher Hintergrund-Apps oder die Gewährleistung einer ausreichenden Kühlung.",
+  "advice_mobile_ram": "Der mobile Speicherplatz ist begrenzt. Löschen Sie Hintergrund-Apps oder ziehen Sie für eine bessere Stabilität ein Gerät mit größerer RAM-Kapazität in Betracht.",
+  "advice_mobile_storage": "Der mobile Speicher ist möglicherweise fast voll, wodurch die E/A-Geschwindigkeit sinkt. Löschen Sie ungenutzte Apps/Fotos, um Speicherplatz freizugeben.",
+  "advice_mobile_gpu": "Die mobile GPU weist einen Engpass auf. Reduzieren Sie die Einstellungen für 3D-Spiele und stellen Sie sicher, dass das Gerät nicht überhitzt, um eine thermische Drosselung zu verhindern.",
+  "advice_mobile_cpu": "Die mobile CPU ist begrenzt. Schließen Sie Apps, die den Akku verbrauchen, im Hintergrund oder erwägen Sie ein Upgrade auf ein Gerät mit einem stärkeren Chip.",
+  "network_speed": "Netzwerkgeschwindigkeit",
+  "network_pinging": "Ping...",
+  "network_downloading": "DL testen...",
+  "network_uploading": "UL-Prüfung...",
+  "report_network": "[Netzwerkdetails]",
+  "report_network_dl": "Download-Geschwindigkeit",
+  "report_network_ul": "Upload-Geschwindigkeit",
+  "report_network_ping": "Latenz (Ping)"
 }

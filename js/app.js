@@ -815,38 +815,79 @@
 
         // 8. 網路下載測速 (Network Fetch)
         async function runNetworkTest(runId) {
-            setStatus('network', '下載測試中...', 'running');
             try {
-                // 使用 Cloudflare 25MB 測試檔案 (支援 CORS)
-                const targetUrl = 'https://speed.cloudflare.com/__down?bytes=25000000';
-                const startTime = performance.now();
-                // 加上 query string 避免快取
-                const response = await fetch(`${targetUrl}&t=${Date.now()}`, { cache: 'no-store' });
-                
-                if (!response.ok) throw new Error('Fetch failed');
-                
-                const reader = response.body.getReader();
-                let receivedLength = 0;
-                
-                while(true) {
+                let pings = [];
+                // 1. Ping Test
+                setStatus('network', t('network_pinging'), 'running');
+                for (let i = 0; i < 5; i++) {
                     if (isCancelledRun(runId)) return Promise.reject(new Error('使用者取消測試'));
-                    const {done, value} = await reader.read();
-                    if (done) break;
-                    receivedLength += value.length;
+                    let pStart = performance.now();
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 3000);
+                    try {
+                        await fetch(`https://speed.cloudflare.com/__down?bytes=0&t=${Date.now()}`, { method: 'GET', cache: 'no-store', signal: controller.signal });
+                        pings.push(performance.now() - pStart);
+                    } catch(e) {}
+                    clearTimeout(timeoutId);
                 }
-                
-                const durationSec = (performance.now() - startTime) / 1000;
-                const megabits = (receivedLength * 8) / (1000 * 1000);
-                const mbps = (megabits / durationSec).toFixed(1);
-                
-                setStatus('network', `${mbps} Mbps`, 'done');
-                document.getElementById('res-network').innerHTML = `${mbps} <span class="text-xs font-normal text-slate-500">Mbps</span>`;
-                return parseFloat(mbps);
+                pings.sort((a,b) => a - b);
+                const ping = pings.length >= 3 ? Math.round(pings[Math.floor(pings.length/2)]) : (pings[0] ? Math.round(pings[0]) : 0);
+
+                // 2. Download Test
+                setStatus('network', t('network_downloading'), 'running');
+                const selectedMode = document.querySelector('input[name="testMode"]:checked')?.value;
+                const dlSize = selectedMode === 'quick' ? 5000000 : 25000000;
+                let dlStart = performance.now();
+                const dlController = new AbortController();
+                const dlTimeoutId = setTimeout(() => dlController.abort(), 8000);
+                let dlMbps = 0;
+                let receivedLength = 0;
+                try {
+                    const dlResp = await fetch(`https://speed.cloudflare.com/__down?bytes=${dlSize}&t=${Date.now()}`, { cache: 'no-store', signal: dlController.signal });
+                    if (!dlResp.ok) throw new Error('DL Fetch failed');
+                    const reader = dlResp.body.getReader();
+                    while(true) {
+                        if (isCancelledRun(runId)) { dlController.abort(); return Promise.reject(new Error('使用者取消測試')); }
+                        const {done, value} = await reader.read();
+                        if (done) break;
+                        receivedLength += value.length;
+                    }
+                    const dlDurationSec = (performance.now() - dlStart) / 1000;
+                    dlMbps = parseFloat(((receivedLength * 8) / (1024 * 1024) / dlDurationSec).toFixed(1));
+                } catch(e) {
+                    if (e.name === 'AbortError' && receivedLength > 0) {
+                        const dlDurationSec = (performance.now() - dlStart) / 1000;
+                        dlMbps = parseFloat(((receivedLength * 8) / (1024 * 1024) / dlDurationSec).toFixed(1));
+                    }
+                }
+                clearTimeout(dlTimeoutId);
+
+                // 3. Upload Test
+                setStatus('network', t('network_uploading'), 'running');
+                const ulSize = selectedMode === 'quick' ? 1000000 : 3000000; 
+                const ulData = new Uint8Array(ulSize);
+                for(let i=0; i<ulSize; i+=4096) ulData[i] = Math.random() * 255;
+                let ulStart = performance.now();
+                const ulController = new AbortController();
+                const ulTimeoutId = setTimeout(() => ulController.abort(), 8000);
+                let ulMbps = 0;
+                try {
+                    const ulResp = await fetch(`https://speed.cloudflare.com/__up?t=${Date.now()}`, {
+                        method: 'POST', body: ulData, cache: 'no-store', signal: ulController.signal
+                    });
+                    if (ulResp.ok) {
+                        const ulDurationSec = (performance.now() - ulStart) / 1000;
+                        ulMbps = parseFloat(((ulSize * 8) / (1024 * 1024) / ulDurationSec).toFixed(1));
+                    }
+                } catch(e) {}
+                clearTimeout(ulTimeoutId);
+
+                return { value: dlMbps, dl: dlMbps, ul: ulMbps, ping: ping };
             } catch (e) {
-                if (e.message === '使用者取消測試') throw e;
+                if (e.message === "使用者取消測試") throw e;
                 setStatus('network', '連線失敗或逾時', 'error');
                 document.getElementById('res-network').innerHTML = `N/A`;
-                return { value: 0, error: '無法連線測試節點' };
+                return { value: 0, dl: 0, ul: 0, ping: 0, error: '無法連線測試節點' };
             }
         }
 
@@ -883,9 +924,25 @@
             if(name === 'ram') { unit = 'cyc/s'; formattedVal = Math.round(finalVal); }
             if(name === 'dom') { unit = 'ops/s'; formattedVal = Math.round(finalVal); }
             if(name === 'canvas2d') { unit = 'ops/s'; formattedVal = Math.round(finalVal); }
-            if(name === 'network') { unit = 'Mbps'; formattedVal = Number(finalVal).toFixed(1); }
+            if(name === 'network') { 
+                // Because network returns an object with dl, ul, ping, and we run iterations=1
+                let resObj = results[0];
+                if (resObj && typeof resObj === 'object' && resObj.dl !== undefined) {
+                    setStatus('network', `D: ${resObj.dl} | U: ${resObj.ul}`, 'done');
+                    document.getElementById('res-network').innerHTML = `
+                        <div class="flex flex-col">
+                            <span class="text-lg">${resObj.dl} <span class="text-[10px] text-slate-500">DL</span> / ${resObj.ul} <span class="text-[10px] text-slate-500">UL</span></span>
+                            <span class="text-xs text-slate-500 mt-1">Ping: ${resObj.ping} ms</span>
+                        </div>
+                    `;
+                    return resObj;
+                } else {
+                    setStatus('network', `0 Mbps`, 'error');
+                    return 0;
+                }
+            }
             
-            if(name !== 'gpu' && name !== 'storage' && name !== 'crypto') {
+            if(name !== 'gpu' && name !== 'storage' && name !== 'crypto' && name !== 'network') {
                 setStatus(name, `${formattedVal} ${unit}`, 'done');
                 document.getElementById(`res-${name}`).innerHTML = `${formattedVal} <span class="text-xs font-normal text-slate-500">${unit}</span>`;
             } else if (name === 'gpu') {
@@ -999,39 +1056,29 @@
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             const scores = [
                 {
-                    name: '邏輯運算 (CPU)',
+                    name: t('cpu_calc'),
                     norm: normCPU,
-                    advice: isMobile ?
-                        '建議關閉背景耗電的應用程式，或考慮更換為具備更強處理晶片的手機/平板。' :
-                        '建議升級具備更高時脈或更多核心的處理器，若為筆電請接上電源，或關閉背景佔用資源的常駐程式。'
+                    advice: isMobile ? t('advice_mobile_cpu') : t('advice_diy_cpu')
                 },
                 {
-                    name: '圖形渲染 (GPU)',
+                    name: t('gpu_webgl'),
                     norm: normGPU,
-                    advice: isMobile ?
-                        '行動裝置圖形效能遭遇瓶頸。玩 3D 遊戲時建議調低畫質與特效，若經常發熱降頻，可考慮使用手機散熱器。' :
-                        '建議檢查是否已開啟瀏覽器的「硬體加速」功能。若為桌機且長期有 3D 或遊戲需求，建議加裝獨立外接顯示卡。'
+                    advice: isMobile ? t('advice_mobile_gpu') : t('advice_diy_gpu')
                 },
                 {
-                    name: 'DOM 與互動',
+                    name: t('dom_layout'),
                     norm: normDOM,
-                    advice: isMobile ?
-                        '瀏覽複雜網頁時容易卡頓。建議一次不要開啟太多分頁，或清理瀏覽器快取。' :
-                        '建議避免同時開啟過多複雜的網頁分頁，或考慮升級具備更強單核效能的處理器。'
+                    advice: isMobile ? t('advice_dom_mobile') : t('advice_dom_pc')
                 },
                 {
-                    name: '記憶體 (RAM)',
+                    name: t('ram_gc'),
                     norm: normMemory,
-                    advice: isMobile ?
-                        '手機記憶體空間可能不足，容易導致背景 App 被強制重新載入。建議定期清理後台程式，或選購 RAM 容量更大的機型。' :
-                        '系統記憶體空間或頻寬可能不足，建議加裝實體記憶體 (RAM)，或關閉不必要的分頁以釋放記憶體空間。'
+                    advice: isMobile ? t('advice_mobile_ram') : t('advice_diy_ram')
                 },
                 {
-                    name: '本機存取 (Storage)',
+                    name: t('storage_io'),
                     norm: normStorage,
-                    advice: isMobile ?
-                        '手機儲存空間可能接近全滿，導致讀寫嚴重掉速。建議清理不需要的照片與 App 以釋放空間。' :
-                        '硬碟讀寫速度遭遇瓶頸。建議升級為更高階的 NVMe SSD，或檢查硬碟剩餘空間是否不足。'
+                    advice: isMobile ? t('advice_mobile_storage') : t('advice_diy_storage')
                 }
             ];
             scores.sort((a, b) => a.norm - b.norm);
@@ -1148,6 +1195,18 @@
                     waited += 100;
                 }
                 if (!window.Chart) return;
+
+                // 等待 i18n 載入完成 (radar_labels 必須是陣列)
+                waited = 0;
+                while (!Array.isArray(t('radar_labels')) && waited < 3000) {
+                    await new Promise(r => setTimeout(r, 100));
+                    waited += 100;
+                }
+                if (!Array.isArray(t('radar_labels'))) {
+                    console.error("i18n 未能正確載入雷達圖標籤");
+                    return;
+                }
+
                 const ctx = document.getElementById('radarChart').getContext('2d');
                 Chart.defaults.color = '#94a3b8';
                 radarChart = new Chart(ctx, {
@@ -1250,7 +1309,7 @@
                         results.gpu = await withTimeout(runWithSampling('gpu', runThreeJSTest, 1, config, myRunId), config.gpuTimeLimit + 5000, 'GPU');
                         results.crypto = await withTimeout(runWithSampling('crypto', runCryptoTest, iters, config.otherTime, myRunId), config.otherTime*iters + 5000, 'Crypto');
                         results.storage = await withTimeout(runWithSampling('storage', runStorageTest, 1, config.otherTime, myRunId), config.otherTime + 10000, 'Storage');
-                        results.network = await withTimeout(runWithSampling('network', runNetworkTest, 1, 0, myRunId, true), 30000, 'Network'); // Download takes too long, run once
+                        results.network = await withTimeout(runWithSampling('network', runNetworkTest, 1, 0, myRunId, true), 40000, 'Network'); // Download takes too long, run once
                     } catch (e) {
                         errorOccurred = true;
                         if (e.message !== '使用者取消測試') {
