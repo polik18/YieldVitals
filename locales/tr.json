@@ -1,6 +1,6 @@
 {
-  "title": "YieldVitals V1.0 | Tarayıcı Karşılaştırması",
-  "subtitle": "V1.0 | Tarayıcı Karşılaştırması | Kalite Kontrol Teşhisleri",
+  "title": "YieldVitals V1.01 | Tarayıcı Karşılaştırması",
+  "subtitle": "V1.01 | Tarayıcı Karşılaştırması | Kalite Kontrol Teşhisleri",
   "error_msg": "Test sırasında bir hata oluştu, lütfen tekrar deneyin.",
   "run_test": "Tarayıcı Performans Testini Çalıştırın",
   "test_desc": "Bu test, cihazınızın tarayıcı ortamındaki kapsamlı bilgi işlem yeteneğini değerlendirir. Test sırasında cihaz ısınabilir, lütfen sayfayı açık tutun.",
@@ -30,7 +30,7 @@
   "tier_mainstream": "Ana Akım Mobil",
   "tier_high_laptop": "Üst düzey dizüstü bilgisayar",
   "tier_flagship": "Amiral Gemisi İş İstasyonu",
-  "report_title": "YieldVitals V1.0 Karşılaştırma Raporu",
+  "report_title": "YieldVitals V1.01 Karşılaştırma Raporu",
   "report_mode": "Mod",
   "report_score": "Genel Puan",
   "report_reliability": "Güvenilirlik",

@@ -1,6 +1,6 @@
 {
-  "title": "RendementVitals V1.0 | Benchmark du navigateur",
-  "subtitle": "V1.0 | Benchmark du navigateur | Diagnostic CQ",
+  "title": "RendementVitals V1.01 | Benchmark du navigateur",
+  "subtitle": "V1.01 | Benchmark du navigateur | Diagnostic CQ",
   "error_msg": "Une erreur s'est produite lors du test, veuillez réessayer.",
   "run_test": "Exécuter le test de performances du navigateur",
   "test_desc": "Ce test évalue la capacité informatique complète de votre appareil dans l'environnement du navigateur. L'appareil peut chauffer pendant les tests, veuillez garder la page ouverte.",
@@ -30,7 +30,7 @@
   "tier_mainstream": "Mobile grand public",
   "tier_high_laptop": "Ordinateur portable haut de gamme",
   "tier_flagship": "Poste de travail phare",
-  "report_title": "Rapport de référence YieldVitals V1.0",
+  "report_title": "Rapport de référence YieldVitals V1.01",
   "report_mode": "Mode",
   "report_score": "Note globale",
   "report_reliability": "Fiabilité",

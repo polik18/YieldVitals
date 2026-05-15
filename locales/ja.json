@@ -1,6 +1,6 @@
 {
-  "title": "YieldVitals V1.0 |ブラウザのベンチマーク",
-  "subtitle": "V1.0 |ブラウザのベンチマーク | QC診断",
+  "title": "YieldVitals V1.01 |ブラウザのベンチマーク",
+  "subtitle": "V1.01 |ブラウザのベンチマーク | QC診断",
   "error_msg": "テスト中にエラーが発生しました。もう一度お試しください。",
   "run_test": "ブラウザのパフォーマンス テストを実行する",
   "test_desc": "このテストでは、ブラウザ環境におけるデバイスの包括的なコンピューティング能力を評価します。テスト中にデバイスが熱くなる可能性があります。ページを開いたままにしてください。",
@@ -30,7 +30,7 @@
   "tier_mainstream": "メインストリームモバイル",
   "tier_high_laptop": "ハイエンドノートパソコン",
   "tier_flagship": "フラッグシップワークステーション",
-  "report_title": "YieldVitals V1.0 ベンチマーク レポート",
+  "report_title": "YieldVitals V1.01 ベンチマーク レポート",
   "report_mode": "モード",
   "report_score": "総合スコア",
   "report_reliability": "信頼性",

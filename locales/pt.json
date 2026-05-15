@@ -1,6 +1,6 @@
 {
-  "title": "Rendimento Vitals V1.0 | Referência do navegador",
-  "subtitle": "V1.0 | Referência do navegador | Diagnóstico de CQ",
+  "title": "Rendimento Vitals V1.01 | Referência do navegador",
+  "subtitle": "V1.01 | Referência do navegador | Diagnóstico de CQ",
   "error_msg": "Ocorreu um erro durante o teste. Tente novamente.",
   "run_test": "Execute o teste de desempenho do navegador",
   "test_desc": "Este teste avalia a capacidade computacional abrangente do seu dispositivo no ambiente do navegador. O dispositivo pode esquentar durante o teste. Mantenha a página aberta.",
@@ -30,7 +30,7 @@
   "tier_mainstream": "Celular convencional",
   "tier_high_laptop": "Laptop de última geração",
   "tier_flagship": "Estação de trabalho principal",
-  "report_title": "Relatório de referência YieldVitals V1.0",
+  "report_title": "Relatório de referência YieldVitals V1.01",
   "report_mode": "Modo",
   "report_score": "Pontuação geral",
   "report_reliability": "Confiabilidade",

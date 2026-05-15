@@ -1,6 +1,6 @@
 {
-  "title": "YieldVitals V1.0 | Nettleserbenchmark",
-  "subtitle": "V1.0 | Nettleserbenchmark | QC-diagnostikk",
+  "title": "YieldVitals V1.01 | Nettleserbenchmark",
+  "subtitle": "V1.01 | Nettleserbenchmark | QC-diagnostikk",
   "error_msg": "Det oppstod en feil under testingen, prøv igjen.",
   "run_test": "Kjør nettleserytelsestest",
   "test_desc": "Denne testen evaluerer den omfattende databehandlingsevnen til enheten din i nettlesermiljøet. Enheten kan varmes opp under testing, vennligst hold siden åpen.",
@@ -30,7 +30,7 @@
   "tier_mainstream": "Mainstream mobil",
   "tier_high_laptop": "Eksklusiv bærbar PC",
   "tier_flagship": "Flaggskip arbeidsstasjon",
-  "report_title": "YieldVitals V1.0 Benchmark Report",
+  "report_title": "YieldVitals V1.01 Benchmark Report",
   "report_mode": "Modus",
   "report_score": "Samlet poengsum",
   "report_reliability": "Pålitelighet",

@@ -1,6 +1,6 @@
 {
-  "title": "Năng suấtVitals V1.0 | Điểm chuẩn của trình duyệt",
-  "subtitle": "V1.0 | Điểm chuẩn trình duyệt | Chẩn đoán QC",
+  "title": "Năng suấtVitals V1.01 | Điểm chuẩn của trình duyệt",
+  "subtitle": "V1.01 | Điểm chuẩn trình duyệt | Chẩn đoán QC",
   "error_msg": "Đã xảy ra lỗi trong quá trình kiểm tra, vui lòng thử lại.",
   "run_test": "Chạy kiểm tra hiệu suất trình duyệt",
   "test_desc": "Bài kiểm tra này đánh giá khả năng tính toán toàn diện của thiết bị của bạn trong môi trường trình duyệt. Thiết bị có thể nóng lên trong quá trình thử nghiệm, vui lòng mở trang này.",
@@ -30,7 +30,7 @@
   "tier_mainstream": "Di động chính thống",
   "tier_high_laptop": "Máy tính xách tay cao cấp",
   "tier_flagship": "Máy trạm hàng đầu",
-  "report_title": "Báo cáo điểm chuẩn YieldVitals v1.0",
+  "report_title": "Báo cáo điểm chuẩn YieldVitals v1.01",
   "report_mode": "Chế độ",
   "report_score": "Điểm tổng thể",
   "report_reliability": "Độ tin cậy",

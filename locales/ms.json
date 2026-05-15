@@ -1,6 +1,6 @@
 {
-  "title": "YieldVitals V1.0 | Penanda Aras Pelayar",
-  "subtitle": "V1.0 | Penanda Aras Penyemak Imbas | Diagnostik QC",
+  "title": "YieldVitals V1.01 | Penanda Aras Pelayar",
+  "subtitle": "V1.01 | Penanda Aras Penyemak Imbas | Diagnostik QC",
   "error_msg": "Ralat berlaku semasa ujian, sila cuba lagi.",
   "run_test": "Jalankan Ujian Prestasi Penyemak Imbas",
   "test_desc": "Ujian ini menilai keupayaan pengkomputeran komprehensif peranti anda dalam persekitaran penyemak imbas. Peranti mungkin panas semasa ujian, sila pastikan halaman dibuka.",
@@ -30,7 +30,7 @@
   "tier_mainstream": "Mudah Alih Aliran Perdana",
   "tier_high_laptop": "Komputer riba mewah",
   "tier_flagship": "Stesen Kerja Utama",
-  "report_title": "Laporan Penanda Aras YieldVitals V1.0",
+  "report_title": "Laporan Penanda Aras YieldVitals V1.01",
   "report_mode": "Mod",
   "report_score": "Skor Keseluruhan",
   "report_reliability": "Kebolehpercayaan",

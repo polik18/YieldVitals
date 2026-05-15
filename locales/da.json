@@ -1,6 +1,6 @@
 {
-  "title": "YieldVitals V1.0 | Browser benchmark",
-  "subtitle": "V1.0 | Browser benchmark | QC diagnostik",
+  "title": "YieldVitals V1.01 | Browser benchmark",
+  "subtitle": "V1.01 | Browser benchmark | QC diagnostik",
   "error_msg": "Der opstod en fejl under testen. Prøv venligst igen.",
   "run_test": "Kør browserens ydeevnetest",
   "test_desc": "Denne test evaluerer din enheds omfattende computerkapacitet i browsermiljøet. Enheden kan blive varm under test, hold venligst siden åben.",
@@ -30,7 +30,7 @@
   "tier_mainstream": "Mainstream mobil",
   "tier_high_laptop": "Avanceret bærbar",
   "tier_flagship": "Flagskibsarbejdsstation",
-  "report_title": "YieldVitals V1.0 Benchmark-rapport",
+  "report_title": "YieldVitals V1.01 Benchmark-rapport",
   "report_mode": "tilstand",
   "report_score": "Samlet score",
   "report_reliability": "Pålidelighed",

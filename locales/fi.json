@@ -1,6 +1,6 @@
 {
-  "title": "YieldVitals V1.0 | Selaimen vertailuarvo",
-  "subtitle": "V1.0 | Selaimen vertailuarvo | QC-diagnostiikka",
+  "title": "YieldVitals V1.01 | Selaimen vertailuarvo",
+  "subtitle": "V1.01 | Selaimen vertailuarvo | QC-diagnostiikka",
   "error_msg": "Testauksen aikana tapahtui virhe, yritä uudelleen.",
   "run_test": "Suorita selaimen suorituskykytesti",
   "test_desc": "Tämä testi arvioi laitteesi kattavan laskentakyvyn selainympäristössä. Laite saattaa lämmetä testauksen aikana, pidä sivu auki.",
@@ -30,7 +30,7 @@
   "tier_mainstream": "Mainstream Mobile",
   "tier_high_laptop": "Huippuluokan kannettava tietokone",
   "tier_flagship": "Lippulaivatyöasema",
-  "report_title": "YieldVitals V1.0 -vertailuraportti",
+  "report_title": "YieldVitals V1.01 -vertailuraportti",
   "report_mode": "tila",
   "report_score": "Kokonaispisteet",
   "report_reliability": "Luotettavuus",
