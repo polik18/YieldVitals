@@ -13,10 +13,10 @@
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="title">YieldVitals V1.011 | Browser Benchmark</title>
+    <title data-i18n="title">YieldVitals v1.1 | Browser Benchmark</title>
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="YieldVitals V1.011 - Factory-grade web performance testing and hardware diagnostic tool. Evaluate CPU, GPU, RAM, Storage, and Network bottlenecks directly in your browser.">
+    <meta name="description" content="YieldVitals v1.1 - Factory-grade web performance testing and hardware diagnostic tool. Evaluate CPU, GPU, RAM, Storage, and Network bottlenecks directly in your browser.">
     <meta name="keywords" content="browser benchmark, cpu test, gpu test, webgl test, html5 benchmark, hardware diagnostics, yieldvitals">
     <meta name="author" content="YieldVitals QC Engineering">
     <meta name="robots" content="index, follow">
@@ -24,13 +24,13 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://yieldvitals.com/">
-    <meta property="og:title" content="YieldVitals V1.011 | Factory-Grade Browser Benchmark">
+    <meta property="og:title" content="YieldVitals v1.1 | Factory-Grade Browser Benchmark">
     <meta property="og:description" content="Test your device's limits with our 8-axis benchmark. Get expert hardware diagnostic advice for free.">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://yieldvitals.com/">
-    <meta property="twitter:title" content="YieldVitals V1.011 | Browser Benchmark">
+    <meta property="twitter:title" content="YieldVitals v1.1 | Browser Benchmark">
     <meta property="twitter:description" content="Test your device's limits with our 8-axis benchmark. Get expert hardware diagnostic advice for free.">
     
     <!-- Hreflang Tags for SEO (Dynamically generated or top languages) -->
@@ -67,10 +67,20 @@
     <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
-    <!-- App Logic -->
-    <script src="js/locales.js"></script>
+    <!-- App Logic Modules -->
     <script defer src="js/i18n.js"></script>
-    <script defer src="js/app.js"></script>
+    <script defer src="js/core/state.js"></script>
+    <script defer src="js/core/utils.js"></script>
+    <script defer src="js/benchmarks/cpu.js"></script>
+    <script defer src="js/benchmarks/dom.js"></script>
+    <script defer src="js/benchmarks/memory.js"></script>
+    <script defer src="js/benchmarks/gpu.js"></script>
+    <script defer src="js/benchmarks/crypto.js"></script>
+    <script defer src="js/benchmarks/storage.js"></script>
+    <script defer src="js/benchmarks/network.js"></script>
+    <script defer src="js/core/scoring.js"></script>
+    <script defer src="js/core/report.js"></script>
+    <script defer src="js/main.js"></script>
 
     <style>
         #domSandbox {
@@ -110,11 +120,11 @@
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center font-bold text-white text-xl shadow-[0_0_10px_rgba(59,130,246,0.5)]">
                 Y</div>
-            <h1 class="text-xl font-bold text-white tracking-wide">YieldVitals <span class="text-sm font-normal text-primary ml-1">V1.011</span></h1>
+            <h1 class="text-xl font-bold text-white tracking-wide">YieldVitals <span class="text-sm font-normal text-primary ml-1">v1.1</span></h1>
         </div>
         <div class="flex items-center gap-4">
             <div class="text-sm text-slate-400 font-mono hidden md:block" data-i18n="subtitle">
-                V1.011 | Browser Benchmark | QC Diagnostics
+                v1.1 | Browser Benchmark | QC Diagnostics
             </div>
             <!-- 語言切換選單 -->
             <select id="langSelector" class="bg-slate-800 text-slate-300 text-xs border border-slate-600 rounded px-2 py-1 focus:outline-none focus:border-primary cursor-pointer appearance-none text-center">
@@ -423,7 +433,7 @@
         <p class="max-w-3xl mx-auto leading-relaxed px-4" data-i18n="footer_disclaimer_desc">
             本網頁提供之效能評測數據僅供參考。實際運作效能將因設備當下之散熱狀態、系統背景程式、瀏覽器版本及底層硬體指令集支援度而有顯著差異。
         </p>
-        <p class="mt-3 opacity-60 font-mono tracking-widest text-[10px]">YIELDVITALS BROWSER BENCHMARK V1.011</p>
+        <p class="mt-3 opacity-60 font-mono tracking-widest text-[10px]">YIELDVITALS BROWSER BENCHMARK v1.1</p>
     </footer>
 
 </body>

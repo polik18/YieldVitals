@@ -1,6 +1,6 @@
 {
-  "title": "YieldVitals V1.011 | Comparativa del navegador",
-  "subtitle": "V1.011 | Comparativa del navegador | Diagnóstico de control de calidad",
+  "title": "YieldVitals v1.1 | Comparativa del navegador",
+  "subtitle": "v1.1 | Comparativa del navegador | Diagnóstico de control de calidad",
   "error_msg": "Se produjo un error durante la prueba, inténtelo de nuevo.",
   "run_test": "Ejecute la prueba de rendimiento del navegador",
   "test_desc": "Esta prueba evalúa la capacidad informática integral de su dispositivo en el entorno del navegador. El dispositivo puede calentarse durante la prueba; mantenga la página abierta.",
@@ -30,7 +30,7 @@
   "tier_mainstream": "Móvil convencional",
   "tier_high_laptop": "Portátil de gama alta",
   "tier_flagship": "Estación de trabajo insignia",
-  "report_title": "Informe de referencia de YieldVitals V1.011",
+  "report_title": "Informe de referencia de YieldVitals v1.1",
   "report_mode": "Modo",
   "report_score": "Puntuación general",
   "report_reliability": "Fiabilidad",

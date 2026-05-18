@@ -1,6 +1,6 @@
 {
-  "title": "YieldVitals V1.011 | Benchmark של דפדפן",
-  "subtitle": "V1.011 | רף דפדפן | אבחון QC",
+  "title": "YieldVitals v1.1 | Benchmark של דפדפן",
+  "subtitle": "v1.1 | רף דפדפן | אבחון QC",
   "error_msg": "אירעה שגיאה במהלך הבדיקה, אנא נסה שוב.",
   "run_test": "הפעל את בדיקת ביצועי הדפדפן",
   "test_desc": "בדיקה זו מעריכה את יכולת המחשוב המקיפה של המכשיר שלך בסביבת הדפדפן. המכשיר עלול להתחמם במהלך הבדיקה, אנא השאר את הדף פתוח.",
@@ -30,7 +30,7 @@
   "tier_mainstream": "מיינסטרים נייד",
   "tier_high_laptop": "מחשב נייד ברמה גבוהה",
   "tier_flagship": "תחנת עבודה דגל",
-  "report_title": "דוח Benchmark של YieldVitals V1.011",
+  "report_title": "דוח Benchmark של YieldVitals v1.1",
   "report_mode": "מצב",
   "report_score": "ציון כללי",
   "report_reliability": "אמינות",

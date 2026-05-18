@@ -1,6 +1,6 @@
 {
-  "title": "YieldVitals V1.011 | Webbläsarens benchmark",
-  "subtitle": "V1.011 | Webbläsarens benchmark | QC Diagnostik",
+  "title": "YieldVitals v1.1 | Webbläsarens benchmark",
+  "subtitle": "v1.1 | Webbläsarens benchmark | QC Diagnostik",
   "error_msg": "Ett fel uppstod under testningen, försök igen.",
   "run_test": "Kör webbläsarens prestandatest",
   "test_desc": "Detta test utvärderar den omfattande beräkningskapaciteten hos din enhet i webbläsarmiljön. Enheten kan bli varm under testning, håll sidan öppen.",
@@ -30,7 +30,7 @@
   "tier_mainstream": "Mainstream Mobile",
   "tier_high_laptop": "High-end bärbar dator",
   "tier_flagship": "Flaggskepps arbetsstation",
-  "report_title": "YieldVitals V1.011 Benchmark-rapport",
+  "report_title": "YieldVitals v1.1 Benchmark-rapport",
   "report_mode": "Läge",
   "report_score": "Totalt resultat",
   "report_reliability": "Tillförlitlighet",

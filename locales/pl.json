@@ -1,6 +1,6 @@
 {
-  "title": "YieldVitals V1.011 | Test porównawczy przeglądarki",
-  "subtitle": "V1.011 | Test porównawczy przeglądarki | Diagnostyka kontroli jakości",
+  "title": "YieldVitals v1.1 | Test porównawczy przeglądarki",
+  "subtitle": "v1.1 | Test porównawczy przeglądarki | Diagnostyka kontroli jakości",
   "error_msg": "Podczas testowania wystąpił błąd. Spróbuj ponownie.",
   "run_test": "Uruchom test wydajności przeglądarki",
   "test_desc": "Ten test ocenia wszechstronne możliwości obliczeniowe Twojego urządzenia w środowisku przeglądarki. Urządzenie może się nagrzać podczas testowania, prosimy o pozostawienie strony otwartej.",
@@ -30,7 +30,7 @@
   "tier_mainstream": "Główny nurt mobilny",
   "tier_high_laptop": "Wysokiej klasy laptop",
   "tier_flagship": "Flagowa stacja robocza",
-  "report_title": "Raport porównawczy YieldVitals V1.011",
+  "report_title": "Raport porównawczy YieldVitals v1.1",
   "report_mode": "Tryb",
   "report_score": "Ogólny wynik",
   "report_reliability": "Niezawodność",

@@ -142,7 +142,7 @@ git diff js/app.js | head -100
 ### 推薦步驟
 ```bash
 # 1. 如果還沒備份，現在備份
-cp js/app.js js/app.js.v1.011_before_fix
+cp js/app.js js/app.js.v1.1_before_fix
 
 # 2. 提交到 Git
 git add js/app.js

@@ -1,6 +1,6 @@
 {
-  "title": "YieldVitals V1.011 | Browser Benchmark",
-  "subtitle": "V1.011 | Browser Benchmark | QC Diagnostics",
+  "title": "YieldVitals v1.1 | Browser Benchmark",
+  "subtitle": "v1.1 | Browser Benchmark | QC Diagnostics",
   "error_msg": "An error occurred during testing, please try again.",
   "run_test": "Run Browser Performance Test",
   "test_desc": "This test evaluates the comprehensive computing capability of your device in the browser environment. The device may heat up during testing, please keep the page open.",
@@ -30,7 +30,7 @@
   "tier_mainstream": "Mainstream Mobile",
   "tier_high_laptop": "High-end Laptop",
   "tier_flagship": "Flagship Workstation",
-  "report_title": "YieldVitals V1.011 Benchmark Report",
+  "report_title": "YieldVitals v1.1 Benchmark Report",
   "report_mode": "Mode",
   "report_score": "Overall Score",
   "report_reliability": "Reliability",

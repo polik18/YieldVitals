@@ -31,31 +31,39 @@ function detectLanguage() {
 }
 
 async function loadLanguage(lang) {
-    try {
+    return new Promise((resolve) => {
+        const applyLanguage = () => {
+            currentLangData = window.YIELDVITALS_LOCALES[lang] || {};
+            currentLang = lang;
+            localStorage.setItem('yieldvitals_lang', lang);
+            
+            document.documentElement.lang = lang;
+            updateDOM();
+            if (typeof updateDynamicElements === 'function') {
+                updateDynamicElements(); // Let app.js know it needs to update charts/reports
+            }
+            resolve(true);
+        };
+
         if (window.YIELDVITALS_LOCALES && window.YIELDVITALS_LOCALES[lang]) {
-            currentLangData = window.YIELDVITALS_LOCALES[lang];
+            applyLanguage();
         } else {
-            // Fallback to fetch if window.YIELDVITALS_LOCALES is missing (e.g. some environment without locales.js)
-            const response = await fetch(`locales/${lang}.json`);
-            if (!response.ok) throw new Error('Language file not found');
-            currentLangData = await response.json();
+            const script = document.createElement('script');
+            script.src = `js/locales/${lang}.js`;
+            script.onload = () => {
+                applyLanguage();
+            };
+            script.onerror = () => {
+                console.error("Failed to load language:", lang);
+                if (lang !== 'en') {
+                    resolve(loadLanguage('en'));
+                } else {
+                    resolve(false);
+                }
+            };
+            document.head.appendChild(script);
         }
-        
-        currentLang = lang;
-        localStorage.setItem('yieldvitals_lang', lang);
-        
-        document.documentElement.lang = lang;
-        updateDOM();
-        if (typeof updateDynamicElements === 'function') {
-            updateDynamicElements(); // Let app.js know it needs to update charts/reports
-        }
-        return true;
-    } catch (e) {
-        console.error("Failed to load language:", lang, e);
-        if (lang !== 'en') {
-            return loadLanguage('en');
-        }
-    }
+    });
 }
 
 // Global translation function

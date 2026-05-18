@@ -1,6 +1,6 @@
 {
-  "title": "YieldVitals V1.011 |浏览器基准测试",
-  "subtitle": "V1.011 |浏览器基准测试 |质量控制诊断",
+  "title": "YieldVitals v1.1 |浏览器基准测试",
+  "subtitle": "v1.1 |浏览器基准测试 |质量控制诊断",
   "error_msg": "测试时出现错误，请重试。",
   "run_test": "运行浏览器性能测试",
   "test_desc": "该测试评估您的设备在浏览器环境下的综合计算能力。测试过程中设备可能会发热，请保持页面打开。",
@@ -30,7 +30,7 @@
   "tier_mainstream": "主流手机",
   "tier_high_laptop": "高端笔记本电脑",
   "tier_flagship": "旗舰工作站",
-  "report_title": "YieldVitals V1.011 基准报告",
+  "report_title": "YieldVitals v1.1 基准报告",
   "report_mode": "模式",
   "report_score": "总分",
   "report_reliability": "可靠性",
