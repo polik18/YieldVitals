@@ -35,11 +35,11 @@
 
         // 模式設定: labelKey/descKey 存 i18n key，在執行時再用 t() 取得翻譯（避免定義時 i18n 尚未載入）
         const MODE_SETTINGS = {
-            quick:     { gpuMax: 50000,  gpuTimeLimit: 10000,  cpuTime: 1500, otherTime: 1000, labelKey: 'mode_quick',     descKey: 'mode_quick_desc' },
-            standard:  { gpuMax: 150000, gpuTimeLimit: 20000,  cpuTime: 3000, otherTime: 2000, labelKey: 'mode_standard',  descKey: 'mode_standard_desc' },
-            extreme:   { gpuMax: 500000, gpuTimeLimit: 30000,  cpuTime: 5000, otherTime: 3000, labelKey: 'mode_extreme',   descKey: 'mode_extreme_desc' },
-            stability: { gpuMax: 150000, gpuTimeLimit: 20000,  cpuTime: 2000, otherTime: 1500, iterations: 3, labelKey: 'mode_stability', descKey: 'mode_stability_desc' },
-            burnin:    { gpuMax: 500000, gpuTimeLimit: 120000, cpuTime: 15000,otherTime: 5000, labelKey: 'mode_burnin',    descKey: 'mode_burnin_desc' }
+            quick:     { gpuMax: 50000,  gpuTimeLimit: 10000,  cpuTime: 500,  otherTime: 350,  iterations: 3, labelKey: 'mode_quick',     descKey: 'mode_quick_desc' },
+            standard:  { gpuMax: 150000, gpuTimeLimit: 20000,  cpuTime: 600,  otherTime: 400,  iterations: 5, labelKey: 'mode_standard',  descKey: 'mode_standard_desc' },
+            extreme:   { gpuMax: 500000, gpuTimeLimit: 30000,  cpuTime: 1000, otherTime: 600,  iterations: 5, labelKey: 'mode_extreme',   descKey: 'mode_extreme_desc' },
+            stability: { gpuMax: 150000, gpuTimeLimit: 20000,  cpuTime: 2000, otherTime: 1500, iterations: 5, labelKey: 'mode_stability', descKey: 'mode_stability_desc' },
+            burnin:    { gpuMax: 500000, gpuTimeLimit: 120000, cpuTime: 1500, otherTime: 500,  iterations: 10, labelKey: 'mode_burnin',    descKey: 'mode_burnin_desc' }
         };
 
         function getDeviceSpecs() {
