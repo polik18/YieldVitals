@@ -1,0 +1,11 @@
+{
+  "cpu": 900,
+  "string": 20,
+  "crypto": 3000,
+  "memory": 700,
+  "storage": 3000,
+  "dom": 1000,
+  "gpu": 750,
+  "canvas2d": 15000,
+  "network": 9000
+}
