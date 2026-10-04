@@ -1,4 +1,4 @@
-        const storageWorkerCode = `
+const storageWorkerCode = `
             self.onmessage = async function(e) {
                 const duration = e.data.duration || 2000;
                 try {
@@ -76,34 +76,54 @@
             }
         `;
 
-        async function runStorageTest(duration, runId) {
-            setStatus('storage', t('status_running_storage'), 'running');
-            const blob = new Blob([storageWorkerCode], { type: 'application/javascript' });
-            const workerUrl = URL.createObjectURL(blob);
+async function runStorageTest(duration, runId, scope = activeBenchmarkScope) {
+  setStatus("storage", t("status_running_storage"), "running");
+  registerRunCleanup(async () => {
+    try {
+      if (navigator.storage?.getDirectory) {
+        const root = await navigator.storage.getDirectory();
+        try {
+          await root.removeEntry("bench_test.tmp");
+        } catch {}
+      }
+    } catch {}
+    try {
+      await new Promise((resolve) => {
+        const request = indexedDB.deleteDatabase("BenchDB");
+        request.onsuccess = request.onerror = request.onblocked = resolve;
+      });
+    } catch {}
+  }, scope);
+  const blob = new Blob([storageWorkerCode], {
+    type: "application/javascript",
+  });
+  const workerUrl = URL.createObjectURL(blob);
+  registerRunCleanup(() => URL.revokeObjectURL(workerUrl), scope);
 
-            return new Promise((resolve, reject) => {
-                const worker = new Worker(workerUrl);
-                worker.onmessage = (e) => {
-                    worker.terminate();
-                    URL.revokeObjectURL(workerUrl);
-                    if (isCancelledRun(runId)) return reject(new Error(t('error_cancelled')));
+  return new Promise((resolve, reject) => {
+    const worker = createTrackedWorker(workerUrl, scope);
+    worker.onmessage = (e) => {
+      worker.terminate();
+      URL.revokeObjectURL(workerUrl);
+      if (isCancelledRun(runId)) return reject(new Error(t("error_cancelled")));
 
-                    if (e.data.success) {
-                        const mbPerSec = e.data.score;
-                        setStatus('storage', `${mbPerSec} MB/s`, 'done');
-                        document.getElementById('res-storage').innerHTML = `${mbPerSec} <span class="text-xs font-normal text-slate-500">MB/s</span>`;
-                        resolve({ value: mbPerSec, method: e.data.method });
-                    } else {
-                        reject(new Error(e.data.error));
-                    }
-                };
-                worker.onerror = (e) => {
-                    worker.terminate();
-                    URL.revokeObjectURL(workerUrl);
-                    reject(new Error('Storage ' + t('error_worker')));
-                };
-                worker.postMessage({ duration });
-            });
-        }
+      if (e.data.success) {
+        const mbPerSec = e.data.score;
+        setStatus("storage", `${mbPerSec} MB/s`, "done");
+        document.getElementById("res-storage").innerHTML =
+          `${mbPerSec} <span class="text-xs font-normal text-slate-500">MB/s</span>`;
+        resolve({ value: mbPerSec, method: e.data.method });
+      } else {
+        reject(new Error(e.data.error));
+      }
+    };
+    worker.onerror = (e) => {
+      worker.terminate();
+      URL.revokeObjectURL(workerUrl);
+      reject(new Error("Storage " + t("error_worker")));
+    };
+    worker.postMessage({ duration });
+  });
+}
 
-        // 8. 網路測速 (Ping / Download / Upload)
+// 8. 網路測速 (Ping / Download / Upload)

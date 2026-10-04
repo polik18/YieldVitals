@@ -1,4 +1,4 @@
-        const cpuWorkerCode = `
+const cpuWorkerCode = `
             self.onmessage = function(e) {
                 const duration = e.data.duration || 1500;
                 const startTime = performance.now();
@@ -16,45 +16,51 @@
             };
         `;
 
-        async function runCPUMultiCore(duration, runId) {
-            setStatus('cpu', t('status_running_cpu'), 'running');
-            const blob = new Blob([cpuWorkerCode], { type: 'application/javascript' });
-            const workerUrl = URL.createObjectURL(blob);
-            let totalOps = 0;
-            const allWorkers = [];
+async function runCPUMultiCore(duration, runId, scope = activeBenchmarkScope) {
+  setStatus("cpu", t("status_running_cpu"), "running");
+  const blob = new Blob([cpuWorkerCode], { type: "application/javascript" });
+  const workerUrl = URL.createObjectURL(blob);
+  registerRunCleanup(() => URL.revokeObjectURL(workerUrl), scope);
+  let totalOps = 0;
+  const allWorkers = [];
 
-            const promises = Array.from({ length: cores }).map(() => {
-                return new Promise((resolve, reject) => {
-                    const worker = new Worker(workerUrl);
-                    allWorkers.push(worker);
-                    worker.onmessage = (e) => {
-                        totalOps += e.data;
-                        worker.terminate();
-                        resolve();
-                    };
-                    worker.onerror = (err) => {
-                        worker.terminate();
-                        reject(err);
-                    };
-                    worker.postMessage({ duration });
-                });
-            });
+  const promises = Array.from({ length: cores }).map(() => {
+    return new Promise((resolve, reject) => {
+      const worker = createTrackedWorker(workerUrl, scope);
+      allWorkers.push(worker);
+      worker.onmessage = (e) => {
+        totalOps += e.data;
+        worker.terminate();
+        resolve();
+      };
+      worker.onerror = (err) => {
+        worker.terminate();
+        reject(err);
+      };
+      worker.postMessage({ duration });
+    });
+  });
 
-            try {
-                await Promise.all(promises);
-            } catch (e) {
-                allWorkers.forEach(w => { try { w.terminate(); } catch (_) {} });
-                URL.revokeObjectURL(workerUrl);
-                throw e;
-            }
-            URL.revokeObjectURL(workerUrl);
-            if (isCancelledRun(runId)) throw new Error(t('error_cancelled'));
+  try {
+    await Promise.all(promises);
+  } catch (e) {
+    allWorkers.forEach((w) => {
+      try {
+        w.terminate();
+      } catch (_) {}
+    });
+    URL.revokeObjectURL(workerUrl);
+    throw e;
+  }
+  URL.revokeObjectURL(workerUrl);
+  if (isCancelledRun(runId)) throw new Error(t("error_cancelled"));
 
-            const durationSec = duration / 1000;
-            const scoreInM = (totalOps / durationSec / 1000000).toFixed(2);
-            setStatus('cpu', `${scoreInM} M/s`, 'done');
-            document.getElementById('res-cpu').innerHTML = `${scoreInM} <span class="text-xs font-normal text-slate-500">M/s</span>`;
-            return parseFloat(scoreInM);
-        }
+  const durationSec = duration / 1000;
+  const scoreInM = (totalOps / durationSec / 1000000).toFixed(2);
+  setStatus("cpu", `${scoreInM} M/s`, "done");
+  document.getElementById("res-cpu").innerHTML =
+    `${scoreInM} <span class="text-xs font-normal text-slate-500">M/s</span>`;
+  return parseFloat(scoreInM);
+}
 
-        // 2. 字串解析測試 (升級為 Worker)
+// 2. 字串解析測試 (升級為 Worker)

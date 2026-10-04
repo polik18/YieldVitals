@@ -32,28 +32,20 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test("page loads with all external dependencies intercepted", async ({
-  page,
-}) => {
+async function configureQuickRun(page, failure = null) {
   await page.goto("/");
-  await expect(page.locator("#startBtn")).toBeVisible();
-  expect(await page.evaluate(() => Boolean(window.Chart && window.THREE))).toBe(
-    true,
-  );
-});
-
-test("quick mode runs to completion and reveals JSON export", async ({
-  page,
-}) => {
-  await page.goto("/");
-  await page.evaluate(() => {
+  await page.evaluate((failureMode) => {
+    const productionGpuRunner = window.runThreeJSTest;
     MODE_SETTINGS.quick = {
       ...MODE_SETTINGS.quick,
       iterations: 1,
       cpuTime: 1,
       otherTime: 1,
       gpuTimeLimit: 1,
+      ...(failureMode === "gpu-cancel" ? { gpuMax: 1 } : {}),
+      ...(failureMode === "storage-timeout" ? { storageTimeoutMs: 80 } : {}),
     };
+    window.__terminatedWorkers = 0;
     window.runCPUMultiCore = async () => 900;
     window.runStringTest = async () => 20;
     window.runRAMTest = async () => 700;
@@ -68,9 +60,257 @@ test("quick mode runs to completion and reveals JSON export", async ({
       ul: 1000,
       ping: 10,
     });
-  });
+
+    if (failureMode === "string-error") {
+      window.runStringTest = async () => {
+        throw new Error("injected string failure");
+      };
+    }
+    if (failureMode === "gpu-unsupported") {
+      window.runThreeJSTest = productionGpuRunner;
+      window.supportsWebGL = () => false;
+    }
+    if (failureMode === "storage-timeout") {
+      window.runStorageTest = async () => {
+        activeBenchmarkScope.addCleanup(() => {
+          window.__storageCleanup = (window.__storageCleanup || 0) + 1;
+        });
+        activeBenchmarkScope.trackWorker({
+          terminate: () => window.__terminatedWorkers++,
+        });
+        return new Promise(() => {});
+      };
+    }
+    if (failureMode === "cpu-pending") {
+      window.runCPUMultiCore = async () => {
+        activeBenchmarkScope.trackWorker({
+          terminate: () => window.__terminatedWorkers++,
+        });
+        return new Promise(() => {});
+      };
+    }
+    if (failureMode === "network-pending") {
+      window.runNetworkTest = async () => {
+        const controller = createTrackedAbortController();
+        window.__networkSignal = controller.signal;
+        return new Promise((resolve, reject) => {
+          controller.signal.addEventListener(
+            "abort",
+            () => {
+              window.__networkAborted = controller.signal.aborted;
+              reject(new DOMException("aborted", "AbortError"));
+            },
+            { once: true },
+          );
+        });
+      };
+    }
+    if (failureMode === "gpu-cancel") {
+      window.runThreeJSTest = productionGpuRunner;
+      window.supportsWebGL = () => true;
+      const vector = () => ({ x: 0, y: 0, z: 0, set() {}, setScalar() {} });
+      class Scene {
+        constructor() {
+          this.children = [];
+        }
+        add(object) {
+          this.children.push(object);
+        }
+        remove(object) {
+          this.children = this.children.filter((item) => item !== object);
+        }
+      }
+      class Disposable {
+        dispose() {}
+      }
+      class Light extends Disposable {
+        constructor() {
+          super();
+          this.position = vector();
+          this.shadow = { mapSize: {} };
+        }
+      }
+      class InstancedMesh extends Disposable {
+        constructor() {
+          super();
+          this.rotation = vector();
+        }
+        setMatrixAt() {}
+      }
+      class DummyObject {
+        constructor() {
+          this.position = vector();
+          this.rotation = vector();
+          this.scale = vector();
+          this.matrix = {};
+        }
+        updateMatrix() {}
+      }
+      class Camera {
+        constructor() {
+          this.position = vector();
+        }
+        lookAt() {}
+      }
+      class Renderer {
+        constructor() {
+          this.domElement = document.createElement("canvas");
+          this.shadowMap = {};
+          window.__rendererNode = this.domElement;
+        }
+        setSize() {}
+        setPixelRatio() {}
+        render() {
+          window.__gpuFrameCount = (window.__gpuFrameCount || 0) + 1;
+        }
+        dispose() {
+          window.__rendererDisposed = (window.__rendererDisposed || 0) + 1;
+        }
+      }
+      class Mesh extends Disposable {
+        constructor() {
+          super();
+          this.rotation = vector();
+          this.position = vector();
+        }
+      }
+      class Color {
+        setHSL() {}
+      }
+      window.THREE = {
+        WebGLRenderer: Renderer,
+        PerspectiveCamera: Camera,
+        Scene,
+        FogExp2: class {},
+        AmbientLight: Light,
+        DirectionalLight: Light,
+        PointLight: Light,
+        IcosahedronGeometry: Disposable,
+        MeshPhongMaterial: Disposable,
+        InstancedMesh,
+        Object3D: DummyObject,
+        ShaderMaterial: Disposable,
+        PlaneGeometry: Disposable,
+        MeshStandardMaterial: Disposable,
+        TorusKnotGeometry: Disposable,
+        Mesh,
+        Vector2: class {},
+        Color,
+        PCFSoftShadowMap: 1,
+      };
+    }
+  }, failure);
+}
+
+test("page loads with all external dependencies intercepted", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#startBtn")).toBeVisible();
+  expect(await page.evaluate(() => Boolean(window.Chart && window.THREE))).toBe(
+    true,
+  );
+});
+
+test("quick mode runs to completion and reveals JSON export", async ({
+  page,
+}) => {
+  await configureQuickRun(page);
   await page.locator("#startBtn").click();
   await expect(page.locator("#exportJsonBtn")).not.toHaveClass(/hidden/, {
     timeout: 15000,
   });
+});
+
+test("one benchmark failure is isolated and later benchmarks still run", async ({
+  page,
+}) => {
+  await configureQuickRun(page, "string-error");
+  await page.locator("#startBtn").click();
+  await expect(page.locator("#exportJsonBtn")).not.toHaveClass(/hidden/);
+  await expect(page.locator("#res-string")).toContainText("N/A");
+  await expect(page.locator("#res-ram")).toContainText("700");
+  await expect(page.locator("#res-network")).toContainText("9000");
+  const results = await page.evaluate(() => lastJsonExport.results);
+  expect(results.string).toMatchObject({ status: "error", value: null });
+  expect(results.memory).toMatchObject({ status: "ok", value: 700 });
+});
+
+test("unsupported GPU is N/A and prevents a misleading overall score", async ({
+  page,
+}) => {
+  await configureQuickRun(page, "gpu-unsupported");
+  await page.locator("#startBtn").click();
+  await expect(page.locator("#exportJsonBtn")).not.toHaveClass(/hidden/);
+  await expect(page.locator("#res-gpu")).toContainText("N/A");
+  const report = await page.evaluate(() => lastJsonExport);
+  expect(report.results.gpu).toMatchObject({
+    status: "unsupported",
+    value: null,
+  });
+  expect(report.score).toBeNull();
+});
+
+test("timed-out storage is cleaned up and network still executes", async ({
+  page,
+}) => {
+  await configureQuickRun(page, "storage-timeout");
+  await page.locator("#startBtn").click();
+  await expect(page.locator("#exportJsonBtn")).not.toHaveClass(/hidden/);
+  await expect(page.locator("#res-storage")).toContainText("N/A");
+  await expect(page.locator("#res-network")).toContainText("9000");
+  expect(await page.evaluate(() => window.__terminatedWorkers)).toBe(1);
+  expect(await page.evaluate(() => window.__storageCleanup)).toBe(1);
+  const results = await page.evaluate(() => lastJsonExport.results);
+  expect(results.storage).toMatchObject({ status: "timeout", value: null });
+  expect(results.network).toMatchObject({ status: "ok", value: 9000 });
+});
+
+test("cancelling terminates active resources and permits an immediate clean run", async ({
+  page,
+}) => {
+  await configureQuickRun(page, "cpu-pending");
+  await page.locator("#startBtn").click();
+  await expect(page.locator("#cancelBtn")).not.toHaveClass(/hidden/);
+  await page.locator("#cancelBtn").click();
+  await expect(page.locator("#startBtn")).toBeEnabled();
+  expect(await page.evaluate(() => window.__terminatedWorkers)).toBe(1);
+  await page.evaluate(() => {
+    window.runCPUMultiCore = async () => 900;
+  });
+  await page.locator("#startBtn").click();
+  await expect(page.locator("#exportJsonBtn")).not.toHaveClass(/hidden/);
+  const results = await page.evaluate(() => lastJsonExport.results);
+  expect(results.cpu).toMatchObject({ status: "ok", value: 900 });
+});
+
+test("cancelling network aborts its active request controller", async ({
+  page,
+}) => {
+  await configureQuickRun(page, "network-pending");
+  await page.locator("#startBtn").click();
+  await expect
+    .poll(() => page.evaluate(() => Boolean(window.__networkSignal)))
+    .toBe(true);
+  const started = Date.now();
+  await page.locator("#cancelBtn").click();
+  await expect(page.locator("#startBtn")).toBeEnabled();
+  expect(await page.evaluate(() => window.__networkAborted)).toBe(true);
+  expect(Date.now() - started).toBeLessThan(250);
+});
+
+test("cancelling GPU work disposes its renderer and removes its canvas", async ({
+  page,
+}) => {
+  await configureQuickRun(page, "gpu-cancel");
+  await page.locator("#startBtn").click();
+  await expect
+    .poll(() => page.evaluate(() => (window.__gpuFrameCount || 0) > 0))
+    .toBe(true);
+  await page.locator("#cancelBtn").click();
+  expect(await page.evaluate(() => window.__rendererDisposed)).toBe(1);
+  expect(await page.evaluate(() => window.__rendererNode?.isConnected)).toBe(
+    false,
+  );
+  await expect(page.locator("#threeContainer")).toHaveClass(/hidden/);
 });

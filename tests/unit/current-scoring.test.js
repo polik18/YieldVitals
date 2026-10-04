@@ -14,6 +14,10 @@ describe("current scoring characterization", () => {
       new URL("../../js/core/state.js", import.meta.url),
       "utf8",
     );
+    const result = await readFile(
+      new URL("../../js/core/result.js", import.meta.url),
+      "utf8",
+    );
     const utils = await readFile(
       new URL("../../js/core/utils.js", import.meta.url),
       "utf8",
@@ -29,11 +33,22 @@ describe("current scoring characterization", () => {
       ),
     );
     window.eval(
-      `${state}\nradarChart = { data: { datasets: [{ data: [] }] }, update() {} };\n${utils}\n${scoring}\nwindow.__score = calculateFinalScore(${JSON.stringify(fixture)}); window.__axes = radarChart.data.datasets[0].data;`,
+      `${state}\n${result}\nradarChart = { data: { datasets: [{ data: [] }] }, update() {} };\n${utils}\n${scoring}\nwindow.__score = calculateFinalScore(${JSON.stringify(fixture)}); window.__axes = [...radarChart.data.datasets[0].data]; window.__incompleteScore = calculateFinalScore({...${JSON.stringify(fixture)}, gpu: createBenchmarkResult('gpu', 'unsupported')}); window.__incompleteAxes = radarChart.data.datasets[0].data;`,
     );
     const { __score: score, __axes: axes } = window;
     expect(score).toBe(62);
     expect(Array.from(axes)).toEqual([67, 50, 67, 67, 80, 33, 50, 86]);
+    expect(window.__incompleteScore).toBeNull();
+    expect(Array.from(window.__incompleteAxes)).toEqual([
+      67,
+      50,
+      67,
+      67,
+      80,
+      33,
+      null,
+      86,
+    ]);
     dom.window.close();
   });
 });

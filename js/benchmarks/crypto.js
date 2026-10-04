@@ -1,4 +1,4 @@
-        const cryptoWorkerCode = `
+const cryptoWorkerCode = `
             self.onmessage = async function(e) {
                 const duration = e.data.duration || 4000;
                 try {
@@ -46,44 +46,48 @@
             };
         `;
 
-        async function runCryptoTest(duration, runId) {
-            setStatus('crypto', t('status_running_crypto'), 'running');
-            const blob = new Blob([cryptoWorkerCode], { type: 'application/javascript' });
-            const workerUrl = URL.createObjectURL(blob);
+async function runCryptoTest(duration, runId, scope = activeBenchmarkScope) {
+  setStatus("crypto", t("status_running_crypto"), "running");
+  const blob = new Blob([cryptoWorkerCode], { type: "application/javascript" });
+  const workerUrl = URL.createObjectURL(blob);
+  registerRunCleanup(() => URL.revokeObjectURL(workerUrl), scope);
 
-            return new Promise((resolve, reject) => {
-                const worker = new Worker(workerUrl);
-                worker.onmessage = (e) => {
-                    worker.terminate();
-                    URL.revokeObjectURL(workerUrl);
-                    if (isCancelledRun(runId)) return reject(new Error(t('error_cancelled')));
+  return new Promise((resolve, reject) => {
+    const worker = createTrackedWorker(workerUrl, scope);
+    worker.onmessage = (e) => {
+      worker.terminate();
+      URL.revokeObjectURL(workerUrl);
+      if (isCancelledRun(runId)) return reject(new Error(t("error_cancelled")));
 
-                    if (e.data.success) {
-                        const mbPerSec = e.data.score;
-                        setStatus('crypto', `${mbPerSec} MB/s`, 'done');
-                        const resEl = document.getElementById('res-crypto');
+      if (e.data.success) {
+        const mbPerSec = e.data.score;
+        setStatus("crypto", `${mbPerSec} MB/s`, "done");
+        const resEl = document.getElementById("res-crypto");
 
-                        // 不再人工封頂，而是回傳 warning 標記
-                        if (mbPerSec > 10000) {
-                            resEl.innerHTML = `${mbPerSec} <span class="text-xs font-normal text-primary/60">MB/s</span>`;
-                            resEl.classList.replace('text-primary', 'text-yellow-400');
-                            document.getElementById('cryptoWarning').classList.remove('hidden');
-                            resolve({ value: mbPerSec, warning: '數值異常偏高，可能受瀏覽器快取或硬體加速影響' });
-                        } else {
-                            resEl.innerHTML = `${mbPerSec} <span class="text-xs font-normal text-primary/60">MB/s</span>`;
-                            resolve(mbPerSec);
-                        }
-                    } else {
-                        reject(new Error(e.data.error));
-                    }
-                };
-                worker.onerror = (e) => {
-                    worker.terminate();
-                    URL.revokeObjectURL(workerUrl);
-                    reject(new Error('WebCrypto ' + t('error_worker')));
-                };
-                worker.postMessage({ duration });
-            });
+        // 不再人工封頂，而是回傳 warning 標記
+        if (mbPerSec > 10000) {
+          resEl.innerHTML = `${mbPerSec} <span class="text-xs font-normal text-primary/60">MB/s</span>`;
+          resEl.classList.replace("text-primary", "text-yellow-400");
+          document.getElementById("cryptoWarning").classList.remove("hidden");
+          resolve({
+            value: mbPerSec,
+            warning: "數值異常偏高，可能受瀏覽器快取或硬體加速影響",
+          });
+        } else {
+          resEl.innerHTML = `${mbPerSec} <span class="text-xs font-normal text-primary/60">MB/s</span>`;
+          resolve(mbPerSec);
         }
+      } else {
+        reject(new Error(e.data.error));
+      }
+    };
+    worker.onerror = (e) => {
+      worker.terminate();
+      URL.revokeObjectURL(workerUrl);
+      reject(new Error("WebCrypto " + t("error_worker")));
+    };
+    worker.postMessage({ duration });
+  });
+}
 
-        // 7. Storage I/O 測試 (OPFS / IndexedDB Fallback)
+// 7. Storage I/O 測試 (OPFS / IndexedDB Fallback)
