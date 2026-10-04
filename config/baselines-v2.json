@@ -1,6 +1,6 @@
 {
-  "scoreVersion": "2.0.0-beta.1",
-  "baselineId": "yieldvitals-v2-provisional-2026-10",
+  "scoreVersion": "2.0.0-beta.2",
+  "baselineId": "yieldvitals-v2-provisional-p03-2026-10",
   "calibrated": false,
   "description": "Provisional, method-aware scoring anchors. Not a cross-device calibrated release baseline.",
   "axes": {
@@ -10,26 +10,26 @@
       "direction": "higher-is-better",
       "weight": 0.25,
       "validRange": { "min": 0, "max": 5000 },
-      "methodCompatibility": ["unspecified"],
+      "methodCompatibility": ["cpu-deterministic-int32-v1"],
       "anchorPoints": [
         { "value": 0, "score": 0 },
-        { "value": 900, "score": 50 },
-        { "value": 3240, "score": 95 },
-        { "value": 3600, "score": 100 }
+        { "value": 50, "score": 50 },
+        { "value": 180, "score": 95 },
+        { "value": 200, "score": 100 }
       ]
     },
     "string": {
       "metricId": "string",
-      "unit": "k ops",
+      "unit": "MiB/s",
       "direction": "higher-is-better",
       "weight": 0.1,
-      "validRange": { "min": 0, "max": 1000 },
-      "methodCompatibility": ["unspecified"],
+      "validRange": { "min": 0, "max": 10000 },
+      "methodCompatibility": ["json-parse-regex-v1"],
       "anchorPoints": [
         { "value": 0, "score": 0 },
-        { "value": 40, "score": 50 },
-        { "value": 144, "score": 95 },
-        { "value": 160, "score": 100 }
+        { "value": 500, "score": 50 },
+        { "value": 1800, "score": 95 },
+        { "value": 2000, "score": 100 }
       ]
     },
     "crypto": {
@@ -48,16 +48,16 @@
     },
     "memory": {
       "metricId": "memory",
-      "unit": "cyc/s",
+      "unit": "objects/s",
       "direction": "higher-is-better",
       "weight": 0.1,
-      "validRange": { "min": 0, "max": 10000 },
-      "methodCompatibility": ["unspecified"],
+      "validRange": { "min": 0, "max": 50000000 },
+      "methodCompatibility": ["js-object-allocation-v1"],
       "anchorPoints": [
         { "value": 0, "score": 0 },
-        { "value": 700, "score": 50 },
-        { "value": 2520, "score": 95 },
-        { "value": 2800, "score": 100 }
+        { "value": 150000, "score": 50 },
+        { "value": 900000, "score": 95 },
+        { "value": 1000000, "score": 100 }
       ]
     },
     "storage": {

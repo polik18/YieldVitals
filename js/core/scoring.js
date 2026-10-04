@@ -14,7 +14,14 @@ async function runWithSampling(
     scope?.throwIfAborted();
     if (isCancelledRun(runId)) throw new Error(t("error_cancelled"));
     let res = await testFn(durationPerIter, runId, scope);
-    let val = typeof res === "object" ? res.value || res.score || res : res;
+    let val =
+      res && typeof res === "object"
+        ? Number.isFinite(res.value)
+          ? res.value
+          : Number.isFinite(res.score)
+            ? res.score
+            : res
+        : res;
     results.push(val);
     fullResults.push(res);
     if (iterations > 1 && i < iterations - 1) {
@@ -42,11 +49,11 @@ async function runWithSampling(
     formattedVal = Number(finalVal).toFixed(2);
   }
   if (name === "string") {
-    unit = "k ops";
-    formattedVal = Number(finalVal).toFixed(1);
+    unit = "MiB/s";
+    formattedVal = Number(finalVal).toFixed(2);
   }
   if (name === "ram") {
-    unit = "cyc/s";
+    unit = "objects/s";
     formattedVal = Math.round(finalVal);
   }
   if (name === "dom") {
@@ -158,7 +165,10 @@ async function runWithSampling(
     samples: results,
     durationMs: performance.now() - samplingStartedAt,
     method: firstObject?.method ?? null,
-    details: firstObject?.warning ? { warning: firstObject.warning } : {},
+    details: {
+      ...(firstObject?.details ?? {}),
+      ...(firstObject?.warning ? { warning: firstObject.warning } : {}),
+    },
   };
 }
 

@@ -1,24 +1,62 @@
-const stringWorkerCode = `
-            self.onmessage = function(e) {
-                const duration = e.data.duration || 1000;
-                const start = performance.now();
-                let ops = 0;
-                const objStr = '{"id":1,"val":"testbenchmarkstring"}';
-                const baseLen = 500; // 动態長度防止 V8 JIT 過度快取
-                const regex = /"val":"([^"]+)"/g;
-
-                while(performance.now() - start < duration) {
-                    // 加入動態長度鹽値，防止 JSON.parse 結果被 JIT 完全快取
-                    const len = baseLen + (ops % 5);
-                    const tail = ',{"id":' + ops + ',"val":"dyn' + (ops % 97) + '"}';
-                    const jsonStr = '{"data":[' + (objStr + ',').repeat(len).slice(0, -1) + tail + ']}';
-                    JSON.parse(jsonStr);
-                    jsonStr.match(regex);
-                    ops++;
-                }
-                self.postMessage({ ops, durationSec: duration / 1000 });
-            };
-        `;
+const stringWorkerCode =
+  `
+  self.onmessage = function(event) {
+    if (event.data.type === "prepare") {
+      const records = Array.from({ length: 256 }, (_, id) => ({
+        id,
+        name: ` +
+  "`record-${String(id).padStart(4, '0')}`" +
+  `,
+        value: id * 17 + 3,
+      }));
+      const payload = JSON.stringify({ fixtureVersion: "json-regex-fixture-v1", records });
+      const byteLength = new TextEncoder().encode(payload).byteLength;
+      JSON.parse(payload);
+      const expectedFieldsPerDocument = payload.match(/"(?:id|name|value)":/g).length;
+      self.postMessage({ type: "ready", payload, byteLength, recordCount: records.length, expectedFieldsPerDocument });
+      return;
+    }
+    if (event.data.type !== "start") return;
+    const { payload, byteLength, recordCount, expectedFieldsPerDocument } = event.data;
+    const parseStarted = performance.now();
+    let documents = 0;
+    let parseChecksum = 0;
+    while (performance.now() - parseStarted < event.data.duration) {
+      const parsed = JSON.parse(payload);
+      parseChecksum = (parseChecksum + parsed.records[0].id + parsed.records.at(-1).value) >>> 0;
+      documents++;
+    }
+    const parseElapsedMs = performance.now() - parseStarted;
+    const regex = /"(?:id|name|value)":/g;
+    const regexStarted = performance.now();
+    let matchedFields = 0;
+    let regexChecksum = 0;
+    let measuredFieldsPerDocument = 0;
+    while (performance.now() - regexStarted < event.data.duration) {
+      regex.lastIndex = 0;
+      let match;
+      while ((match = regex.exec(payload)) !== null) {
+        matchedFields++;
+        regexChecksum = (regexChecksum + match[0].length) >>> 0;
+      }
+      if (measuredFieldsPerDocument === 0) measuredFieldsPerDocument = matchedFields;
+    }
+    const regexElapsedMs = performance.now() - regexStarted;
+    self.postMessage({
+      byteLength,
+      recordCount,
+      documents,
+      parseElapsedMs,
+      parseMiBPerSec: (documents * byteLength / (parseElapsedMs / 1000)) / (1024 * 1024),
+      parseChecksum,
+      fieldsPerSec: matchedFields / (regexElapsedMs / 1000),
+      regexElapsedMs,
+      regexChecksum,
+      expectedFieldsPerDocument,
+      measuredFieldsPerDocument,
+    });
+  };
+`;
 
 async function runStringTest(duration, runId, scope = activeBenchmarkScope) {
   setStatus("string", t("status_running_string"), "running");
@@ -28,22 +66,49 @@ async function runStringTest(duration, runId, scope = activeBenchmarkScope) {
 
   return new Promise((resolve, reject) => {
     const worker = createTrackedWorker(workerUrl, scope);
-    worker.onmessage = (e) => {
+    worker.onmessage = (event) => {
+      if (event.data.type === "ready") {
+        worker.postMessage({ ...event.data, type: "start", duration });
+        return;
+      }
       worker.terminate();
       URL.revokeObjectURL(workerUrl);
       if (isCancelledRun(runId)) return reject(new Error(t("error_cancelled")));
-      const scoreK = (e.data.ops / e.data.durationSec / 1000).toFixed(1);
-      setStatus("string", `${scoreK}k ops`, "done");
+      const result = event.data;
+      if (
+        result.expectedFieldsPerDocument !== 768 ||
+        result.measuredFieldsPerDocument !== result.expectedFieldsPerDocument ||
+        result.documents < 1
+      )
+        return reject(new Error("String benchmark fixture checksum mismatch"));
+      const throughput = Number(result.parseMiBPerSec.toFixed(2));
+      setStatus("string", `${throughput} MiB/s`, "done");
       document.getElementById("res-string").innerHTML =
-        `${scoreK} <span class="text-xs font-normal text-slate-500">k ops</span>`;
-      resolve(parseFloat(scoreK));
+        `${throughput} <span class="text-xs font-normal text-slate-500">MiB/s</span>`;
+      resolve({
+        value: throughput,
+        method: "json-parse-regex-v1",
+        samples: [throughput],
+        durationMs: result.parseElapsedMs + result.regexElapsedMs,
+        details: {
+          workloadVersion: "json-regex-fixture-v1",
+          payloadBytes: result.byteLength,
+          documentCount: result.documents,
+          documentsPerSecond: result.documents / (result.parseElapsedMs / 1000),
+          regexFieldsPerSecond: result.fieldsPerSec,
+          parseChecksum: result.parseChecksum,
+          regexChecksum: result.regexChecksum,
+          parseElapsedMs: result.parseElapsedMs,
+          regexElapsedMs: result.regexElapsedMs,
+        },
+      });
     };
     worker.onerror = (err) => {
       worker.terminate();
       URL.revokeObjectURL(workerUrl);
       reject(err);
     };
-    worker.postMessage({ duration });
+    worker.postMessage({ type: "prepare" });
   });
 }
 

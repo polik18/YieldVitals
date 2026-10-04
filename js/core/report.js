@@ -15,8 +15,8 @@ function generateReportText(results, finalScore, rel, modeLabel, diag) {
   text += `${t("report_reliability")}：${rel.score} (${rel.reason})\n\n`;
   text += `${t("report_details")}\n`;
   text += `- ${t("cpu_calc")}: ${formatMetric(results.cpu, "M/s", 2)}\n`;
-  text += `- ${t("string_parse")}: ${formatMetric(results.string, "k ops")}\n`;
-  text += `- ${t("ram_gc")}: ${formatMetric(results.memory, "cyc/s", 0)}\n`;
+  text += `- ${t("string_parse")}: ${formatMetric(results.string, "MiB/s", 2)}\n`;
+  text += `- ${t("ram_gc")}: ${formatMetric(results.memory, "objects/s", 0)}\n`;
   text += `- ${t("dom_layout")}: ${formatMetric(results.dom, "ops/s", 0)}\n`;
   text += `- ${t("canvas2d_render")}: ${formatMetric(results.canvas2d, "draw calls/s", 0)}\n`;
 

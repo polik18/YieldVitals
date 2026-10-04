@@ -1,5 +1,5 @@
 function getBenchmarkDefinitions(config, runId) {
-  const iterations = config.iterations || 1;
+  const iterations = Math.max(3, config.iterations || 1);
   return [
     {
       id: "cpu",
@@ -18,8 +18,8 @@ function getBenchmarkDefinitions(config, runId) {
     },
     {
       id: "string",
-      unit: "k ops",
-      timeout: config.otherTime * iterations + 5000,
+      unit: "MiB/s",
+      timeout: config.otherTime * iterations * 2 + 5000,
       run: (scope) =>
         runWithSampling(
           "string",
@@ -34,8 +34,8 @@ function getBenchmarkDefinitions(config, runId) {
     {
       id: "memory",
       uiId: "ram",
-      unit: "cyc/s",
-      timeout: config.otherTime * iterations + 5000,
+      unit: "objects/s",
+      timeout: config.memoryTimeoutMs ?? config.otherTime * iterations + 5000,
       run: (scope) =>
         runWithSampling(
           "ram",
@@ -142,7 +142,7 @@ function updateBenchmarkResult(definition, result) {
   }
 }
 
-async function runOneBenchmark(definition, runContext, runId) {
+async function runOneBenchmark(definition, runContext, runId, baselineId) {
   if (runContext.signal.aborted) {
     return createBenchmarkResult(definition.id, "skipped", {
       error: "Run cancelled before benchmark started",
@@ -163,14 +163,49 @@ async function runOneBenchmark(definition, runContext, runId) {
     const measurement = getBenchmarkResultValue(raw);
     if (!Number.isFinite(measurement.value))
       throw new Error(`No valid numeric value returned by ${definition.id}`);
+    const sampleValues = measurement.samples ?? [measurement.value];
+    const sortedSamples = [...sampleValues]
+      .filter(Number.isFinite)
+      .sort((a, b) => a - b);
+    const median = sortedSamples.length
+      ? sortedSamples[Math.floor(sortedSamples.length / 2)]
+      : null;
+    const deviations =
+      median === null
+        ? []
+        : sortedSamples
+            .map((sample) => Math.abs(sample - median))
+            .sort((a, b) => a - b);
+    const mad = deviations.length
+      ? deviations[Math.floor(deviations.length / 2)]
+      : null;
+    const mean = sortedSamples.length
+      ? sortedSamples.reduce((sum, sample) => sum + sample, 0) /
+        sortedSamples.length
+      : null;
+    const standardDeviation =
+      mean === null
+        ? null
+        : Math.sqrt(
+            sortedSamples.reduce(
+              (sum, sample) => sum + (sample - mean) ** 2,
+              0,
+            ) / sortedSamples.length,
+          );
+    const statistics = {
+      sampleCount: sortedSamples.length,
+      median,
+      mad,
+      cvPercent: mean ? (standardDeviation / mean) * 100 : null,
+    };
     const result = createBenchmarkResult(definition.id, "ok", {
       value: measurement.value,
       unit: definition.unit,
       method: measurement.method ?? null,
-      samples: measurement.samples ?? [measurement.value],
+      samples: sampleValues,
       durationMs: measurement.durationMs ?? performance.now() - startedAt,
-      details: measurement.details,
-      metadata: { runId, baselineId: "yieldvitals-v2-provisional-2026-10" },
+      details: { ...measurement.details, statistics },
+      metadata: { runId, baselineId },
     });
     validateBenchmarkResult(result);
     if (!isCancelledRun(runId)) updateBenchmarkResult(definition, result);
@@ -191,7 +226,7 @@ async function runOneBenchmark(definition, runContext, runId) {
     const result = createBenchmarkResult(definition.id, status, {
       error: error?.message || String(error),
       durationMs: performance.now() - startedAt,
-      metadata: { runId, baselineId: "yieldvitals-v2-provisional-2026-10" },
+      metadata: { runId, baselineId },
     });
     if (!isCancelledRun(runId)) updateBenchmarkResult(definition, result);
     return result;
@@ -286,6 +321,7 @@ document
     let myRunId = null;
 
     try {
+      const scoringModel = await SCORING_MODEL_READY;
       currentRunId++; // Start a new run
       myRunId = currentRunId;
       const runContext = new RunContext(myRunId);
@@ -301,6 +337,7 @@ document
           definition,
           runContext,
           myRunId,
+          scoringModel.baselineId,
         );
         if (runContext.signal.aborted) break;
       }
@@ -319,7 +356,6 @@ document
 
       // 結算與渲染 (包含被中途腰斬但已有部分分數的狀態)
       if (!isCancelledRun(myRunId)) {
-        const scoringModel = await SCORING_MODEL_READY;
         const scoreResult = scoringModel.scoreRun(results);
         const finalScore = scoreResult.overallScore;
         if (radarChart) {

@@ -15,10 +15,10 @@ function createScoringModel(configuration) {
     }
     if (axisId === "storage" && !axis.methodCompatibility.includes(method))
       return { score: null, reason: "method-mismatch" };
+    const compatibleMethod = method ?? "unspecified";
     if (
       axisId !== "storage" &&
-      method &&
-      !axis.methodCompatibility.includes(method)
+      !axis.methodCompatibility.includes(compatibleMethod)
     )
       return { score: null, reason: "method-mismatch" };
     const anchors = axis.methods?.[method] ?? axis.anchorPoints;
@@ -88,7 +88,14 @@ function createScoringModel(configuration) {
     };
   }
 
-  return Object.freeze({ axisIds, normalizeMetric, scoreRun });
+  return Object.freeze({
+    axisIds,
+    scoreVersion: configuration.scoreVersion,
+    baselineId: configuration.baselineId,
+    calibrated: configuration.calibrated,
+    normalizeMetric,
+    scoreRun,
+  });
 }
 
 function getScoreDiagnostics(overallScore, axisScores) {

@@ -14,7 +14,7 @@ window.YIELDVITALS_LOCALES["en"] = {
   "subtasks": "Test Subtasks Progress",
   "cpu_calc": "Logic Computing (CPU)",
   "string_parse": "Deep String Parsing",
-  "ram_gc": "Memory GC Pressure",
+  "ram_gc": "JavaScript Allocation & GC Pressure",
   "dom_layout": "DOM Layout Repaint",
   "gpu_webgl": "WebGL Rendering",
   "crypto_throughput": "WebCrypto Throughput",

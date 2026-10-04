@@ -20,7 +20,12 @@ function makeRun(valueAt, methodOverrides = {}) {
   return Object.fromEntries(
     Object.entries(config.axes).map(([axisId, axis]) => {
       const method =
-        methodOverrides[axisId] ?? (axisId === "storage" ? "OPFS" : null);
+        methodOverrides[axisId] ??
+        (axisId === "storage"
+          ? "OPFS"
+          : axis.methodCompatibility[0] === "unspecified"
+            ? null
+            : axis.methodCompatibility[0]);
       const anchors = axis.methods?.[method] ?? axis.anchorPoints;
       return [
         axisId,

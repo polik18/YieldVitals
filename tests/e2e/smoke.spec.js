@@ -46,14 +46,26 @@ async function configureQuickRun(page, failure = null) {
       ...(failureMode === "storage-timeout" ? { storageTimeoutMs: 80 } : {}),
     };
     window.__terminatedWorkers = 0;
-    window.runCPUMultiCore = async () => 900;
-    window.runStringTest = async () => 20;
-    window.runRAMTest = async () => 700;
+    window.runCPUMultiCore = async () => ({
+      value: 900,
+      method: "cpu-deterministic-int32-v1",
+    });
+    window.runStringTest = async () => ({
+      value: 20,
+      method: "json-parse-regex-v1",
+    });
+    window.runRAMTest = async () => ({
+      value: 700,
+      method: "js-object-allocation-v1",
+    });
     window.runDOMTest = async () => 1000;
-    window.runCanvas2DTest = async () => 15000;
+    window.runCanvas2DTest = async () => ({
+      value: 15000,
+      method: "OffscreenCanvas",
+    });
     window.runThreeJSTest = async () => 750;
     window.runCryptoTest = async () => 3000;
-    window.runStorageTest = async () => 3000;
+    window.runStorageTest = async () => ({ value: 3000, method: "OPFS" });
     window.runNetworkTest = async () => ({
       value: 9000,
       dl: 9000,
@@ -212,6 +224,101 @@ test("page loads with all external dependencies intercepted", async ({
   );
 });
 
+test("real CPU, string, and bounded-allocation workers report auditable samples", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.evaluate(() => {
+    MODE_SETTINGS.quick = {
+      ...MODE_SETTINGS.quick,
+      iterations: 3,
+      cpuTime: 20,
+      otherTime: 20,
+      gpuTimeLimit: 20,
+    };
+    window.runRAMTest = async () => ({
+      value: 700,
+      method: "js-object-allocation-v1",
+    });
+    window.runDOMTest = async () => 1000;
+    window.runCanvas2DTest = async () => ({
+      value: 15000,
+      method: "OffscreenCanvas",
+    });
+    window.runThreeJSTest = async () => 750;
+    window.runCryptoTest = async () => 3000;
+    window.runStorageTest = async () => ({ value: 3000, method: "OPFS" });
+    window.runNetworkTest = async () => ({ value: 10, dl: 10, ul: 5, ping: 1 });
+  });
+  await page.locator("#startBtn").click();
+  await expect(page.locator("#exportJsonBtn")).not.toHaveClass(/hidden/, {
+    timeout: 15000,
+  });
+  const results = await page.evaluate(() => lastJsonExport.results);
+  expect(results.cpu).toMatchObject({
+    status: "ok",
+    method: "cpu-deterministic-int32-v1",
+    workloadVersion: "cpu-int32-hash-v1",
+    statistics: { sampleCount: 3 },
+  });
+  expect(results.cpu.checksum).toEqual(expect.any(Number));
+  expect(results.cpu.samples).toHaveLength(3);
+  expect(results.string).toMatchObject({
+    status: "ok",
+    method: "json-parse-regex-v1",
+    workloadVersion: "json-regex-fixture-v1",
+    statistics: { sampleCount: 3 },
+  });
+  expect(results.string.payloadBytes).toBeGreaterThan(0);
+  expect(results.string.regexFieldsPerSecond).toBeGreaterThan(0);
+});
+
+test("real bounded-allocation worker reports its batch limit and sample statistics", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.evaluate(() => {
+    MODE_SETTINGS.quick = {
+      ...MODE_SETTINGS.quick,
+      iterations: 3,
+      cpuTime: 5,
+      otherTime: 10,
+      gpuTimeLimit: 5,
+      memoryTimeoutMs: 15000,
+    };
+    window.runCPUMultiCore = async () => ({
+      value: 900,
+      method: "cpu-deterministic-int32-v1",
+    });
+    window.runStringTest = async () => ({
+      value: 20,
+      method: "json-parse-regex-v1",
+    });
+    window.runDOMTest = async () => 1000;
+    window.runCanvas2DTest = async () => ({
+      value: 15000,
+      method: "OffscreenCanvas",
+    });
+    window.runThreeJSTest = async () => 750;
+    window.runCryptoTest = async () => 3000;
+    window.runStorageTest = async () => ({ value: 3000, method: "OPFS" });
+    window.runNetworkTest = async () => ({ value: 10, dl: 10, ul: 5, ping: 1 });
+  });
+  await page.locator("#startBtn").click();
+  await expect(page.locator("#exportJsonBtn")).not.toHaveClass(/hidden/, {
+    timeout: 15000,
+  });
+  const result = await page.evaluate(() => lastJsonExport.results.memory);
+  expect(result).toMatchObject({
+    status: "ok",
+    method: "js-object-allocation-v1",
+    workloadVersion: "bounded-object-allocation-v1",
+    statistics: { sampleCount: 3 },
+  });
+  expect(result.batchSize).toBe(256);
+  expect(result.allocatedObjects).toBeGreaterThan(0);
+});
+
 test("quick mode runs to completion and reveals JSON export", async ({
   page,
 }) => {
@@ -222,15 +329,15 @@ test("quick mode runs to completion and reveals JSON export", async ({
   });
   const report = await page.evaluate(() => lastJsonExport);
   expect(report).toMatchObject({
-    scoreVersion: "2.0.0-beta.1",
-    baselineId: "yieldvitals-v2-provisional-2026-10",
+    scoreVersion: "2.0.0-beta.2",
+    baselineId: "yieldvitals-v2-provisional-p03-2026-10",
     calibrated: false,
   });
+  expect(report.results.cpu.metadata.baselineId).toBe(report.baselineId);
+  expect(report.results.cpu.statistics.sampleCount).toBe(3);
+  expect(report.results.cpu.samples).toHaveLength(3);
   expect(report.axisScores).toHaveProperty("canvas2d");
-  expect(report.rejectedMetrics).toContainEqual({
-    metricId: "storage",
-    reason: "method-mismatch",
-  });
+  expect(report.rejectedMetrics).toEqual([]);
 });
 
 test("one benchmark failure is isolated and later benchmarks still run", async ({

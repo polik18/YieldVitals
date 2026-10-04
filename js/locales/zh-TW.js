@@ -14,7 +14,7 @@ window.YIELDVITALS_LOCALES["zh-TW"] = {
   "subtasks": "測試子項目進度",
   "cpu_calc": "邏輯運算 (CPU)",
   "string_parse": "深度字串解析",
-  "ram_gc": "記憶體 GC 壓力",
+  "ram_gc": "JavaScript 物件配置與 GC 壓力",
   "dom_layout": "DOM 佈局重繪",
   "gpu_webgl": "WebGL 圖形渲染",
   "crypto_throughput": "WebCrypto 吞吐",

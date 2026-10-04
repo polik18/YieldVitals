@@ -14,7 +14,7 @@ window.YIELDVITALS_LOCALES["zh-CN"] = {
   "subtasks": "测试子任务进度",
   "cpu_calc": "逻辑计算（CPU）",
   "string_parse": "深度字符串解析",
-  "ram_gc": "内存GC压力",
+  "ram_gc": "JavaScript 对象分配与 GC 压力",
   "dom_layout": "DOM 布局重绘",
   "gpu_webgl": "WebGL 渲染",
   "crypto_throughput": "Web加密吞吐量",
