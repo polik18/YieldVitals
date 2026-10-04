@@ -1,6 +1,6 @@
 {
-  "scoreVersion": "2.0.0-beta.2",
-  "baselineId": "yieldvitals-v2-provisional-p03-2026-10",
+  "scoreVersion": "2.0.0-beta.3",
+  "baselineId": "yieldvitals-v2-provisional-p03-dom-canvas-2026-10",
   "calibrated": false,
   "description": "Provisional, method-aware scoring anchors. Not a cross-device calibrated release baseline.",
   "axes": {
@@ -88,7 +88,7 @@
       "direction": "higher-is-better",
       "weight": 0.1,
       "validRange": { "min": 0, "max": 100000 },
-      "methodCompatibility": ["unspecified"],
+      "methodCompatibility": ["dom-forced-layout-v1"],
       "anchorPoints": [
         { "value": 0, "score": 0 },
         { "value": 4000, "score": 50 },
@@ -102,7 +102,10 @@
       "direction": "higher-is-better",
       "weight": 0.2,
       "validRange": { "min": 0, "max": 1000 },
-      "methodCompatibility": ["unspecified"],
+      "methodCompatibility": [
+        "webgl-adaptive-shadow-v1",
+        "webgl-adaptive-no-shadow-v1"
+      ],
       "anchorPoints": [
         { "value": 0, "score": 0 },
         { "value": 500, "score": 50 },
@@ -116,7 +119,7 @@
       "direction": "higher-is-better",
       "weight": 0.1,
       "validRange": { "min": 0, "max": 5000000 },
-      "methodCompatibility": ["OffscreenCanvas"],
+      "methodCompatibility": ["canvas2d-offscreen-draw-v2"],
       "anchorPoints": [
         { "value": 0, "score": 0 },
         { "value": 500000, "score": 50 },

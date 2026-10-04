@@ -15,7 +15,7 @@ window.YIELDVITALS_LOCALES["en"] = {
   "cpu_calc": "Logic Computing (CPU)",
   "string_parse": "Deep String Parsing",
   "ram_gc": "JavaScript Allocation & GC Pressure",
-  "dom_layout": "DOM Layout Repaint",
+  "dom_layout": "DOM Forced Layout",
   "gpu_webgl": "WebGL Rendering",
   "crypto_throughput": "WebCrypto Throughput",
   "storage_io": "Local Storage I/O",

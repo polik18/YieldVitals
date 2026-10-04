@@ -2,43 +2,46 @@ const canvas2dWorkerCode = `
             self.onmessage = function(e) {
                 const duration = e.data.duration || 1000;
                 const useOffscreen = typeof OffscreenCanvas !== 'undefined';
-                let ops = 0;
-                const start = performance.now();
-
-                if (useOffscreen) {
-                    const canvas = new OffscreenCanvas(800, 600);
-                    const ctx = canvas.getContext('2d');
-                    while (performance.now() - start < duration) {
-                        for (let i = 0; i < 100; i++) {
-                            // Deterministic values prevent JIT over-optimisation
-                            ctx.fillStyle = 'hsl(' + ((ops * 7 + i * 37) % 360) + ',85%,55%)';
-                            ctx.beginPath();
-                            ctx.arc(
-                                (ops * 13 + i * 79) % 800,
-                                (ops * 17 + i * 53) % 600,
-                                8 + (i % 42),
-                                0, Math.PI * 2
-                            );
-                            ctx.fill();
-                        }
-                        ops++;
-                    }
-                    const durationSec = (performance.now() - start) / 1000;
-                    self.postMessage({ ops, durationSec, method: 'OffscreenCanvas' });
-                } else {
-                    // Fallback: pure computation (pixel math without canvas)
-                    let sum = 0;
-                    while (performance.now() - start < duration) {
-                        for (let i = 0; i < 100; i++) {
-                            const x = (ops * 13 + i * 79) % 800;
-                            const y = (ops * 17 + i * 53) % 600;
-                            sum += Math.sqrt(x * x + y * y);
-                        }
-                        ops++;
-                    }
-                    const durationSec = (performance.now() - start) / 1000;
-                    self.postMessage({ ops, durationSec, sum, method: 'Fallback' });
+                if (!useOffscreen) {
+                    self.postMessage({ method: 'unsupported' });
+                    return;
                 }
+                const canvasWidth = 800;
+                const canvasHeight = 600;
+                const canvas = new OffscreenCanvas(canvasWidth, canvasHeight);
+                const ctx = canvas.getContext('2d');
+                if (!ctx) {
+                    self.postMessage({ method: 'unsupported' });
+                    return;
+                }
+                const drawOne = (operation) => {
+                    ctx.fillStyle = 'hsl(' + ((operation * 7 + 37) % 360) + ',85%,55%)';
+                    ctx.beginPath();
+                    ctx.arc((operation * 13 + 79) % canvasWidth,
+                        (operation * 17 + 53) % canvasHeight,
+                        8 + (operation % 42), 0, Math.PI * 2);
+                    ctx.fill();
+                };
+                const warmupUntil = performance.now() + 100;
+                let operation = 0;
+                while (performance.now() < warmupUntil) drawOne(operation++);
+                operation = 0;
+                const start = performance.now();
+                while (performance.now() - start < duration) drawOne(operation++);
+                const elapsedMs = performance.now() - start;
+                const pixels = ctx.getImageData(0, 0, canvasWidth, canvasHeight).data;
+                let checksum = 0;
+                for (let index = 0; index < pixels.length; index += 97)
+                    checksum = (checksum + pixels[index] + index) >>> 0;
+                self.postMessage({
+                    operations: operation,
+                    elapsedMs,
+                    checksum,
+                    canvasWidth,
+                    canvasHeight,
+                    method: 'canvas2d-offscreen-draw-v2',
+                    workloadVersion: 'fixed-canvas-arcs-v2'
+                });
             };
         `;
 
@@ -56,7 +59,7 @@ async function runCanvas2DTest(duration, runId, scope = activeBenchmarkScope) {
       worker.terminate();
       URL.revokeObjectURL(workerUrl);
       if (isCancelledRun(runId)) return reject(new Error(t("error_cancelled")));
-      if (e.data.method !== "OffscreenCanvas") {
+      if (e.data.method !== "canvas2d-offscreen-draw-v2") {
         reject(
           new BenchmarkError(
             "unsupported",
@@ -65,12 +68,24 @@ async function runCanvas2DTest(duration, runId, scope = activeBenchmarkScope) {
         );
         return;
       }
-      // One beginPath/arc/fill batch represents one draw call.
-      const score = Math.round((e.data.ops * 100) / e.data.durationSec);
+      const score = Math.round((e.data.operations * 1000) / e.data.elapsedMs);
       setStatus("canvas2d", `${score} draw calls/s`, "done");
       document.getElementById("res-canvas2d").innerHTML =
         `${score} <span class="text-xs font-normal text-slate-500">draw calls/s</span>`;
-      resolve({ value: score, method: e.data.method });
+      resolve({
+        value: score,
+        method: e.data.method,
+        samples: [score],
+        durationMs: e.data.elapsedMs,
+        details: {
+          workloadVersion: e.data.workloadVersion,
+          drawCallCount: e.data.operations,
+          canvasWidth: e.data.canvasWidth,
+          canvasHeight: e.data.canvasHeight,
+          devicePixelRatio: 1,
+          pixelChecksum: e.data.checksum,
+        },
+      });
     };
     worker.onerror = (err) => {
       worker.terminate();
@@ -150,11 +165,11 @@ async function runThreeJSTest(config, runId, scope = activeBenchmarkScope) {
         antialias: false,
         powerPreference: "high-performance",
       });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      // Apple Metal: cap pixel ratio at 1 to prevent VRAM exhaustion / context loss
-      renderer.setPixelRatio(
-        isAppleMetal ? 1 : window.devicePixelRatio > 1 ? 1.5 : 1,
-      );
+      // Keep the workload independent of viewport and device-pixel ratio.
+      const renderWidth = 640;
+      const renderHeight = 480;
+      renderer.setPixelRatio(1);
+      renderer.setSize(renderWidth, renderHeight, false);
       // Disable shadow maps on Apple ANGLE to avoid Metal driver instability
       renderer.shadowMap.enabled = !isAppleMetal;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -171,7 +186,7 @@ async function runThreeJSTest(config, runId, scope = activeBenchmarkScope) {
 
       camera = new THREE.PerspectiveCamera(
         75,
-        window.innerWidth / window.innerHeight,
+        renderWidth / renderHeight,
         0.1,
         1000,
       );
@@ -332,7 +347,7 @@ async function runThreeJSTest(config, runId, scope = activeBenchmarkScope) {
           p2Uniforms = {
             uTime: { value: 0 },
             uResolution: {
-              value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+              value: new THREE.Vector2(renderWidth, renderHeight),
             },
             uIters: { value: p2Iters },
           };
@@ -484,7 +499,21 @@ async function runThreeJSTest(config, runId, scope = activeBenchmarkScope) {
       document.getElementById("res-gpu").innerHTML =
         `${unifiedScore} <span class="text-xs font-normal text-slate-500">Pts</span>`;
 
-      resolve({ value: unifiedScore, onePercentLow: unifiedScore });
+      resolve({
+        value: unifiedScore,
+        onePercentLow: unifiedScore,
+        method: isAppleMetal
+          ? "webgl-adaptive-no-shadow-v1"
+          : "webgl-adaptive-shadow-v1",
+        details: {
+          workloadVersion: "three-phase-adaptive-v1",
+          renderWidth,
+          renderHeight,
+          devicePixelRatio: 1,
+          shadowMapsEnabled: !isAppleMetal,
+          measurement: "adaptive-vsync-capacity-proxy",
+        },
+      });
     } catch (e) {
       cleanup();
       reject(e);

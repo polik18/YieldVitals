@@ -42,4 +42,33 @@ describe("P03 deterministic and bounded workload foundations", () => {
     expect(workerSource).toContain("batchSize: 256");
     expect(workerSource).not.toContain("new Array(10000)");
   });
+
+  it("uses a fixed DOM tree and reports forced-layout method and checksum", async () => {
+    const code = await source("../../js/benchmarks/dom.js");
+    expect(code).toContain('"dom-fixed-tree-forced-layout-v1"');
+    expect(code).toContain('method: "dom-forced-layout-v1"');
+    expect(code).toContain("box.replaceChildren(...nodes)");
+    expect(code).toContain("node.offsetWidth + node.offsetHeight");
+    expect(code).not.toContain("box.innerHTML = `<div style=");
+  });
+
+  it("uses a fixed OffscreenCanvas workload with warmup and pixel checksum", async () => {
+    const code = await source("../../js/benchmarks/gpu.js");
+    expect(code).toContain("fixed-canvas-arcs-v2");
+    expect(code).toContain("canvas2d-offscreen-draw-v2");
+    expect(code).toContain("new OffscreenCanvas(canvasWidth, canvasHeight)");
+    expect(code).toContain("ctx.getImageData(0, 0, canvasWidth, canvasHeight)");
+    expect(code).toContain("devicePixelRatio: 1");
+    expect(code).not.toContain("method: 'Fallback'");
+  });
+
+  it("fixes WebGL resolution while exposing its still-adaptive measurement method", async () => {
+    const code = await source("../../js/benchmarks/gpu.js");
+    expect(code).toContain("const renderWidth = 640");
+    expect(code).toContain("const renderHeight = 480");
+    expect(code).toContain('"webgl-adaptive-shadow-v1"');
+    expect(code).toContain('"webgl-adaptive-no-shadow-v1"');
+    expect(code).toContain('measurement: "adaptive-vsync-capacity-proxy"');
+    expect(code).toContain("for (let i = 0; i < p1Max; i++)");
+  });
 });

@@ -58,12 +58,18 @@ async function configureQuickRun(page, failure = null) {
       value: 700,
       method: "js-object-allocation-v1",
     });
-    window.runDOMTest = async () => 1000;
+    window.runDOMTest = async () => ({
+      value: 1000,
+      method: "dom-forced-layout-v1",
+    });
     window.runCanvas2DTest = async () => ({
       value: 15000,
-      method: "OffscreenCanvas",
+      method: "canvas2d-offscreen-draw-v2",
     });
-    window.runThreeJSTest = async () => 750;
+    window.runThreeJSTest = async () => ({
+      value: 750,
+      method: "webgl-adaptive-shadow-v1",
+    });
     window.runCryptoTest = async () => 3000;
     window.runStorageTest = async () => ({ value: 3000, method: "OPFS" });
     window.runNetworkTest = async () => ({
@@ -240,12 +246,18 @@ test("real CPU, string, and bounded-allocation workers report auditable samples"
       value: 700,
       method: "js-object-allocation-v1",
     });
-    window.runDOMTest = async () => 1000;
+    window.runDOMTest = async () => ({
+      value: 1000,
+      method: "dom-forced-layout-v1",
+    });
     window.runCanvas2DTest = async () => ({
       value: 15000,
-      method: "OffscreenCanvas",
+      method: "canvas2d-offscreen-draw-v2",
     });
-    window.runThreeJSTest = async () => 750;
+    window.runThreeJSTest = async () => ({
+      value: 750,
+      method: "webgl-adaptive-shadow-v1",
+    });
     window.runCryptoTest = async () => 3000;
     window.runStorageTest = async () => ({ value: 3000, method: "OPFS" });
     window.runNetworkTest = async () => ({ value: 10, dl: 10, ul: 5, ping: 1 });
@@ -294,12 +306,18 @@ test("real bounded-allocation worker reports its batch limit and sample statisti
       value: 20,
       method: "json-parse-regex-v1",
     });
-    window.runDOMTest = async () => 1000;
+    window.runDOMTest = async () => ({
+      value: 1000,
+      method: "dom-forced-layout-v1",
+    });
     window.runCanvas2DTest = async () => ({
       value: 15000,
-      method: "OffscreenCanvas",
+      method: "canvas2d-offscreen-draw-v2",
     });
-    window.runThreeJSTest = async () => 750;
+    window.runThreeJSTest = async () => ({
+      value: 750,
+      method: "webgl-adaptive-shadow-v1",
+    });
     window.runCryptoTest = async () => 3000;
     window.runStorageTest = async () => ({ value: 3000, method: "OPFS" });
     window.runNetworkTest = async () => ({ value: 10, dl: 10, ul: 5, ping: 1 });
@@ -329,8 +347,8 @@ test("quick mode runs to completion and reveals JSON export", async ({
   });
   const report = await page.evaluate(() => lastJsonExport);
   expect(report).toMatchObject({
-    scoreVersion: "2.0.0-beta.2",
-    baselineId: "yieldvitals-v2-provisional-p03-2026-10",
+    scoreVersion: "2.0.0-beta.3",
+    baselineId: "yieldvitals-v2-provisional-p03-dom-canvas-2026-10",
     calibrated: false,
   });
   expect(report.results.cpu.metadata.baselineId).toBe(report.baselineId);

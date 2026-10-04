@@ -100,7 +100,7 @@ describe("versioned pure scoring model", () => {
   it("requires every core axis and rejects baseline or method mismatches", () => {
     const run = makeRun((_id, anchors) => anchors.at(-1).value, {
       storage: "OPFS",
-      canvas2d: "OffscreenCanvas",
+      canvas2d: "canvas2d-offscreen-draw-v2",
     });
     delete run.gpu;
     expect(model.scoreRun(run).overallScore).toBeNull();
@@ -130,7 +130,7 @@ describe("versioned pure scoring model", () => {
     expect(model.normalizeMetric("storage", 150, "OPFS").score).not.toBe(50);
     const run = makeRun((_id, anchors) => anchors.at(-1).value, {
       storage: "IndexedDB",
-      canvas2d: "OffscreenCanvas",
+      canvas2d: "canvas2d-offscreen-draw-v2",
     });
     run.network = { status: "ok", value: 1e12, method: "internet" };
     expect(model.scoreRun(run).overallScore).toBe(100);

@@ -116,33 +116,59 @@ async function runStringTest(duration, runId, scope = activeBenchmarkScope) {
 async function runDOMTest(duration, runId, scope = activeBenchmarkScope) {
   setStatus("dom", t("status_running_dom"), "running");
   const box = document.getElementById("domSandbox");
-  const start = performance.now();
+  const workloadVersion = "dom-fixed-tree-forced-layout-v1";
+  const nodeCount = 64;
+  const nodes = Array.from({ length: nodeCount }, (_, index) => {
+    const node = document.createElement("div");
+    node.textContent = `node-${index}`;
+    node.style.cssText = `box-sizing:border-box;width:${80 + index % 31}px;height:${12 + index % 7}px;border-left:${1 + index % 3}px solid #334155;padding-left:${index % 5}px`;
+    return node;
+  });
+  box.replaceChildren(...nodes);
+  let checksum = 0;
   let ops = 0;
+  const mutateAndRead = (operation) => {
+    const node = nodes[operation % nodeCount];
+    node.style.width = `${80 + (operation * 7) % 97}px`;
+    node.style.paddingLeft = `${operation % 13}px`;
+    checksum = (checksum + node.offsetWidth + node.offsetHeight) >>> 0;
+  };
+  const warmupUntil = performance.now() + Math.min(100, Math.max(30, duration * 0.05));
+
+  while (performance.now() < warmupUntil) mutateAndRead(ops++);
+  ops = 0;
+  checksum = 0;
+  const start = performance.now();
 
   return new Promise((resolve, reject) => {
     function step() {
       if (isCancelledRun(runId)) {
-        box.innerHTML = "";
+        box.replaceChildren();
         return reject(new Error(t("error_cancelled")));
       }
-      // 每個 task slice 執行 4ms 的 DOM 重繪，再 yield 給瀏覽器
+      // Keep the fixture fixed and yield between short forced-layout batches.
       const sliceEnd = performance.now() + 4;
       while (performance.now() < sliceEnd) {
-        box.innerHTML = `<div style="padding:${ops % 10}px;margin:${ops % 5}px"><span>${ops}</span></div>`;
-        box.offsetHeight; // Force synchronous reflow
+        mutateAndRead(ops);
         ops++;
       }
 
       if (performance.now() - start < duration) {
         scheduleRunTimeout(step, 0, scope); // Yield, then continue
       } else {
-        box.innerHTML = "";
-        const durationSec = (performance.now() - start) / 1000;
-        const score = Math.round(ops / durationSec);
+        const elapsedMs = performance.now() - start;
+        box.replaceChildren();
+        const score = Math.round((ops * 1000) / elapsedMs);
         setStatus("dom", `${score} ops/s`, "done");
         document.getElementById("res-dom").innerHTML =
           `${score} <span class="text-xs font-normal text-slate-500">ops/s</span>`;
-        resolve(score);
+        resolve({
+          value: score,
+          method: "dom-forced-layout-v1",
+          samples: [score],
+          durationMs: elapsedMs,
+          details: { workloadVersion, nodeCount, operations: ops, checksum },
+        });
       }
     }
     scheduleRunTimeout(step, 0, scope);
