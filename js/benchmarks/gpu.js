@@ -56,12 +56,21 @@ async function runCanvas2DTest(duration, runId, scope = activeBenchmarkScope) {
       worker.terminate();
       URL.revokeObjectURL(workerUrl);
       if (isCancelledRun(runId)) return reject(new Error(t("error_cancelled")));
-      // ops × 100 draws per op, normalised to per-second
+      if (e.data.method !== "OffscreenCanvas") {
+        reject(
+          new BenchmarkError(
+            "unsupported",
+            "Canvas drawing benchmark requires OffscreenCanvas",
+          ),
+        );
+        return;
+      }
+      // One beginPath/arc/fill batch represents one draw call.
       const score = Math.round((e.data.ops * 100) / e.data.durationSec);
-      setStatus("canvas2d", `${score} ops/s`, "done");
+      setStatus("canvas2d", `${score} draw calls/s`, "done");
       document.getElementById("res-canvas2d").innerHTML =
-        `${score} <span class="text-xs font-normal text-slate-500">ops/s</span>`;
-      resolve(score);
+        `${score} <span class="text-xs font-normal text-slate-500">draw calls/s</span>`;
+      resolve({ value: score, method: e.data.method });
     };
     worker.onerror = (err) => {
       worker.terminate();

@@ -27,10 +27,8 @@ function isCancelledRun(runId) {
   return runId !== currentRunId;
 }
 
-// 基準天花板設定 (集中管理)
-// Calibrated against real hardware (M4, Core Ultra 7, Ryzen 7600, Snapdragon 8 Gen 3)
-// With hyperbolic norm: at baseline = ~67 score, 2x = ~80, 0.5x = ~50
-const BENCHMARK_BASELINE = {
+// Frozen v1 normalization values retained only for historical-score tests.
+const LEGACY_BENCHMARK_BASELINE = {
   cpu: 900, // M/s  — M4 ~780, Ryzen 7600 ~900, mid-laptop ~400
   string: 40, // k ops/s — M4 Chrome ~35k, mid-PC ~20-40k (was 120, way too high)
   memory: 700, // cyc/s — mid-range ~300-500, M4 ~1100 (was 200, causing 100% cap)
@@ -38,7 +36,6 @@ const BENCHMARK_BASELINE = {
   gpu: 1500, // Pts — composite score; mid GPU ~800, high-end ~2000+
   crypto: 3000, // MB/s — x86 AES-NI ~2000-3500, M4 ~3200
   storage: 1500, // MB/s — OPFS NVMe ~1000-3000, mid SSD ~500-1000
-  network: 300, // Mbps — typical broadband; highly variable, low weight
   canvas2d: 5000, // ops/s — mid Chrome ~2000-4000, M4 ~6000
 };
 

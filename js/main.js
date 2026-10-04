@@ -64,7 +64,7 @@ function getBenchmarkDefinitions(config, runId) {
     },
     {
       id: "canvas2d",
-      unit: "ops/s",
+      unit: "draw calls/s",
       timeout: config.otherTime * iterations + 5000,
       run: (scope) =>
         runWithSampling(
@@ -170,7 +170,7 @@ async function runOneBenchmark(definition, runContext, runId) {
       samples: measurement.samples ?? [measurement.value],
       durationMs: measurement.durationMs ?? performance.now() - startedAt,
       details: measurement.details,
-      metadata: { runId },
+      metadata: { runId, baselineId: "yieldvitals-v2-provisional-2026-10" },
     });
     validateBenchmarkResult(result);
     if (!isCancelledRun(runId)) updateBenchmarkResult(definition, result);
@@ -191,7 +191,7 @@ async function runOneBenchmark(definition, runContext, runId) {
     const result = createBenchmarkResult(definition.id, status, {
       error: error?.message || String(error),
       durationMs: performance.now() - startedAt,
-      metadata: { runId },
+      metadata: { runId, baselineId: "yieldvitals-v2-provisional-2026-10" },
     });
     if (!isCancelledRun(runId)) updateBenchmarkResult(definition, result);
     return result;
@@ -319,38 +319,18 @@ document
 
       // 結算與渲染 (包含被中途腰斬但已有部分分數的狀態)
       if (!isCancelledRun(myRunId)) {
-        const finalScore = calculateFinalScore(results);
-        const normCPU = normalize(
-          getBenchmarkValue(results.cpu) ?? 0,
-          BENCHMARK_BASELINE.cpu,
-        );
-        const normGPU = normalize(
-          getBenchmarkValue(results.gpu) ?? 0,
-          BENCHMARK_BASELINE.gpu,
-        );
-        const normDOM = normalize(
-          getBenchmarkValue(results.dom) ?? 0,
-          BENCHMARK_BASELINE.dom,
-        );
-        const normMemory = normalize(
-          getBenchmarkValue(results.memory) ?? 0,
-          BENCHMARK_BASELINE.memory,
-        );
-        const normStorage = normalize(
-          getBenchmarkValue(results.storage) ?? 0,
-          BENCHMARK_BASELINE.storage,
-        );
-        const diag =
-          finalScore === null
-            ? null
-            : getDiagnostics(
-                finalScore,
-                normCPU,
-                normGPU,
-                normDOM,
-                normMemory,
-                normStorage,
-              );
+        const scoringModel = await SCORING_MODEL_READY;
+        const scoreResult = scoringModel.scoreRun(results);
+        const finalScore = scoreResult.overallScore;
+        if (radarChart) {
+          radarChart.data.datasets[0].data = scoringModel.axisIds.map(
+            (axisId) => scoreResult.axisScores[axisId],
+          );
+          radarChart.update();
+        }
+        const diag = scoreResult.diagnostics
+          ? localizeScoreDiagnostics(scoreResult.diagnostics)
+          : null;
         renderResult(finalScore, diag);
 
         // 渲染可信度
@@ -379,6 +359,11 @@ document
           timestamp: new Date().toISOString(),
           mode: t(config.labelKey),
           score: finalScore,
+          scoreVersion: scoreResult.scoreVersion,
+          baselineId: scoreResult.baselineId,
+          calibrated: scoreResult.calibrated,
+          axisScores: scoreResult.axisScores,
+          rejectedMetrics: scoreResult.rejectedMetrics,
           reliability: rel,
           results: results,
           environment: {

@@ -54,7 +54,7 @@ async function runWithSampling(
     formattedVal = Math.round(finalVal);
   }
   if (name === "canvas2d") {
-    unit = "ops/s";
+    unit = "draw calls/s";
     formattedVal = Math.round(finalVal);
   }
   if (name === "network") {
@@ -225,38 +225,38 @@ function calculateFinalScore(results) {
   const valCrypto = values.crypto;
   const valGPU = values.gpu;
   const valStorage = values.storage;
-  const valNetwork = getBenchmarkValue(results.network);
 
   // 8 項獨立正規化
   const normCPU =
-    values.cpu === null ? null : normalize(values.cpu, BENCHMARK_BASELINE.cpu);
+    values.cpu === null
+      ? null
+      : normalize(values.cpu, LEGACY_BENCHMARK_BASELINE.cpu);
   const normString =
     values.string === null
       ? null
-      : normalize(values.string, BENCHMARK_BASELINE.string);
+      : normalize(values.string, LEGACY_BENCHMARK_BASELINE.string);
   const normMemory =
     values.memory === null
       ? null
-      : normalize(values.memory, BENCHMARK_BASELINE.memory); // Fixed RAM key to memory
+      : normalize(values.memory, LEGACY_BENCHMARK_BASELINE.memory); // Fixed RAM key to memory
   const normDOM =
-    values.dom === null ? null : normalize(values.dom, BENCHMARK_BASELINE.dom);
+    values.dom === null
+      ? null
+      : normalize(values.dom, LEGACY_BENCHMARK_BASELINE.dom);
   const normCanvas2D =
     values.canvas2d === null
       ? null
-      : normalize(values.canvas2d, BENCHMARK_BASELINE.canvas2d);
+      : normalize(values.canvas2d, LEGACY_BENCHMARK_BASELINE.canvas2d);
   const normGPU =
-    valGPU === null ? null : normalize(valGPU, BENCHMARK_BASELINE.gpu);
+    valGPU === null ? null : normalize(valGPU, LEGACY_BENCHMARK_BASELINE.gpu);
   const normCrypto =
-    valCrypto === null ? null : normalize(valCrypto, BENCHMARK_BASELINE.crypto);
+    valCrypto === null
+      ? null
+      : normalize(valCrypto, LEGACY_BENCHMARK_BASELINE.crypto);
   const normStorage =
     valStorage === null
       ? null
-      : normalize(valStorage, BENCHMARK_BASELINE.storage);
-  const normNetwork =
-    valNetwork === null
-      ? null
-      : normalize(valNetwork, BENCHMARK_BASELINE.network);
-
+      : normalize(valStorage, LEGACY_BENCHMARK_BASELINE.storage);
   if (radarChart) {
     // 8 axes (Network excluded from radar — shown separately as info)
     radarChart.data.datasets[0].data = [
@@ -287,72 +287,40 @@ function calculateFinalScore(results) {
   );
 }
 
-function getDiagnostics(
-  finalScore,
-  normCPU,
-  normGPU,
-  normDOM,
-  normMemory,
-  normStorage,
-) {
-  let webBrowsing = t("fitness_very_smooth");
-  let multiTab = t("fitness_very_smooth");
-  let web3D = t("fitness_very_smooth");
-  let heavyWebApps = t("fitness_very_smooth");
-
-  if (finalScore < 30) {
-    webBrowsing = t("fitness_smooth");
-    multiTab = t("fitness_stutter");
-    web3D = t("fitness_not_rec");
-    heavyWebApps = t("fitness_struggle");
-  } else if (finalScore < 60) {
-    webBrowsing = t("fitness_very_smooth");
-    multiTab = t("fitness_smooth");
-    web3D = t("fitness_good");
-    heavyWebApps = t("fitness_power");
-  } else if (finalScore < 85) {
-    webBrowsing = t("fitness_very_smooth");
-    multiTab = t("fitness_very_smooth");
-    web3D = t("fitness_good");
-    heavyWebApps = t("fitness_smooth");
-  }
-
-  const isMobile =
+function localizeScoreDiagnostics(diagnostics) {
+  const fitness = Object.fromEntries(
+    Object.entries(diagnostics.fitness).map(([key, translationKey]) => [
+      key,
+      t(translationKey),
+    ]),
+  );
+  const metricNames = {
+    cpu: "cpu_calc",
+    gpu: "gpu_webgl",
+    dom: "dom_layout",
+    memory: "ram_gc",
+    storage: "storage_io",
+  };
+  const adviceKeys = {
+    cpu: ["advice_mobile_cpu", "advice_diy_cpu"],
+    gpu: ["advice_mobile_gpu", "advice_diy_gpu"],
+    dom: ["advice_dom_mobile", "advice_dom_pc"],
+    memory: ["advice_mobile_ram", "advice_diy_ram"],
+    storage: ["advice_mobile_storage", "advice_diy_storage"],
+  };
+  const mobile =
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
       navigator.userAgent,
     );
-  const scores = [
-    {
-      name: t("cpu_calc"),
-      norm: normCPU,
-      advice: isMobile ? t("advice_mobile_cpu") : t("advice_diy_cpu"),
-    },
-    {
-      name: t("gpu_webgl"),
-      norm: normGPU,
-      advice: isMobile ? t("advice_mobile_gpu") : t("advice_diy_gpu"),
-    },
-    {
-      name: t("dom_layout"),
-      norm: normDOM,
-      advice: isMobile ? t("advice_dom_mobile") : t("advice_dom_pc"),
-    },
-    {
-      name: t("ram_gc"),
-      norm: normMemory,
-      advice: isMobile ? t("advice_mobile_ram") : t("advice_diy_ram"),
-    },
-    {
-      name: t("storage_io"),
-      norm: normStorage,
-      advice: isMobile ? t("advice_mobile_storage") : t("advice_diy_storage"),
-    },
-  ];
-  scores.sort((a, b) => a.norm - b.norm);
-  const weakestLink = scores[0];
-
+  const weakestLink = diagnostics.weakestLink;
   return {
-    fitness: { webBrowsing, multiTab, web3D, heavyWebApps },
-    weakestLink: weakestLink.norm < 60 ? weakestLink : null,
+    fitness,
+    weakestLink: weakestLink
+      ? {
+          norm: weakestLink.score,
+          name: t(metricNames[weakestLink.metricId]),
+          advice: t(adviceKeys[weakestLink.metricId][mobile ? 0 : 1]),
+        }
+      : null,
   };
 }

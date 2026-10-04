@@ -9,6 +9,7 @@ function copyClassicScripts() {
     async closeBundle() {
       await mkdir(resolve("dist/js"), { recursive: true });
       await cp(resolve("js"), resolve("dist/js"), { recursive: true });
+      await cp(resolve("config"), resolve("dist/config"), { recursive: true });
     },
   };
 }

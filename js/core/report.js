@@ -18,7 +18,7 @@ function generateReportText(results, finalScore, rel, modeLabel, diag) {
   text += `- ${t("string_parse")}: ${formatMetric(results.string, "k ops")}\n`;
   text += `- ${t("ram_gc")}: ${formatMetric(results.memory, "cyc/s", 0)}\n`;
   text += `- ${t("dom_layout")}: ${formatMetric(results.dom, "ops/s", 0)}\n`;
-  text += `- ${t("canvas2d_render")}: ${formatMetric(results.canvas2d, "ops/s", 0)}\n`;
+  text += `- ${t("canvas2d_render")}: ${formatMetric(results.canvas2d, "draw calls/s", 0)}\n`;
 
   text += `- ${t("gpu_webgl")}: ${formatMetric(results.gpu, "Pts", 0)}\n`;
 

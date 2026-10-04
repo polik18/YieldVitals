@@ -1,0 +1,128 @@
+{
+  "scoreVersion": "2.0.0-beta.1",
+  "baselineId": "yieldvitals-v2-provisional-2026-10",
+  "calibrated": false,
+  "description": "Provisional, method-aware scoring anchors. Not a cross-device calibrated release baseline.",
+  "axes": {
+    "cpu": {
+      "metricId": "cpu",
+      "unit": "M/s",
+      "direction": "higher-is-better",
+      "weight": 0.25,
+      "validRange": { "min": 0, "max": 5000 },
+      "methodCompatibility": ["unspecified"],
+      "anchorPoints": [
+        { "value": 0, "score": 0 },
+        { "value": 900, "score": 50 },
+        { "value": 3240, "score": 95 },
+        { "value": 3600, "score": 100 }
+      ]
+    },
+    "string": {
+      "metricId": "string",
+      "unit": "k ops",
+      "direction": "higher-is-better",
+      "weight": 0.1,
+      "validRange": { "min": 0, "max": 1000 },
+      "methodCompatibility": ["unspecified"],
+      "anchorPoints": [
+        { "value": 0, "score": 0 },
+        { "value": 40, "score": 50 },
+        { "value": 144, "score": 95 },
+        { "value": 160, "score": 100 }
+      ]
+    },
+    "crypto": {
+      "metricId": "crypto",
+      "unit": "MB/s",
+      "direction": "higher-is-better",
+      "weight": 0.05,
+      "validRange": { "min": 0, "max": 100000 },
+      "methodCompatibility": ["unspecified"],
+      "anchorPoints": [
+        { "value": 0, "score": 0 },
+        { "value": 3000, "score": 50 },
+        { "value": 10800, "score": 95 },
+        { "value": 12000, "score": 100 }
+      ]
+    },
+    "memory": {
+      "metricId": "memory",
+      "unit": "cyc/s",
+      "direction": "higher-is-better",
+      "weight": 0.1,
+      "validRange": { "min": 0, "max": 10000 },
+      "methodCompatibility": ["unspecified"],
+      "anchorPoints": [
+        { "value": 0, "score": 0 },
+        { "value": 700, "score": 50 },
+        { "value": 2520, "score": 95 },
+        { "value": 2800, "score": 100 }
+      ]
+    },
+    "storage": {
+      "metricId": "storage",
+      "unit": "MB/s",
+      "direction": "higher-is-better",
+      "weight": 0.1,
+      "validRange": { "min": 0, "max": 10000 },
+      "methods": {
+        "OPFS": [
+          { "value": 0, "score": 0 },
+          { "value": 1500, "score": 50 },
+          { "value": 5400, "score": 95 },
+          { "value": 6000, "score": 100 }
+        ],
+        "IndexedDB": [
+          { "value": 0, "score": 0 },
+          { "value": 150, "score": 50 },
+          { "value": 540, "score": 95 },
+          { "value": 600, "score": 100 }
+        ]
+      },
+      "methodCompatibility": ["OPFS", "IndexedDB"]
+    },
+    "dom": {
+      "metricId": "dom",
+      "unit": "ops/s",
+      "direction": "higher-is-better",
+      "weight": 0.1,
+      "validRange": { "min": 0, "max": 100000 },
+      "methodCompatibility": ["unspecified"],
+      "anchorPoints": [
+        { "value": 0, "score": 0 },
+        { "value": 4000, "score": 50 },
+        { "value": 14400, "score": 95 },
+        { "value": 16000, "score": 100 }
+      ]
+    },
+    "gpu": {
+      "metricId": "gpu",
+      "unit": "Pts",
+      "direction": "higher-is-better",
+      "weight": 0.2,
+      "validRange": { "min": 0, "max": 1000 },
+      "methodCompatibility": ["unspecified"],
+      "anchorPoints": [
+        { "value": 0, "score": 0 },
+        { "value": 500, "score": 50 },
+        { "value": 900, "score": 95 },
+        { "value": 1000, "score": 100 }
+      ]
+    },
+    "canvas2d": {
+      "metricId": "canvas2d",
+      "unit": "draw calls/s",
+      "direction": "higher-is-better",
+      "weight": 0.1,
+      "validRange": { "min": 0, "max": 5000000 },
+      "methodCompatibility": ["OffscreenCanvas"],
+      "anchorPoints": [
+        { "value": 0, "score": 0 },
+        { "value": 500000, "score": 50 },
+        { "value": 1800000, "score": 95 },
+        { "value": 2000000, "score": 100 }
+      ]
+    }
+  }
+}

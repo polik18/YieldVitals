@@ -220,6 +220,17 @@ test("quick mode runs to completion and reveals JSON export", async ({
   await expect(page.locator("#exportJsonBtn")).not.toHaveClass(/hidden/, {
     timeout: 15000,
   });
+  const report = await page.evaluate(() => lastJsonExport);
+  expect(report).toMatchObject({
+    scoreVersion: "2.0.0-beta.1",
+    baselineId: "yieldvitals-v2-provisional-2026-10",
+    calibrated: false,
+  });
+  expect(report.axisScores).toHaveProperty("canvas2d");
+  expect(report.rejectedMetrics).toContainEqual({
+    metricId: "storage",
+    reason: "method-mismatch",
+  });
 });
 
 test("one benchmark failure is isolated and later benchmarks still run", async ({
