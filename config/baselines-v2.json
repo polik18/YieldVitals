@@ -1,6 +1,6 @@
 {
-  "scoreVersion": "2.0.0-beta.3",
-  "baselineId": "yieldvitals-v2-provisional-p03-dom-canvas-2026-10",
+  "scoreVersion": "2.0.0-beta.4",
+  "baselineId": "yieldvitals-v2-provisional-p03-crypto-2026-10",
   "calibrated": false,
   "description": "Provisional, method-aware scoring anchors. Not a cross-device calibrated release baseline.",
   "axes": {
@@ -38,7 +38,7 @@
       "direction": "higher-is-better",
       "weight": 0.05,
       "validRange": { "min": 0, "max": 100000 },
-      "methodCompatibility": ["unspecified"],
+      "methodCompatibility": ["aes-gcm-256-encrypt-decrypt-v1"],
       "anchorPoints": [
         { "value": 0, "score": 0 },
         { "value": 3000, "score": 50 },

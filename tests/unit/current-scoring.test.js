@@ -33,7 +33,7 @@ describe("current scoring characterization", () => {
       ),
     );
     window.eval(
-      `${state}\n${result}\nradarChart = { data: { datasets: [{ data: [] }] }, update() {} };\n${utils}\n${scoring}\nwindow.__score = calculateFinalScore(${JSON.stringify(fixture)}); window.__axes = [...radarChart.data.datasets[0].data]; window.__incompleteScore = calculateFinalScore({...${JSON.stringify(fixture)}, gpu: createBenchmarkResult('gpu', 'unsupported')}); window.__incompleteAxes = radarChart.data.datasets[0].data;`,
+      `${state}\n${result}\nradarChart = { data: { datasets: [{ data: [] }] }, update() {} };\n${utils}\n${scoring}\nwindow.__score = calculateFinalScore(${JSON.stringify(fixture)}); window.__axes = [...radarChart.data.datasets[0].data]; window.__incompleteScore = calculateFinalScore({...${JSON.stringify(fixture)}, gpu: createBenchmarkResult('gpu', 'unsupported')}); window.__incompleteAxes = radarChart.data.datasets[0].data; window.__reliability = calculateReliability({...${JSON.stringify(fixture)}, crypto: { status: 'ok', value: 3000, warning: 'anomalous sample' }}, false, false);`,
     );
     const { __score: score, __axes: axes } = window;
     expect(score).toBe(62);
@@ -49,6 +49,8 @@ describe("current scoring characterization", () => {
       null,
       86,
     ]);
+    expect(window.__reliability.score).toBe("rel_med");
+    expect(window.__reliability.reason).toBe("rel_reason_crypto_warn");
     dom.window.close();
   });
 });

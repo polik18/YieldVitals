@@ -70,7 +70,10 @@ async function configureQuickRun(page, failure = null) {
       value: 750,
       method: "webgl-adaptive-shadow-v1",
     });
-    window.runCryptoTest = async () => 3000;
+    window.runCryptoTest = async () => ({
+      value: 3000,
+      method: "aes-gcm-256-encrypt-decrypt-v1",
+    });
     window.runStorageTest = async () => ({ value: 3000, method: "OPFS" });
     window.runNetworkTest = async () => ({
       value: 9000,
@@ -258,7 +261,10 @@ test("real CPU, string, and bounded-allocation workers report auditable samples"
       value: 750,
       method: "webgl-adaptive-shadow-v1",
     });
-    window.runCryptoTest = async () => 3000;
+    window.runCryptoTest = async () => ({
+      value: 3000,
+      method: "aes-gcm-256-encrypt-decrypt-v1",
+    });
     window.runStorageTest = async () => ({ value: 3000, method: "OPFS" });
     window.runNetworkTest = async () => ({ value: 10, dl: 10, ul: 5, ping: 1 });
   });
@@ -318,7 +324,10 @@ test("real bounded-allocation worker reports its batch limit and sample statisti
       value: 750,
       method: "webgl-adaptive-shadow-v1",
     });
-    window.runCryptoTest = async () => 3000;
+    window.runCryptoTest = async () => ({
+      value: 3000,
+      method: "aes-gcm-256-encrypt-decrypt-v1",
+    });
     window.runStorageTest = async () => ({ value: 3000, method: "OPFS" });
     window.runNetworkTest = async () => ({ value: 10, dl: 10, ul: 5, ping: 1 });
   });
@@ -347,8 +356,8 @@ test("quick mode runs to completion and reveals JSON export", async ({
   });
   const report = await page.evaluate(() => lastJsonExport);
   expect(report).toMatchObject({
-    scoreVersion: "2.0.0-beta.3",
-    baselineId: "yieldvitals-v2-provisional-p03-dom-canvas-2026-10",
+    scoreVersion: "2.0.0-beta.4",
+    baselineId: "yieldvitals-v2-provisional-p03-crypto-2026-10",
     calibrated: false,
   });
   expect(report.results.cpu.metadata.baselineId).toBe(report.baselineId);

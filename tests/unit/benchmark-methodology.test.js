@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { webcrypto } from "node:crypto";
 import vm from "node:vm";
 import { describe, expect, it } from "vitest";
 
@@ -70,5 +71,31 @@ describe("P03 deterministic and bounded workload foundations", () => {
     expect(code).toContain('"webgl-adaptive-no-shadow-v1"');
     expect(code).toContain('measurement: "adaptive-vsync-capacity-proxy"');
     expect(code).toContain("for (let i = 0; i < p1Max; i++)");
+  });
+
+  it("runs an AES-GCM encrypt/decrypt round trip with auditable decimal MB/s", async () => {
+    const code = await source("../../js/benchmarks/crypto.js");
+    const context = vm.createContext({});
+    const workerSource = vm.runInContext(`${code}\ncryptoWorkerCode`, context);
+    let result;
+    const workerContext = vm.createContext({
+      crypto: webcrypto,
+      performance: globalThis.performance,
+      self: { postMessage: (message) => (result = message) },
+    });
+    vm.runInContext(workerSource, workerContext);
+    await workerContext.self.onmessage({ data: { duration: 2 } });
+
+    expect(result.success).toBe(true);
+    expect(result.method).toBe("aes-gcm-256-encrypt-decrypt-v1");
+    expect(result.details.direction).toBe("encrypt-and-decrypt");
+    expect(result.details.chunkBytes).toBe(1024 * 1024);
+    expect(result.details.bytesProcessed).toBe(
+      result.details.operations * 1024 * 1024 * 2,
+    );
+    expect(result.details.nonceBytes).toBe(12);
+    expect(result.details.checksum).toBeGreaterThan(0);
+    expect(result.details.dataUnit).toContain("decimal MB");
+    expect(result.elapsedMs).toBeGreaterThan(0);
   });
 });

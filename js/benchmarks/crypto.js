@@ -1,50 +1,93 @@
 const cryptoWorkerCode = `
-            self.onmessage = async function(e) {
-                const duration = e.data.duration || 4000;
-                try {
-                    const key = await crypto.subtle.generateKey(
-                        { name: "AES-GCM", length: 256 },
-                        true,
-                        ["encrypt", "decrypt"]
-                    );
-                    const chunkSize = 1024 * 1024; // 1MB
-                    const bufferPool = [];
-                    for(let i=0; i<4; i++) {
-                        const arr = new Uint8Array(chunkSize);
-                        const seed = crypto.getRandomValues(new Uint8Array(65536));
-                        for (let j = 0; j < arr.length; j += seed.length) {
-                            arr.set(seed.subarray(0, Math.min(seed.length, arr.length - j)), j);
-                        }
-                        bufferPool.push(arr);
-                    }
+  self.onmessage = async function(event) {
+    const durationMs = event.data.duration || 1000;
+    const workloadVersion = "aes-gcm-fixed-buffer-v2";
+    const method = "aes-gcm-256-encrypt-decrypt-v1";
+    const chunkBytes = 1024 * 1024;
+    const nonceBytes = 12;
 
-                    let totalEncrypted = 0;
-                    const startTime = performance.now();
-                    let poolIndex = 0;
+    try {
+      const key = await crypto.subtle.generateKey(
+        { name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]
+      );
+      const payload = new Uint8Array(chunkBytes);
+      for (let index = 0; index < payload.length; index++)
+        payload[index] = (index * 31 + 17) & 255;
 
-                    while (true) {
-                        if (performance.now() - startTime > duration) break;
+      // A random 64-bit prefix plus a monotonic 32-bit counter guarantees no
+      // nonce reuse within this run (including warm-up operations).
+      const noncePrefix = crypto.getRandomValues(new Uint8Array(8));
+      let nonceCounter = 0;
+      const nextNonce = () => {
+        if (nonceCounter > 0xffffffff) throw new Error("AES-GCM nonce counter exhausted");
+        const iv = new Uint8Array(nonceBytes);
+        iv.set(noncePrefix, 0);
+        new DataView(iv.buffer).setUint32(8, nonceCounter++);
+        return iv;
+      };
+      const encryptDecrypt = async () => {
+        const iv = nextNonce();
+        const ciphertext = await crypto.subtle.encrypt(
+          { name: "AES-GCM", iv }, key, payload
+        );
+        return new Uint8Array(await crypto.subtle.decrypt(
+          { name: "AES-GCM", iv },
+          key,
+          ciphertext
+        ));
+      };
 
-                        const promises = [];
-                        for(let i=0; i<8; i++) {
-                            const freshIv = crypto.getRandomValues(new Uint8Array(12)); // Fix 1-C: 每次加密使用新 IV
-                            promises.push(crypto.subtle.encrypt(
-                                { name: "AES-GCM", iv: freshIv }, key, bufferPool[poolIndex]
-                            ));
-                            poolIndex = (poolIndex + 1) % bufferPool.length;
-                        }
-                        await Promise.all(promises);
-                        totalEncrypted += chunkSize * 8;
-                    }
+      await encryptDecrypt();
+      await encryptDecrypt();
+      let lastPlaintext = null;
+      let operations = 0;
+      const startedAt = performance.now();
+      while (performance.now() - startedAt < durationMs) {
+        lastPlaintext = await encryptDecrypt();
+        operations++;
+      }
+      const elapsedMs = performance.now() - startedAt;
+      if (!lastPlaintext || lastPlaintext.length !== payload.length)
+        throw new Error("AES-GCM output length mismatch");
 
-                    const durationSec = (performance.now() - startTime) / 1000;
-                    const mbPerSec = (totalEncrypted / (1024 * 1024) / durationSec).toFixed(0);
-                    self.postMessage({ success: true, score: parseFloat(mbPerSec) });
-                } catch (e) {
-                    self.postMessage({ success: false, error: e.message });
-                }
-            };
-        `;
+      let checksum = 0;
+      for (let index = 0; index < payload.length; index += 4096) {
+        if (lastPlaintext[index] !== payload[index])
+          throw new Error("AES-GCM round-trip verification failed");
+        checksum = (checksum + lastPlaintext[index] + index) >>> 0;
+      }
+      const bytesProcessed = operations * chunkBytes * 2;
+      const decimalMegabytesPerSecond =
+        bytesProcessed / 1000000 / (elapsedMs / 1000);
+      const warning = decimalMegabytesPerSecond > 10000
+        ? "Exceeds the provisional 10000 MB/s plausibility threshold"
+        : null;
+
+      self.postMessage({
+        success: true,
+        score: Number(decimalMegabytesPerSecond.toFixed(2)),
+        method,
+        warning,
+        elapsedMs,
+        details: {
+          workloadVersion,
+          algorithm: "AES-GCM-256",
+          direction: "encrypt-and-decrypt",
+          chunkBytes,
+          operations,
+          bytesProcessed,
+          nonceBytes,
+          noncePolicy: "random-64-bit-prefix-plus-monotonic-32-bit-counter",
+          checksum,
+          warmupOperations: 2,
+          dataUnit: "decimal MB (1000000 bytes)",
+        },
+      });
+    } catch (error) {
+      self.postMessage({ success: false, error: error.message });
+    }
+  };
+`;
 
 async function runCryptoTest(duration, runId, scope = activeBenchmarkScope) {
   setStatus("crypto", t("status_running_crypto"), "running");
@@ -54,40 +97,39 @@ async function runCryptoTest(duration, runId, scope = activeBenchmarkScope) {
 
   return new Promise((resolve, reject) => {
     const worker = createTrackedWorker(workerUrl, scope);
-    worker.onmessage = (e) => {
+    worker.onmessage = (event) => {
       worker.terminate();
       URL.revokeObjectURL(workerUrl);
       if (isCancelledRun(runId)) return reject(new Error(t("error_cancelled")));
 
-      if (e.data.success) {
-        const mbPerSec = e.data.score;
-        setStatus("crypto", `${mbPerSec} MB/s`, "done");
-        const resEl = document.getElementById("res-crypto");
-
-        // 不再人工封頂，而是回傳 warning 標記
-        if (mbPerSec > 10000) {
-          resEl.innerHTML = `${mbPerSec} <span class="text-xs font-normal text-primary/60">MB/s</span>`;
-          resEl.classList.replace("text-primary", "text-yellow-400");
-          document.getElementById("cryptoWarning").classList.remove("hidden");
-          resolve({
-            value: mbPerSec,
-            warning: "數值異常偏高，可能受瀏覽器快取或硬體加速影響",
-          });
-        } else {
-          resEl.innerHTML = `${mbPerSec} <span class="text-xs font-normal text-primary/60">MB/s</span>`;
-          resolve(mbPerSec);
-        }
-      } else {
-        reject(new Error(e.data.error));
+      if (!event.data.success) {
+        reject(new Error(event.data.error));
+        return;
       }
+
+      const megabytesPerSecond = event.data.score;
+      const resultElement = document.getElementById("res-crypto");
+      setStatus("crypto", `${megabytesPerSecond} MB/s`, "done");
+      resultElement.innerHTML = `${megabytesPerSecond} <span class="text-xs font-normal text-primary/60">MB/s</span>`;
+      if (event.data.warning) {
+        resultElement.classList.replace("text-primary", "text-yellow-400");
+        document.getElementById("cryptoWarning").classList.remove("hidden");
+      }
+
+      resolve({
+        value: megabytesPerSecond,
+        method: event.data.method,
+        samples: [megabytesPerSecond],
+        durationMs: event.data.elapsedMs,
+        ...(event.data.warning ? { warning: event.data.warning } : {}),
+        details: event.data.details,
+      });
     };
-    worker.onerror = (e) => {
+    worker.onerror = (error) => {
       worker.terminate();
       URL.revokeObjectURL(workerUrl);
-      reject(new Error("WebCrypto " + t("error_worker")));
+      reject(new Error(`WebCrypto ${t("error_worker")}: ${error.message}`));
     };
     worker.postMessage({ duration });
   });
 }
-
-// 7. Storage I/O 測試 (OPFS / IndexedDB Fallback)

@@ -148,7 +148,10 @@ async function runWithSampling(
   } else if (name === "crypto") {
     setStatus("crypto", `${finalVal} MB/s`, "done");
     let resEl = document.getElementById("res-crypto");
-    if (finalVal > 10000) {
+    const warningSample = fullResults.find(
+      (sample) => sample && typeof sample === "object" && sample.warning,
+    );
+    if (warningSample) {
       resEl.innerHTML = `${finalVal} <span class="text-xs font-normal text-primary/60">MB/s</span>`;
       resEl.classList.replace("text-primary", "text-yellow-400");
       document.getElementById("cryptoWarning").classList.remove("hidden");
@@ -160,6 +163,9 @@ async function runWithSampling(
   const firstObject = fullResults.find(
     (sample) => sample && typeof sample === "object",
   );
+  const warningSample = fullResults.find(
+    (sample) => sample && typeof sample === "object" && sample.warning,
+  );
   return {
     value: finalVal,
     samples: results,
@@ -167,7 +173,7 @@ async function runWithSampling(
     method: firstObject?.method ?? null,
     details: {
       ...(firstObject?.details ?? {}),
-      ...(firstObject?.warning ? { warning: firstObject.warning } : {}),
+      ...(warningSample?.warning ? { warning: warningSample.warning } : {}),
     },
   };
 }
