@@ -77,8 +77,12 @@
                 setStatus(name, `${formattedVal} ${unit}`, 'done');
                 document.getElementById(`res-${name}`).innerHTML = `${formattedVal} <span class="text-xs font-normal text-slate-500">${unit}</span>`;
             } else if (name === 'gpu') {
+                const gpuRes = fullResults.find(r => r && typeof r === 'object' && resultValue(r) === finalVal);
+                const swTag = gpuRes && gpuRes.software ? ' <span class="text-xs font-normal text-yellow-400">(SW)</span>' : '';
                 setStatus('gpu', `${Math.floor(finalVal)} Pts`, 'done');
-                document.getElementById('res-gpu').innerHTML = `${Math.floor(finalVal)} <span class="text-xs font-normal text-slate-500">Pts</span>`;
+                document.getElementById('res-gpu').innerHTML = `${Math.floor(finalVal)} <span class="text-xs font-normal text-slate-500">Pts</span>${swTag}`;
+                // 保留完整 GPU 結果（各階段吞吐量、軟體渲染旗標）供可信度判斷與 JSON 匯出
+                if (gpuRes) return gpuRes;
             } else if (name === 'storage') {
                 setStatus('storage', `${finalVal} MB/s`, 'done');
                 document.getElementById('res-storage').innerHTML = `${finalVal} <span class="text-xs font-normal text-slate-500">MB/s</span>`;
@@ -119,6 +123,10 @@
                     reason = t('rel_reason_sub_err');
                     colorClass = 'bg-yellow-500';
                 }
+            } else if (results.gpu && typeof results.gpu === 'object' && results.gpu.software) {
+                score = t('rel_med');
+                reason = t('rel_reason_gpu_sw');
+                colorClass = 'bg-yellow-500';
             } else if (results.crypto && typeof results.crypto === 'object' && results.crypto.warning) {
                 score = t('rel_med');
                 reason = t('rel_reason_crypto_warn');

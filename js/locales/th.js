@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["th"] = {
   "rel_reason_core_err": "การทดสอบหลัก (CPU/GPU) พบข้อผิดพลาดหรือไม่สมบูรณ์ คะแนนรวมไม่ได้บ่งชี้",
   "rel_reason_sub_err": "การทดสอบรองบางรายการถูกขัดจังหวะ คะแนนรวมอาจมีความลำเอียงเล็กน้อย",
   "rel_reason_crypto_warn": "ปริมาณงานของ Crypto สูงผิดปกติ อาจได้รับผลกระทบจากแคชพื้นฐานหรือการเร่งความเร็วด้วยฮาร์ดแวร์ที่รุนแรง",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "โหลด Chart.js ไม่สำเร็จ ตรวจสอบการเชื่อมต่อเครือข่ายของคุณ",
   "error_three_load": "โหลด Three.js ไม่สำเร็จ ตรวจสอบการเชื่อมต่อเครือข่ายของคุณ",
   "error_timeout": "หมดเวลาการทดสอบ",

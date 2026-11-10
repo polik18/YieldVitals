@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["ms"] = {
   "rel_reason_core_err": "Ujian teras (CPU/GPU) mengalami ralat atau tidak selesai. Jumlah markah bukan indikatif.",
   "rel_reason_sub_err": "Beberapa ujian menengah telah terganggu. Jumlah markah mungkin sedikit berat sebelah.",
   "rel_reason_crypto_warn": "Daya pengeluaran kripto adalah luar biasa tinggi. Ia mungkin terjejas oleh cache asas atau pecutan perkakasan yang melampau.",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "Gagal memuatkan Chart.js. Semak sambungan rangkaian anda.",
   "error_three_load": "Gagal memuatkan Three.js. Semak sambungan rangkaian anda.",
   "error_timeout": "Tamat masa ujian",

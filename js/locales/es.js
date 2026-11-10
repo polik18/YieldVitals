@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["es"] = {
   "rel_reason_core_err": "Las pruebas principales (CPU/GPU) encontraron errores o no se completaron. La puntuación total no es indicativa.",
   "rel_reason_sub_err": "Algunas pruebas secundarias fueron interrumpidas. La puntuación total puede estar ligeramente sesgada.",
   "rel_reason_crypto_warn": "El rendimiento de las criptomonedas es anormalmente alto. Podría verse afectado por la caché subyacente o una aceleración extrema del hardware.",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "No se pudo cargar Chart.js. Verifique su conexión de red.",
   "error_three_load": "No se pudo cargar Three.js. Verifique su conexión de red.",
   "error_timeout": "Tiempo de espera de prueba",

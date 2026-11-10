@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["tr"] = {
   "rel_reason_core_err": "Çekirdek testleri (CPU/GPU) hatalarla karşılaştı veya tamamlanmadı. Toplam puan gösterge niteliğinde değildir.",
   "rel_reason_sub_err": "Bazı ikincil testler kesintiye uğradı. Toplam puan biraz taraflı olabilir.",
   "rel_reason_crypto_warn": "Kripto verimi anormal derecede yüksek. Temel önbellekten veya aşırı donanım hızlandırmasından etkilenebilir.",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "Chart.js yüklenemedi. Ağ bağlantınızı kontrol edin.",
   "error_three_load": "Three.js yüklenemedi. Ağ bağlantınızı kontrol edin.",
   "error_timeout": "Test zaman aşımı",

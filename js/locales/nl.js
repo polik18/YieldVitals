@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["nl"] = {
   "rel_reason_core_err": "Kerntests (CPU/GPU) hebben fouten aangetroffen of zijn niet voltooid. Totaalscore is niet indicatief.",
   "rel_reason_sub_err": "Sommige secundaire tests werden onderbroken. De totale score kan enigszins vertekend zijn.",
   "rel_reason_crypto_warn": "De crypto-doorvoer is abnormaal hoog. Het kan worden beïnvloed door de onderliggende cache of extreme hardwareversnelling.",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "Kan Chart.js niet laden. Controleer uw netwerkverbinding.",
   "error_three_load": "Kan Three.js niet laden. Controleer uw netwerkverbinding.",
   "error_timeout": "Time-out testen",

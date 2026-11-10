@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["en"] = {
   "rel_reason_core_err": "Core tests (CPU/GPU) encountered errors or did not complete. Total score is not indicative.",
   "rel_reason_sub_err": "Some secondary tests were interrupted. Total score may be slightly biased.",
   "rel_reason_crypto_warn": "Crypto throughput is abnormally high. It might be affected by underlying cache or extreme hardware acceleration.",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "Failed to load Chart.js. Check your network connection.",
   "error_three_load": "Failed to load Three.js. Check your network connection.",
   "error_timeout": "Test timeout",

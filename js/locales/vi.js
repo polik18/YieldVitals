@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["vi"] = {
   "rel_reason_core_err": "Các bài kiểm tra lõi (CPU/GPU) gặp lỗi hoặc không hoàn thành. Tổng số điểm không mang tính biểu thị.",
   "rel_reason_sub_err": "Một số bài kiểm tra thứ cấp đã bị gián đoạn. Tổng số điểm có thể hơi thiên vị.",
   "rel_reason_crypto_warn": "Thông lượng tiền điện tử cao bất thường. Nó có thể bị ảnh hưởng bởi bộ nhớ đệm cơ bản hoặc khả năng tăng tốc phần cứng quá mức.",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "Không tải được Chart.js. Kiểm tra kết nối mạng của bạn.",
   "error_three_load": "Không tải được Three.js. Kiểm tra kết nối mạng của bạn.",
   "error_timeout": "Hết thời gian kiểm tra",

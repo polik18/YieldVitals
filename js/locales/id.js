@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["id"] = {
   "rel_reason_core_err": "Tes inti (CPU/GPU) mengalami kesalahan atau tidak selesai. Skor total tidak bersifat indikatif.",
   "rel_reason_sub_err": "Beberapa tes sekunder terhenti. Skor total mungkin sedikit bias.",
   "rel_reason_crypto_warn": "Throughput kripto sangat tinggi. Ini mungkin dipengaruhi oleh cache yang mendasarinya atau akselerasi perangkat keras yang ekstrem.",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "Gagal memuat Chart.js. Periksa koneksi jaringan Anda.",
   "error_three_load": "Gagal memuat Three.js. Periksa koneksi jaringan Anda.",
   "error_timeout": "Batas waktu tes",

@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["ur"] = {
   "rel_reason_core_err": "بنیادی ٹیسٹوں (CPU/GPU) میں خرابیوں کا سامنا ہوا یا مکمل نہیں ہوا۔ کل سکور اشارہ نہیں ہے۔",
   "rel_reason_sub_err": "کچھ سیکنڈری ٹیسٹوں میں خلل پڑا۔ کل سکور قدرے متعصب ہو سکتا ہے۔",
   "rel_reason_crypto_warn": "کرپٹو تھرو پٹ غیر معمولی طور پر زیادہ ہے۔ یہ بنیادی کیشے یا انتہائی ہارڈویئر ایکسلریشن سے متاثر ہو سکتا ہے۔",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "Chart.js لوڈ کرنے میں ناکام۔ اپنا نیٹ ورک کنکشن چیک کریں۔",
   "error_three_load": "Three.js لوڈ کرنے میں ناکام۔ اپنا نیٹ ورک کنکشن چیک کریں۔",
   "error_timeout": "ٹیسٹ ٹائم آؤٹ",

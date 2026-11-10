@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["uk"] = {
   "rel_reason_core_err": "Основні тести (CPU/GPU) виявили помилки або не завершилися. Загальний бал не є орієнтовним.",
   "rel_reason_sub_err": "Деякі вторинні випробування були перервані. Загальна оцінка може бути дещо зміщеною.",
   "rel_reason_crypto_warn": "Крипто пропускна здатність аномально висока. На це може вплинути основний кеш або екстремальне апаратне прискорення.",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "Не вдалося завантажити Chart.js. Перевірте підключення до мережі.",
   "error_three_load": "Не вдалося завантажити Three.js. Перевірте підключення до мережі.",
   "error_timeout": "Тайм-аут тесту",

@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["ko"] = {
   "rel_reason_core_err": "핵심 테스트(CPU/GPU)에 오류가 발생했거나 완료되지 않았습니다. 총점은 지표가 아닙니다.",
   "rel_reason_sub_err": "일부 2차 테스트가 중단되었습니다. 총점은 약간 편향될 수 있습니다.",
   "rel_reason_crypto_warn": "암호화폐 처리량이 비정상적으로 높습니다. 기본 캐시나 극단적인 하드웨어 가속의 영향을 받을 수 있습니다.",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "Chart.js를 로드하지 못했습니다. 네트워크 연결을 확인하세요.",
   "error_three_load": "Three.js를 로드하지 못했습니다. 네트워크 연결을 확인하세요.",
   "error_timeout": "테스트 시간 초과",

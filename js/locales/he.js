@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["he"] = {
   "rel_reason_core_err": "בדיקות ליבה (CPU/GPU) נתקלו בשגיאות או לא הושלמו. הציון הכולל אינו מעיד.",
   "rel_reason_sub_err": "כמה בדיקות משניות הופסקו. הציון הכולל עשוי להיות מוטה מעט.",
   "rel_reason_crypto_warn": "תפוקת הקריפטו גבוהה באופן חריג. זה עשוי להיות מושפע מהמטמון הבסיסי או מאצת חומרה קיצונית.",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "טעינת Chart.js נכשלה. בדוק את חיבור הרשת שלך.",
   "error_three_load": "טעינת Three.js נכשלה. בדוק את חיבור הרשת שלך.",
   "error_timeout": "פסק זמן לבדיקה",

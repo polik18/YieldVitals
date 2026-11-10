@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["fi"] = {
   "rel_reason_core_err": "Ydintesteissä (CPU/GPU) havaittiin virheitä tai niitä ei suoritettu loppuun. Kokonaispistemäärä ei ole ohjeellinen.",
   "rel_reason_sub_err": "Jotkut toissijaiset testit keskeytettiin. Kokonaispistemäärä voi olla hieman puolueellinen.",
   "rel_reason_crypto_warn": "Salauskapasiteetti on epätavallisen korkea. Taustalla oleva välimuisti tai äärimmäinen laitteistokiihdytys voi vaikuttaa siihen.",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "Chart.js:n lataaminen epäonnistui. Tarkista verkkoyhteytesi.",
   "error_three_load": "Three.js:n lataus epäonnistui. Tarkista verkkoyhteytesi.",
   "error_timeout": "Testin aikakatkaisu",

@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["fr"] = {
   "rel_reason_core_err": "Les tests de base (CPU/GPU) ont rencontré des erreurs ou n'ont pas abouti. Le score total n’est pas indicatif.",
   "rel_reason_sub_err": "Certains tests secondaires ont été interrompus. Le score total peut être légèrement biaisé.",
   "rel_reason_crypto_warn": "Le débit cryptographique est anormalement élevé. Cela peut être affecté par le cache sous-jacent ou par une accélération matérielle extrême.",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "Échec du chargement de Chart.js. Vérifiez votre connexion réseau.",
   "error_three_load": "Échec du chargement de Three.js. Vérifiez votre connexion réseau.",
   "error_timeout": "Expiration du délai de test",

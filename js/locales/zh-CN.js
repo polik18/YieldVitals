@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["zh-CN"] = {
   "rel_reason_core_err": "核心测试 (CPU/GPU) 发生错误或未完成，总分不具参考价值。",
   "rel_reason_sub_err": "部分次要测试发生中断，总分可能略有偏差。",
   "rel_reason_crypto_warn": "Crypto 数值异常偏高，可能受到底层快取或极端硬件加速影响。",
+  "rel_reason_gpu_sw": "检测到软件渲染（GPU 硬件加速未启用），GPU 分数不代表实际显卡性能。",
   "error_chart_load": "Chart.js 载入失败，无法显示图表。请检查网络连线。",
   "error_three_load": "Three.js 载入失败，无法执行图形测试。请检查网络连线。",
   "error_timeout": "测试超时",

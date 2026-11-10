@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["ru"] = {
   "rel_reason_core_err": "В тестах ядра (ЦП/ГП) возникли ошибки или они не были завершены. Общий балл не является ориентировочным.",
   "rel_reason_sub_err": "Некоторые вторичные испытания были прерваны. Общий балл может быть слегка смещен.",
   "rel_reason_crypto_warn": "Пропускная способность криптографии аномально высока. На это может повлиять базовый кеш или чрезмерное аппаратное ускорение.",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "Не удалось загрузить Chart.js. Проверьте сетевое соединение.",
   "error_three_load": "Не удалось загрузить Three.js. Проверьте сетевое соединение.",
   "error_timeout": "Тайм-аут теста",

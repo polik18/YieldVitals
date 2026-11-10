@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["zh-TW"] = {
   "rel_reason_core_err": "核心測試 (CPU/GPU) 發生錯誤或未完成，總分不具參考價值。",
   "rel_reason_sub_err": "部分次要測試發生中斷，總分可能略有偏差。",
   "rel_reason_crypto_warn": "Crypto 數值異常偏高，可能受到底層快取或極端硬體加速影響。",
+  "rel_reason_gpu_sw": "偵測到軟體渲染（GPU 硬體加速未啟用），GPU 分數不代表實際顯示卡效能。",
   "error_chart_load": "Chart.js 載入失敗，無法顯示圖表。請檢查網路連線。",
   "error_three_load": "Three.js 載入失敗，無法執行圖形測試。請檢查網路連線。",
   "error_timeout": "測試逾時",

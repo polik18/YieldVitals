@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["ar"] = {
   "rel_reason_core_err": "واجهت الاختبارات الأساسية (CPU/GPU) أخطاء أو لم تكتمل. النتيجة الإجمالية ليست إرشادية.",
   "rel_reason_sub_err": "تمت مقاطعة بعض الاختبارات الثانوية. قد تكون النتيجة الإجمالية متحيزة قليلاً.",
   "rel_reason_crypto_warn": "إنتاجية التشفير مرتفعة بشكل غير طبيعي. قد يتأثر بذاكرة التخزين المؤقت الأساسية أو تسريع الأجهزة الشديد.",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "فشل تحميل Chart.js. تحقق من اتصال الشبكة الخاصة بك.",
   "error_three_load": "فشل تحميل Three.js. تحقق من اتصال الشبكة الخاصة بك.",
   "error_timeout": "مهلة الاختبار",

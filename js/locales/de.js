@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["de"] = {
   "rel_reason_core_err": "Bei den Kerntests (CPU/GPU) sind Fehler aufgetreten oder sie wurden nicht abgeschlossen. Die Gesamtpunktzahl ist nicht aussagekräftig.",
   "rel_reason_sub_err": "Einige Sekundärtests wurden unterbrochen. Die Gesamtpunktzahl kann leicht verzerrt sein.",
   "rel_reason_crypto_warn": "Der Krypto-Durchsatz ist ungewöhnlich hoch. Dies kann durch den zugrunde liegenden Cache oder eine extreme Hardwarebeschleunigung beeinträchtigt werden.",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "Chart.js konnte nicht geladen werden. Überprüfen Sie Ihre Netzwerkverbindung.",
   "error_three_load": "Three.js konnte nicht geladen werden. Überprüfen Sie Ihre Netzwerkverbindung.",
   "error_timeout": "Test-Timeout",

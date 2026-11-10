@@ -114,7 +114,7 @@ Camoufox 回報 `8 核 / "Apple M1, or similar" / Memory Unknown`（實機 12 �
 > - ✅ 3 `runWithSampling` 改用 `resultValue()`，只取有效樣本的中位數；無有效樣本即視為失敗。可信度改依實際失敗清單判斷。
 > - ✅ 4 baseline 暫定值：GPU 1500→600、Canvas 2D 5000→1,500,000。
 > - ✅ 報告文字：失敗項目顯示 N/A 而非 0。
-> - ⏳ 1 網域：DNS 需在 Namecheap 操作，等待決定（恢復 yieldvitals.com 或改用 github.io 網址）。
+> - ✅ 1 網址：`yieldvitals.com` 並非本專案網域（他人註冊、停車頁），已全面改為 `https://polik18.github.io/YieldVitals/` 並加 canonical；commit `dbe36ec` 已推送，Pages 約 45 s 上線，線上實跑驗證通過（總分 66、無 page error）。
 >
 > **驗證（M2 Max，本機 http.server）**
 > - Chromium 正常跑：總分 66，雷達 `[62,54,61,68,51,93,67,79]`（GPU 46→67、Canvas 100→79），無 page error。
@@ -128,7 +128,26 @@ Camoufox 回報 `8 核 / "Apple M1, or similar" / Memory Unknown`（實機 12 �
 3. **修 `runWithSampling`**：統一由各測試回傳 `{value, unit, meta}`，不再用 `||` 推斷。
 4. **立即修正兩個明顯錯誤的 baseline**：Canvas 2D 改用實際單位（draw calls/s）並重新設定量級；GPU baseline 不得高於 GPU 分數上限（暫時改 600，待階段 2 重寫）。
 
-### 階段 1：GPU 測試重寫（2–3 天）
+### 階段 1：GPU 測試重寫（2–3 天）— 2026-11-10 已完成
+
+> **完成狀態**
+> - ✅ 固定工作量、量時間：Phase 1 = 60k 實例 × 80 三角形；Phase 2 = 每像素 128 次 ALU 迴圈；Phase 3 = 8 點光源 PBR＋400 實例球。模式只影響量測時間，不影響尺度（移除 `gpuMax`）。
+> - ✅ 與螢幕脫鉤：固定 1280×720 離屏 render target，批次渲染後以 readPixels 1×1 同步停表；不再依 rAF/FPS 門檻。
+> - ✅ **Ping-pong 相依鏈**：實驗證實未讀取的中間幀會被驅動略過（Shader 階段吞吐被灌水約 130 倍，2048 次迴圈仍 8000 FPS）；改為每幀取樣上一幀後吞吐與迴圈數/解析度呈線性。
+> - ✅ 光源初始化時一次建好、先 compile；所有平台不開陰影（移除 Mac 特例）。
+> - ✅ 分數 = 三階段相對參考值的加權幾何平均 × 1000（無上限）；參考值 = M2 Max/Chromium，`BENCHMARK_BASELINE.gpu = 1000`（暫定，階段 2 重新校準）。
+> - ✅ 軟體渲染偵測（SwiftShader/llvmpipe 等）→ 顯示 `(SW)`、可信度降為 Medium（新增 `rel_reason_gpu_sw`，30 語系）。
+> - ✅ 測試期間分頁被隱藏 → 該次結果作廢（N/A）。
+> - ✅ 完整 GPU 結果（各階段吞吐量、software 旗標）保留於 JSON 匯出。
+>
+> **驗證（M2 Max）**
+> | 情境 | 修改前 | 修改後 |
+> |---|---|---|
+> | Chromium Quick / Quick / Extreme | 639 / 481 / 432 Pts | 1014 / 1006 / 1011 Pts（差異 < 1%） |
+> | Camoufox（Firefox 引擎） | 固定 47 Pts | 1059 Pts |
+> | Chromium SwiftShader 軟體渲染 | — | 6 Pts (SW)，可信度 Medium |
+> | 雷達 GPU 軸（Chromium） | 39–46 | 67 |
+
 - 改為**固定工作量、量時間**（不依模式、不依時間上限）：每個 phase 用固定的幾個負載等級（例如 Phase 1 = 1 萬／5 萬／20 萬實例），每級渲染固定 N 幀，以 `gl.finish()` 或 `EXT_disjoint_timer_query_webgl2` 量 GPU 時間，輸出「每秒實例數」「每秒片段迭代數」等連續值。
 - 渲染到離屏 render target（固定解析度，如 1920×1080），與螢幕刷新率、devicePixelRatio、vsync 脫鉤。
 - Phase 3 在開始前一次建好所有燈並預熱 shader，只切換 `visible`／強度，避免重新編譯；Mac 與其他平台使用同樣的陰影設定（或兩者都關）。

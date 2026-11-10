@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["bn"] = {
   "rel_reason_core_err": "মূল পরীক্ষাগুলি (CPU/GPU) ত্রুটির সম্মুখীন হয়েছে বা সম্পূর্ণ হয়নি৷ মোট স্কোর নির্দেশক নয়।",
   "rel_reason_sub_err": "কিছু মাধ্যমিক পরীক্ষা বিঘ্নিত হয়েছিল। মোট স্কোর সামান্য পক্ষপাতদুষ্ট হতে পারে.",
   "rel_reason_crypto_warn": "ক্রিপ্টো থ্রুপুট অস্বাভাবিকভাবে বেশি। এটি অন্তর্নিহিত ক্যাশে বা চরম হার্ডওয়্যার ত্বরণ দ্বারা প্রভাবিত হতে পারে।",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "Failed to load Chart.js. আপনার নেটওয়ার্ক সংযোগ পরীক্ষা করুন.",
   "error_three_load": "Three.js লোড করতে ব্যর্থ হয়েছে. আপনার নেটওয়ার্ক সংযোগ পরীক্ষা করুন.",
   "error_timeout": "পরীক্ষার সময়সীমা",

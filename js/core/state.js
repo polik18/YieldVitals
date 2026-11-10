@@ -32,8 +32,8 @@
             string: 40,   // k ops/s — M4 Chrome ~35k, mid-PC ~20-40k (was 120, way too high)
             memory: 700,  // cyc/s — mid-range ~300-500, M4 ~1100 (was 200, causing 100% cap)
             dom: 4000,    // ops/s — Chrome macOS ~2000-5000 (was 30000, 10x too high)
-            gpu: 600,     // Pts — composite score, hard max 1000 (see gpu.js). 2026-11 實測 M2 Max Chromium ~480–660。
-                          // 暫定值；階段 1 重寫 GPU 測試後需重新校準（原 1500 高於理論上限，雷達最高僅 57）
+            gpu: 1000,    // Pts — 階段 1 起為固定工作量吞吐量分數（無上限），M2 Max / Chromium = 1000 Pts。
+                          // 暫定以 M2 Max 為 baseline（=雷達 67）；階段 2 依多裝置、多引擎重新校準
             crypto: 3000, // MB/s — x86 AES-NI ~2000-3500, M4 ~3200
             storage: 1500,// MB/s — OPFS NVMe ~1000-3000, mid SSD ~500-1000
             network: 300, // Mbps — typical broadband; highly variable, low weight
@@ -43,11 +43,11 @@
 
         // 模式設定: labelKey/descKey 存 i18n key，在執行時再用 t() 取得翻譯（避免定義時 i18n 尚未載入）
         const MODE_SETTINGS = {
-            quick:     { gpuMax: 50000,  gpuTimeLimit: 10000,  cpuTime: 500,  otherTime: 350,  iterations: 3, labelKey: 'mode_quick',     descKey: 'mode_quick_desc' },
-            standard:  { gpuMax: 150000, gpuTimeLimit: 20000,  cpuTime: 600,  otherTime: 400,  iterations: 5, labelKey: 'mode_standard',  descKey: 'mode_standard_desc' },
-            extreme:   { gpuMax: 500000, gpuTimeLimit: 30000,  cpuTime: 1000, otherTime: 600,  iterations: 5, labelKey: 'mode_extreme',   descKey: 'mode_extreme_desc' },
-            stability: { gpuMax: 150000, gpuTimeLimit: 20000,  cpuTime: 2000, otherTime: 1500, iterations: 5, labelKey: 'mode_stability', descKey: 'mode_stability_desc' },
-            burnin:    { gpuMax: 500000, gpuTimeLimit: 120000, cpuTime: 1500, otherTime: 500,  iterations: 10, labelKey: 'mode_burnin',    descKey: 'mode_burnin_desc' }
+            quick:     { gpuTimeLimit: 10000, cpuTime: 500,  otherTime: 350,  iterations: 3, labelKey: 'mode_quick',     descKey: 'mode_quick_desc' },
+            standard:  { gpuTimeLimit: 20000,  cpuTime: 600,  otherTime: 400,  iterations: 5, labelKey: 'mode_standard',  descKey: 'mode_standard_desc' },
+            extreme:   { gpuTimeLimit: 30000,  cpuTime: 1000, otherTime: 600,  iterations: 5, labelKey: 'mode_extreme',   descKey: 'mode_extreme_desc' },
+            stability: { gpuTimeLimit: 20000,  cpuTime: 2000, otherTime: 1500, iterations: 5, labelKey: 'mode_stability', descKey: 'mode_stability_desc' },
+            burnin:    { gpuTimeLimit: 120000, cpuTime: 1500, otherTime: 500,  iterations: 10, labelKey: 'mode_burnin',    descKey: 'mode_burnin_desc' }
         };
 
         function getDeviceSpecs() {

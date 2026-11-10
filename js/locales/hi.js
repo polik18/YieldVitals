@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["hi"] = {
   "rel_reason_core_err": "कोर परीक्षणों (सीपीयू/जीपीयू) में त्रुटियां आईं या वे पूरी नहीं हुईं। कुल स्कोर सांकेतिक नहीं है.",
   "rel_reason_sub_err": "कुछ माध्यमिक परीक्षण बाधित हुए। कुल स्कोर थोड़ा पक्षपातपूर्ण हो सकता है।",
   "rel_reason_crypto_warn": "क्रिप्टो थ्रूपुट असामान्य रूप से उच्च है। यह अंतर्निहित कैश या अत्यधिक हार्डवेयर त्वरण से प्रभावित हो सकता है।",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "चार्ट.जेएस लोड करने में विफल। अपना नेटवर्क कनेक्शन जांचें.",
   "error_three_load": "थ्री.जेएस लोड करने में विफल। अपना नेटवर्क कनेक्शन जांचें.",
   "error_timeout": "परीक्षण का समय समाप्त",

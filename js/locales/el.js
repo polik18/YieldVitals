@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["el"] = {
   "rel_reason_core_err": "Οι βασικές δοκιμές (CPU/GPU) αντιμετώπισαν σφάλματα ή δεν ολοκληρώθηκαν. Η συνολική βαθμολογία δεν είναι ενδεικτική.",
   "rel_reason_sub_err": "Ορισμένες δευτερεύουσες δοκιμές διακόπηκαν. Η συνολική βαθμολογία μπορεί να είναι ελαφρώς προκατειλημμένη.",
   "rel_reason_crypto_warn": "Η απόδοση κρυπτογράφησης είναι ασυνήθιστα υψηλή. Μπορεί να επηρεαστεί από την υποκείμενη κρυφή μνήμη ή την ακραία επιτάχυνση υλικού.",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "Απέτυχε η φόρτωση του Chart.js. Ελέγξτε τη σύνδεση δικτύου σας.",
   "error_three_load": "Η φόρτωση του Three.js απέτυχε. Ελέγξτε τη σύνδεση δικτύου σας.",
   "error_timeout": "Λήξη χρονικού ορίου δοκιμής",

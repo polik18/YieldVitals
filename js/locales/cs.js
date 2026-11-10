@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["cs"] = {
   "rel_reason_core_err": "Testy jádra (CPU/GPU) zaznamenaly chyby nebo nebyly dokončeny. Celkové skóre není orientační.",
   "rel_reason_sub_err": "Některé sekundární testy byly přerušeny. Celkové skóre může být mírně zkreslené.",
   "rel_reason_crypto_warn": "Propustnost kryptoměn je abnormálně vysoká. Může to být ovlivněno základní mezipamětí nebo extrémní hardwarovou akcelerací.",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "Načtení Chart.js se nezdařilo. Zkontrolujte připojení k síti.",
   "error_three_load": "Načtení Three.js se nezdařilo. Zkontrolujte připojení k síti.",
   "error_timeout": "Časový limit testu",

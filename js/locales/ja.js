@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["ja"] = {
   "rel_reason_core_err": "コア テスト (CPU/GPU) でエラーが発生したか、完了しませんでした。合計スコアは指標ではありません。",
   "rel_reason_sub_err": "一部の二次試験は中断されました。合計スコアは多少偏る可能性があります。",
   "rel_reason_crypto_warn": "暗号化のスループットが異常に高い。基盤となるキャッシュや極端なハードウェア アクセラレーションの影響を受ける可能性があります。",
+  "rel_reason_gpu_sw": "ソフトウェアレンダリングを検出しました（GPU ハードウェアアクセラレーション無効）。GPU スコアは実際の性能を表しません。",
   "error_chart_load": "Chart.jsの読み込みに失敗しました。ネットワーク接続を確認してください。",
   "error_three_load": "Three.js の読み込みに失敗しました。ネットワーク接続を確認してください。",
   "error_timeout": "テストのタイムアウト",

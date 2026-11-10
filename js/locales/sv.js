@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["sv"] = {
   "rel_reason_core_err": "Kärntester (CPU/GPU) stötte på fel eller slutfördes inte. Totalpoäng är inte vägledande.",
   "rel_reason_sub_err": "Vissa sekundära tester avbröts. Totalpoängen kan vara något partisk.",
   "rel_reason_crypto_warn": "Kryptogenomströmningen är onormalt hög. Det kan påverkas av underliggande cache eller extrem hårdvaruacceleration.",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "Det gick inte att läsa in Chart.js. Kontrollera din nätverksanslutning.",
   "error_three_load": "Det gick inte att ladda Three.js. Kontrollera din nätverksanslutning.",
   "error_timeout": "Test timeout",

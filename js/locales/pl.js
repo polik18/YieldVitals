@@ -134,6 +134,7 @@ window.YIELDVITALS_LOCALES["pl"] = {
   "rel_reason_core_err": "Testy podstawowe (CPU/GPU) napotkały błędy lub nie zostały ukończone. Łączny wynik nie ma charakteru orientacyjnego.",
   "rel_reason_sub_err": "Niektóre testy dodatkowe zostały przerwane. Wynik całkowity może być nieco stronniczy.",
   "rel_reason_crypto_warn": "Przepustowość kryptowalut jest nienormalnie wysoka. Może na to mieć wpływ podstawowa pamięć podręczna lub ekstremalne przyspieszenie sprzętowe.",
+  "rel_reason_gpu_sw": "Software rendering detected (GPU hardware acceleration is off). The GPU score does not reflect real graphics performance.",
   "error_chart_load": "Nie udało się załadować Chart.js. Sprawdź połączenie sieciowe.",
   "error_three_load": "Nie udało się załadować Three.js. Sprawdź połączenie sieciowe.",
   "error_timeout": "Limit czasu testu",
