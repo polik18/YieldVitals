@@ -45,9 +45,9 @@
         // 因此必須依引擎取 baseline，否則雷達圖會因瀏覽器而非硬體而極端化。
         // 待補：更多裝置（中低階筆電、Windows、Android、iPhone）的校準資料。
         const BENCHMARK_BASELINES = {
-            blink:  { cpu: 1020, string: 26.9, memory: 694,  dom: 47445, canvas2d: 154750, gpu: 1002, crypto: 2278, storage: 658,  network: 300 },
-            gecko:  { cpu: 737,  string: 19.0, memory: 183,  dom: 22602, canvas2d: 154286, gpu: 1026, crypto: 4285, storage: 3193, network: 300 },
-            webkit: { cpu: 362,  string: 20.5, memory: 1037, dom: 17750, canvas2d: 171750, gpu: 1013, crypto: 2488, storage: 1291, network: 300 }
+            blink:  { cpu: 1020, string: 26.9, memory: 694,  dom: 47445, canvas2d: 154750, gpu: 1000, crypto: 2278, storage: 658,  network: 300 },
+            gecko:  { cpu: 737,  string: 19.0, memory: 183,  dom: 22602, canvas2d: 154286, gpu: 1057, crypto: 4285, storage: 3193, network: 300 },
+            webkit: { cpu: 362,  string: 20.5, memory: 1037, dom: 17750, canvas2d: 171750, gpu: 1024, crypto: 2488, storage: 1291, network: 300 }
         };
         const BENCHMARK_BASELINE = BENCHMARK_BASELINES[browserEngine] || BENCHMARK_BASELINES.blink;
 
