@@ -171,6 +171,26 @@ Camoufox 回報 `8 核 / "Apple M1, or similar" / Memory Unknown`（實機 12 �
 > **驗證（M2 Max，tools/calibrate.js）**：三引擎各項 CV 皆 < 6%；參考機雷達 74–77；
 > Chromium 主執行緒降速 4 倍模擬 → DOM 47445→10939、雷達 75→43（理論 45），總分 75→72，診斷正確指出 DOM 瓶頸。
 
+### 多機實測驗證（2026-11-10）
+
+以 headless Chrome（背景執行、測完即清除）在其他實機跑線上版 Standard 模式，參考機 = M2 Max（75 分）：
+
+| 機型 | 台數 | 總分 | CPU 多核 | 單核類（String/DOM/RAM） | GPU (Pts / 雷達) | 雷達範圍 |
+|---|---|---|---|---|---|---|
+| Apple M2 Max（參考機） | 1 | 75 | 1020 | 基準 | 1000 / 75 | 75 |
+| Apple M4 Mac mini | 6 | 74–75 | ~1000 | 84–86 | 420–465 / 56–58 | 56–91 |
+| Apple M2 Mac mini | 3 | 68–69 | ~650 | 76–77 | 313–336 / 50–51 | 50–81 |
+| Windows：Ryzen 5 5600GT＋RTX 2000 Ada | 1 | 66–69 | 455 | 69–70 | 1168–1249 / 79 | 54–82 |
+| 同上，桌面工作階段（瀏覽器實際使用 Radeon 內顯） | 1 | 59–61 | 455 | 63–71 | 201 / 40 | 40–81 |
+
+結論：
+- 同型號多台結果高度一致（M4 六台總分差 1 分、GPU 差約 10%）；M4 > M2、各軸排序正確。
+- 相對比例與公開跑分大致相符（例：GPU M4 ≈ 0.43×、M2 ≈ 0.32× M2 Max；CPU 多核 M4 ≈ M2 Max；單核 M4 ≈ 1.5×）。
+- 雷達範圍 40–91，不再出現 0/100 極端值。
+- Windows 透過 SSH（session 0）啟動的 Chrome 會反覆 GPU process crash → WebGL context lost；改在使用者桌面工作階段執行則完全正常，屬測試環境假象，非程式問題。
+- 發現：Windows 雙顯卡機若螢幕接內顯，Chrome 一律使用內顯（powerPreference 無效）→ GPU 只有獨顯的 1/6。建議診斷加入「偵測到內顯：請在 Windows 圖形設定指定 Chrome 使用高效能 GPU」。（待辦）
+- 待補：Android、iPhone、Intel Mac、Windows 筆電（Intel 內顯）。
+
 ### 網路測速重寫（原階段 3 網路項目）— 2026-11-10 已完成
 
 > 對照 macOS `networkQuality`（DL ~900 / UL ~932 Mbps / RTT 10–13 ms）：
