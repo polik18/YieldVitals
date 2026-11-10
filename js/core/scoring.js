@@ -4,24 +4,23 @@
             for(let i=0; i<iterations; i++) {
                 if (isCancelledRun(runId)) throw new Error(t('error_cancelled'));
                 let res = await testFn(durationPerIter, runId);
-                let val = (typeof res === 'object') ? (res.value || res.score || res) : res;
-                results.push(val);
+                const val = resultValue(res);
+                if (val !== null) results.push(val);
                 fullResults.push(res);
                 if (iterations > 1 && i < iterations - 1) {
                     await new Promise(r => setTimeout(r, 100)); // Let CPU breathe
                 }
             }
             
-            let finalVal;
-            if (iterations === 1) finalVal = results[0];
-            else {
+            // 非網路項目：沒有任何有效樣本就視為失敗（交給呼叫端標成 N/A，不以 0 分計入）
+            if (!isNetwork && results.length === 0) {
+                throw new Error(`${name}: N/A`);
+            }
+
+            let finalVal = null;
+            if (results.length > 0) {
                 results.sort((a,b) => a - b);
-                if (isNetwork) {
-                    let sum = results.reduce((a,b) => a+b, 0);
-                    finalVal = sum / iterations;
-                } else {
-                    finalVal = results[Math.floor(iterations/2)]; // Median
-                }
+                finalVal = results[Math.floor(results.length / 2)]; // Median（只取有效樣本）
             }
             
             // UI Update for median
@@ -98,7 +97,10 @@
             return finalVal;
         }
 
-        function calculateReliability(results, isCancelled, errorOccurred) {
+        // failures: { key: errorMessage }，由 main.js 逐項收集
+        function calculateReliability(results, isCancelled, failures = {}) {
+            const failedKeys = Object.keys(failures);
+            const errorOccurred = failedKeys.length > 0;
             let score = t('rel_high');
             let reason = t('rel_reason_high');
             let colorClass = 'bg-primary';
@@ -108,7 +110,7 @@
             }
 
             if (errorOccurred) {
-                if (!results.cpu || !results.gpu || (typeof results.gpu === 'object' ? results.gpu.value === undefined : results.gpu === undefined)) {
+                if (failedKeys.includes('cpu') || failedKeys.includes('gpu') || resultValue(results.cpu) === null || resultValue(results.gpu) === null) {
                     score = t('rel_low');
                     reason = t('rel_reason_core_err');
                     colorClass = 'bg-red-500';
@@ -126,40 +128,43 @@
             return { score, reason, colorClass };
         }
 
-        function calculateFinalScore(results) {
-            const valCrypto = typeof results.crypto === 'object' ? results.crypto.value : (results.crypto || 0);
-            const valGPU = typeof results.gpu === 'object' ? results.gpu.value : (results.gpu || 0);
-            const valStorage = typeof results.storage === 'object' ? results.storage.value : (results.storage || 0);
-            const valNetwork = typeof results.network === 'object' ? results.network.value : (results.network || 0);
+        // 計分權重（Network 不計分）
+        const SCORE_WEIGHTS = {
+            cpu: 0.25, gpu: 0.20, canvas2d: 0.10, dom: 0.10,
+            storage: 0.10, memory: 0.10, string: 0.10, crypto: 0.05
+        };
 
-            // 8 項獨立正規化
-            const normCPU = normalize(results.cpu || 0, BENCHMARK_BASELINE.cpu);
-            const normString = normalize(results.string || 0, BENCHMARK_BASELINE.string);
-            const normMemory = normalize(results.memory || 0, BENCHMARK_BASELINE.memory); // Fixed RAM key to memory
-            const normDOM = normalize(results.dom || 0, BENCHMARK_BASELINE.dom);
-            const normCanvas2D = normalize(results.canvas2d || 0, BENCHMARK_BASELINE.canvas2d);
-            const normGPU = normalize(valGPU, BENCHMARK_BASELINE.gpu);
-            const normCrypto = normalize(valCrypto, BENCHMARK_BASELINE.crypto);
-            const normStorage = normalize(valStorage, BENCHMARK_BASELINE.storage);
-            const normNetwork = normalize(valNetwork, BENCHMARK_BASELINE.network);
+        // 各項正規化分數；失敗/無效項目為 null（不再當成 0 分拉低總分）
+        function computeNorms(results) {
+            const norms = {};
+            Object.keys(SCORE_WEIGHTS).forEach(key => {
+                const v = resultValue(results[key]);
+                norms[key] = v === null ? null : normalize(v, BENCHMARK_BASELINE[key]);
+            });
+            return norms;
+        }
+
+        function calculateFinalScore(results) {
+            const norms = computeNorms(results);
 
             if (radarChart) {
-                // 8 axes (Network excluded from radar — shown separately as info)
-                radarChart.data.datasets[0].data = [normCPU, normString, normCrypto, normMemory, normStorage, normDOM, normGPU, normCanvas2D];
+                // 8 axes，順序需與 radar_labels 一致；失敗項目給 null（雷達圖留空而非畫成 0）
+                radarChart.data.datasets[0].data = [
+                    norms.cpu, norms.string, norms.crypto, norms.memory,
+                    norms.storage, norms.dom, norms.gpu, norms.canvas2d
+                ];
                 radarChart.update();
             }
 
-            // 7 項硬體加權計分 (Network 不計分)
-            return Math.round(
-                normCPU * 0.25 +
-                normGPU * 0.20 +
-                normCanvas2D * 0.10 +
-                normDOM * 0.10 +
-                normStorage * 0.10 +
-                normMemory * 0.10 +
-                normString * 0.10 +
-                normCrypto * 0.05
-            );
+            // 只對成功項目加權，權重重新分配
+            let weightSum = 0, total = 0;
+            Object.entries(SCORE_WEIGHTS).forEach(([key, w]) => {
+                if (norms[key] === null) return;
+                total += norms[key] * w;
+                weightSum += w;
+            });
+            const finalScore = weightSum > 0 ? Math.round(total / weightSum) : 0;
+            return { finalScore, norms };
         }
 
         function getDiagnostics(finalScore, normCPU, normGPU, normDOM, normMemory, normStorage) {
@@ -186,7 +191,7 @@
             }
 
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            const scores = [
+            const allScores = [
                 {
                     name: t('cpu_calc'),
                     norm: normCPU,
@@ -213,12 +218,14 @@
                     advice: isMobile ? t('advice_mobile_storage') : t('advice_diy_storage')
                 }
             ];
+            // 失敗項目 (null) 不參與弱點判斷
+            const scores = allScores.filter(s => s.norm !== null && s.norm !== undefined);
             scores.sort((a, b) => a.norm - b.norm);
             const weakestLink = scores[0];
 
             return {
                 fitness: { webBrowsing, multiTab, web3D, heavyWebApps },
-                weakestLink: weakestLink.norm < 60 ? weakestLink : null
+                weakestLink: weakestLink && weakestLink.norm < 60 ? weakestLink : null
             };
         }
 

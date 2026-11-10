@@ -59,44 +59,58 @@
                     setButtonLoading(true);
 
                     const results = {};
-                    let errorOccurred = false;
+                    const failures = {};
+                    const iters = config.iterations || 1;
 
-                    try {
-                        let iters = config.iterations || 1;
-                        results.cpu = await withTimeout(runWithSampling('cpu', runCPUMultiCore, iters, config.cpuTime, myRunId), config.cpuTime*iters + 10000, 'CPU');
-                        results.string = await withTimeout(runWithSampling('string', runStringTest, iters, config.otherTime, myRunId), config.otherTime*iters + 5000, 'String');
-                        results.memory = await withTimeout(runWithSampling('ram', runRAMTest, iters, config.otherTime, myRunId), config.otherTime*iters + 5000, 'RAM');
-                        results.dom = await withTimeout(runWithSampling('dom', runDOMTest, iters, config.otherTime, myRunId), config.otherTime*iters + 5000, 'DOM');
-                        results.canvas2d = await withTimeout(runWithSampling('canvas2d', runCanvas2DTest, iters, config.otherTime, myRunId), config.otherTime*iters + 5000, 'Canvas2D');
-                        results.gpu = await withTimeout(runWithSampling('gpu', runThreeJSTest, 1, config, myRunId), config.gpuTimeLimit + 5000, 'GPU');
-                        results.crypto = await withTimeout(runWithSampling('crypto', runCryptoTest, iters, config.otherTime, myRunId), config.otherTime*iters + 5000, 'Crypto');
-                        results.storage = await withTimeout(runWithSampling('storage', runStorageTest, 1, config.otherTime, myRunId), config.otherTime + 10000, 'Storage');
-                        results.network = await withTimeout(runWithSampling('network', runNetworkTest, 3, 0, myRunId, true), 60000, 'Network'); // 改為 3 次迭代，超時 60s
-                    } catch (e) {
-                        errorOccurred = true;
-                        if (e.message !== t('error_cancelled') && e.message !== '使用者取消測試') {
-                            showError(e.message);
+                    // [結果 key, UI id, 標籤, 逾時(ms), 執行函式]
+                    // 每項獨立執行：任一項失敗只標記該項 N/A，其餘照常完成（舊版會整串中斷並以 0 分計入）
+                    const steps = [
+                        ['cpu',      'cpu',      'CPU',      config.cpuTime * iters + 10000,  tk => runWithSampling('cpu', runCPUMultiCore, iters, config.cpuTime, tk)],
+                        ['string',   'string',   'String',   config.otherTime * iters + 5000, tk => runWithSampling('string', runStringTest, iters, config.otherTime, tk)],
+                        ['memory',   'ram',      'RAM',      config.otherTime * iters + 5000, tk => runWithSampling('ram', runRAMTest, iters, config.otherTime, tk)],
+                        ['dom',      'dom',      'DOM',      config.otherTime * iters + 5000, tk => runWithSampling('dom', runDOMTest, iters, config.otherTime, tk)],
+                        ['canvas2d', 'canvas2d', 'Canvas2D', config.otherTime * iters + 5000, tk => runWithSampling('canvas2d', runCanvas2DTest, iters, config.otherTime, tk)],
+                        ['gpu',      'gpu',      'GPU',      config.gpuTimeLimit + 5000,      tk => runWithSampling('gpu', runThreeJSTest, 1, config, tk)],
+                        ['crypto',   'crypto',   'Crypto',   config.otherTime * iters + 5000, tk => runWithSampling('crypto', runCryptoTest, iters, config.otherTime, tk)],
+                        ['storage',  'storage',  'Storage',  config.otherTime + 10000,        tk => runWithSampling('storage', runStorageTest, 1, config.otherTime, tk)],
+                        ['network',  'network',  'Network',  60000,                           tk => runWithSampling('network', runNetworkTest, 3, 0, tk, true)]
+                    ];
+
+                    for (const [key, uiId, label, timeoutMs, fn] of steps) {
+                        if (isCancelledRun(myRunId)) break;
+                        try {
+                            results[key] = await runStep(label, myRunId, timeoutMs, fn);
+                        } catch (e) {
+                            if (isCancelledRun(myRunId)) break;
+                            console.warn(`[${label}] failed:`, e);
+                            failures[key] = (e && e.message) || String(e);
+                            results[key] = null;
+                            setStatus(uiId, 'N/A', 'error');
+                            document.getElementById(`res-${uiId}`).innerHTML = `<span class="text-red-400">N/A</span>`;
                         }
                     }
 
-                    // 結算與渲染 (包含被中途腰斬但已有部分分數的狀態)
+                    const failedSummary = steps
+                        .filter(([key]) => failures[key])
+                        .map(([key, , label]) => `${label}: ${failures[key]}`);
+                    if (failedSummary.length > 0 && !isCancelledRun(myRunId)) {
+                        showError(failedSummary.join(' | '));
+                    }
+
+                    // 結算與渲染（失敗項目以 null 排除，不以 0 分計入）
                     if (!isCancelledRun(myRunId)) {
-                        const finalScore = calculateFinalScore(results);
-                        const normCPU = normalize(results.cpu || 0, BENCHMARK_BASELINE.cpu);
-                        const valGPU = typeof results.gpu === 'object' ? results.gpu.value : (results.gpu || 0);
-                        const normGPU = normalize(valGPU, BENCHMARK_BASELINE.gpu);
-                        const normDOM = normalize(results.dom || 0, BENCHMARK_BASELINE.dom);
-                        const normMemory = normalize(results.memory || 0, BENCHMARK_BASELINE.memory);
-                        const valStorage = typeof results.storage === 'object' ? results.storage.value : (results.storage || 0);
-                        const normStorage = normalize(valStorage, BENCHMARK_BASELINE.storage);
-                        const valNetwork = typeof results.network === 'object' ? results.network.value : (results.network || 0);
-                        const normNetwork = normalize(valNetwork, BENCHMARK_BASELINE.network);
+                        const { finalScore, norms } = calculateFinalScore(results);
+                        const normCPU = norms.cpu;
+                        const normGPU = norms.gpu;
+                        const normDOM = norms.dom;
+                        const normMemory = norms.memory;
+                        const normStorage = norms.storage;
 
                         const diag = getDiagnostics(finalScore, normCPU, normGPU, normDOM, normMemory, normStorage);
                         renderResult(finalScore, diag);
 
                         // 渲染可信度
-                        const rel = calculateReliability(results, false, errorOccurred);
+                        const rel = calculateReliability(results, false, failures);
                         const relBox = document.getElementById('reliabilityBox');
                         const relBadge = document.getElementById('reliabilityBadge');
                         const relReason = document.getElementById('reliabilityReason');
@@ -117,6 +131,7 @@
                             score: finalScore,
                             reliability: rel,
                             results: results,
+                            failures: failures,
                             environment: {
                                 userAgent: navigator.userAgent,
                                 cores: cores,

@@ -130,13 +130,48 @@
             return null;
         }
 
-        function withTimeout(promise, ms, label) {
-            return Promise.race([
-                promise,
-                new Promise((_, reject) => {
-                    setTimeout(() => reject(new Error(`${label} ${t('error_timeout')} (${ms}ms)`)), ms);
-                })
-            ]);
+        // 追蹤所有測試 Worker，逾時或取消時可以真正終止（舊版 withTimeout 只 race，Worker 會在背景繼續吃 CPU）
+        const activeWorkers = new Set();
+        function trackWorker(worker) {
+            activeWorkers.add(worker);
+            const originalTerminate = worker.terminate.bind(worker);
+            worker.terminate = () => {
+                activeWorkers.delete(worker);
+                originalTerminate();
+            };
+            return worker;
+        }
+        function terminateActiveWorkers() {
+            [...activeWorkers].forEach(w => { try { w.terminate(); } catch (_) {} });
+        }
+
+        // 執行單一測試步驟：產生 { runId, signal } token 傳給測試；逾時時 abort token 並終止 Worker，
+        // 讓測試迴圈 (isCancelledRun(token)) 立即停止，不會干擾下一項測試。
+        async function runStep(label, runId, ms, fn) {
+            const controller = new AbortController();
+            const token = { runId, signal: controller.signal };
+            let timer;
+            try {
+                return await Promise.race([
+                    fn(token),
+                    new Promise((_, reject) => {
+                        timer = setTimeout(() => {
+                            controller.abort();
+                            terminateActiveWorkers();
+                            reject(new Error(`${label} ${t('error_timeout')} (${ms}ms)`));
+                        }, ms);
+                    })
+                ]);
+            } finally {
+                clearTimeout(timer);
+                if (controller.signal.aborted || isCancelledRun(runId)) terminateActiveWorkers();
+            }
+        }
+
+        // 從測試結果取出數值：物件取 .value，數字直接回傳；無效值回傳 null（不再當成 0 計分）
+        function resultValue(res) {
+            const v = (res !== null && typeof res === 'object') ? res.value : res;
+            return (typeof v === 'number' && isFinite(v) && v > 0) ? v : null;
         }
 
         // Hyperbolic saturation normalization: score = 100 * ratio / (ratio + 0.5)

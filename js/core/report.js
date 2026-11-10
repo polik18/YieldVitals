@@ -4,32 +4,32 @@
             text += `${t('report_score')}：${finalScore}\n`;
             text += `${t('report_reliability')}：${rel.score} (${rel.reason})\n\n`;
             text += `${t('report_details')}\n`;
-            text += `- ${t('cpu_calc')}: ${results.cpu || 0} M/s\n`;
-            text += `- ${t('string_parse')}: ${results.string || 0} k ops\n`;
-            text += `- ${t('ram_gc')}: ${results.memory || 0} cyc/s\n`;
-            text += `- ${t('dom_layout')}: ${results.dom || 0} ops/s\n`;
-            text += `- ${t('canvas2d_render')}: ${results.canvas2d || 0} ops/s\n`;
+            // 失敗/無效項目顯示 N/A，不再顯示成 0
+            const fmt = (res, unit, digits) => {
+                const v = resultValue(res);
+                if (v === null) return 'N/A';
+                return `${digits === undefined ? v : Number(v).toFixed(digits)} ${unit}`;
+            };
+            text += `- ${t('cpu_calc')}: ${fmt(results.cpu, 'M/s', 2)}\n`;
+            text += `- ${t('string_parse')}: ${fmt(results.string, 'k ops', 1)}\n`;
+            text += `- ${t('ram_gc')}: ${fmt(results.memory, 'cyc/s', 0)}\n`;
+            text += `- ${t('dom_layout')}: ${fmt(results.dom, 'ops/s', 0)}\n`;
+            text += `- ${t('canvas2d_render')}: ${fmt(results.canvas2d, 'ops/s', 0)}\n`;
+            text += `- ${t('gpu_webgl')}: ${fmt(results.gpu, 'Pts', 0)}\n`;
+            const cryptoWarn = results.crypto && typeof results.crypto === 'object' && results.crypto.warning ? ' (!)' : '';
+            text += `- ${t('crypto_throughput')}: ${fmt(results.crypto, 'MB/s')}${cryptoWarn}\n`;
+            text += `- ${t('storage_io')}: ${fmt(results.storage, 'MB/s')}\n`;
             
-            const valGPU = typeof results.gpu === 'object' ? results.gpu.value : (results.gpu || 0);
-            text += `- ${t('gpu_webgl')}: ${valGPU > 0 ? Math.round(valGPU) + ' Pts' : 'N/A'}\n`;
-            
-            let cryptoVal = typeof results.crypto === 'object' ? results.crypto.value : (results.crypto || 0);
-            let cryptoWarn = typeof results.crypto === 'object' && results.crypto.warning ? ' (!)' : '';
-            text += `- ${t('crypto_throughput')}: ${cryptoVal} MB/s${cryptoWarn}\n`;
-            
-            let storageVal = typeof results.storage === 'object' ? results.storage.value : (results.storage || 0);
-            text += `- ${t('storage_io')}: ${storageVal} MB/s\n`;
-            
-            if (results.network) {
-                let networkDl = typeof results.network === 'object' ? (results.network.dl || results.network.value) : results.network;
-                let networkUl = typeof results.network === 'object' ? results.network.ul : 0;
-                let networkPing = typeof results.network === 'object' ? results.network.ping : 0;
+            if (results.network && typeof results.network === 'object' && results.network.dl) {
+                const networkDl = results.network.dl;
+                const networkUl = results.network.ul != null ? results.network.ul : 'N/A';
+                const networkPing = results.network.ping != null ? results.network.ping : 'N/A';
                 text += `\n${t('report_network')}\n`;
                 text += `- ${t('report_network_dl')}: ${networkDl} Mbps\n`;
                 text += `- ${t('report_network_ul')}: ${networkUl} Mbps\n`;
                 text += `- ${t('report_network_ping')}: ${networkPing} ms\n\n`;
             } else {
-                text += `- ${t('network_speed')}: 0 Mbps\n\n`;
+                text += `- ${t('network_speed')}: N/A\n\n`;
             }
 
             if (diag) {

@@ -15,8 +15,14 @@
                 .replace(/"/g, '&quot;');
         }
 
-        // 取消判斷：若 runId 不符合目前執行中的 run，表示已被取消
-        function isCancelledRun(runId) { return runId !== currentRunId; }
+        // 取消判斷：runId 可以是數字（整次測試），或 runStep 產生的 token { runId, signal }。
+        // token 的 signal 在該步驟逾時時會被 abort，讓仍在背景跑的測試迴圈立即停止。
+        function isCancelledRun(runId) {
+            if (runId && typeof runId === 'object') {
+                return runId.runId !== currentRunId || !!(runId.signal && runId.signal.aborted);
+            }
+            return runId !== currentRunId;
+        }
 
         // 基準天花板設定 (集中管理)
         // Calibrated against real hardware (M4, Core Ultra 7, Ryzen 7600, Snapdragon 8 Gen 3)
@@ -26,11 +32,13 @@
             string: 40,   // k ops/s — M4 Chrome ~35k, mid-PC ~20-40k (was 120, way too high)
             memory: 700,  // cyc/s — mid-range ~300-500, M4 ~1100 (was 200, causing 100% cap)
             dom: 4000,    // ops/s — Chrome macOS ~2000-5000 (was 30000, 10x too high)
-            gpu: 1500,    // Pts — composite score; mid GPU ~800, high-end ~2000+
+            gpu: 600,     // Pts — composite score, hard max 1000 (see gpu.js). 2026-11 實測 M2 Max Chromium ~480–660。
+                          // 暫定值；階段 1 重寫 GPU 測試後需重新校準（原 1500 高於理論上限，雷達最高僅 57）
             crypto: 3000, // MB/s — x86 AES-NI ~2000-3500, M4 ~3200
             storage: 1500,// MB/s — OPFS NVMe ~1000-3000, mid SSD ~500-1000
             network: 300, // Mbps — typical broadband; highly variable, low weight
-            canvas2d: 5000// ops/s — mid Chrome ~2000-4000, M4 ~6000
+            canvas2d: 1500000 // draw calls/s（runCanvas2DTest 回傳 ops×100/秒）。2026-11 實測 M2 Max：
+                              // Chromium ~2.8M、Firefox ~230k。原 5000 單位錯誤導致永遠 100 分；暫定值，階段 2 依引擎校準
         };
 
         // 模式設定: labelKey/descKey 存 i18n key，在執行時再用 t() 取得翻譯（避免定義時 i18n 尚未載入）

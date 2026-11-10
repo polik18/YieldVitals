@@ -25,7 +25,7 @@
 
             const promises = Array.from({ length: cores }).map(() => {
                 return new Promise((resolve, reject) => {
-                    const worker = new Worker(workerUrl);
+                    const worker = trackWorker(new Worker(workerUrl));
                     allWorkers.push(worker);
                     worker.onmessage = (e) => {
                         totalOps += e.data;

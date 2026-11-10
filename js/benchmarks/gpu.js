@@ -48,7 +48,7 @@
             const workerUrl = URL.createObjectURL(blob);
 
             return new Promise((resolve, reject) => {
-                const worker = new Worker(workerUrl);
+                const worker = trackWorker(new Worker(workerUrl));
                 worker.onmessage = (e) => {
                     worker.terminate();
                     URL.revokeObjectURL(workerUrl);
