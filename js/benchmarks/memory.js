@@ -3,12 +3,14 @@
                 const duration = e.data.duration || 1000;
                 const start = performance.now();
                 let cycles = 0;
+                let sink = 0;
                 while(performance.now() - start < duration) {
                     let arr = new Array(10000).fill(0).map((_, i) => ({ id: i, data: new Array(100).fill('x') }));
+                    sink += arr[cycles % 10000].data.length; // 使用結果，防止配置被最佳化掉
                     arr = null; // 觸發 GC
                     cycles++;
                 }
-                self.postMessage({ cycles, durationSec: duration / 1000 });
+                self.postMessage({ cycles, durationSec: (performance.now() - start) / 1000, sink });
             };
         `;
 

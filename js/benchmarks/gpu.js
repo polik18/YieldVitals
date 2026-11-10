@@ -21,6 +21,8 @@
                             );
                             ctx.fill();
                         }
+                        // 讀回 1 像素強制真正光柵化（否則 GPU 加速的 2D context 只是在錄製指令）
+                        ctx.getImageData((ops * 13) % 800, (ops * 17) % 600, 1, 1);
                         ops++;
                     }
                     const durationSec = (performance.now() - start) / 1000;

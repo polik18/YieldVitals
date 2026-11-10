@@ -56,7 +56,7 @@
                 if (resObj && typeof resObj === 'object' && resObj.dl !== null && resObj.dl > 0) {
                     const dlStr = resObj.dl != null ? resObj.dl : 'N/A';
                     const ulStr = resObj.ul != null ? resObj.ul : 'N/A';
-                    const pingStr = resObj.ping != null ? `${resObj.ping} ms` : 'N/A';
+                    const pingStr = resObj.ping != null ? `${resObj.ping} ms${resObj.jitter != null ? ` ± ${resObj.jitter}` : ''}` : 'N/A';
                     setStatus('network', `D: ${dlStr} | U: ${ulStr}`, 'done');
                     document.getElementById('res-network').innerHTML = `
                         <div class="flex flex-col">
@@ -164,14 +164,16 @@
                 radarChart.update();
             }
 
-            // 只對成功項目加權，權重重新分配
+            // 總分 = 各項倍率的加權幾何平均再映射（= 未截斷對數分數的加權平均），只計成功項目並重新分配權重。
+            // 幾何平均讓單一極端項目無法綁架總分。
             let weightSum = 0, total = 0;
             Object.entries(SCORE_WEIGHTS).forEach(([key, w]) => {
-                if (norms[key] === null) return;
-                total += norms[key] * w;
+                const s = logScore(resultValue(results[key]), BENCHMARK_BASELINE[key]);
+                if (s === null) return;
+                total += s * w;
                 weightSum += w;
             });
-            const finalScore = weightSum > 0 ? Math.round(total / weightSum) : 0;
+            const finalScore = weightSum > 0 ? Math.round(Math.min(Math.max(total / weightSum, 0), 100)) : 0;
             return { finalScore, norms };
         }
 

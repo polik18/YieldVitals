@@ -174,15 +174,19 @@
             return (typeof v === 'number' && isFinite(v) && v > 0) ? v : null;
         }
 
-        // Hyperbolic saturation normalization: score = 100 * ratio / (ratio + 0.5)
-        // This is a Michaelis-Menten curve — smooth, never extreme, no log instability.
-        // At baseline (ratio=1.0) → 67,  at 2x → 80,  at 0.5x → 50,  at 0.25x → 33
-        // Much gentler than sigmoid — avoids the "all-zeros or all-100s" radar problem.
+        // 對數計分：參考機 (ratio=1) = 75 分，每快 2 倍 +15、每慢 2 倍 -15。
+        //   4x → 100、2x → 90、1x → 75、0.5x → 60、0.25x → 45、0.1x → 25、0.03x → 0
+        // 舊版雙曲線 100r/(r+0.5) 會把差異壓扁，配合錯誤 baseline 造成雷達圖一邊 100、一邊個位數。
+        const SCORE_REF = 75;
+        const SCORE_PER_DOUBLING = 15;
+        function logScore(value, baseline) {
+            if (!value || value <= 0 || !baseline) return null;
+            return SCORE_REF + SCORE_PER_DOUBLING * Math.log2(value / baseline);
+        }
         function normalize(value, baseline) {
-            if (!value || value <= 0) return 0;
-            const ratio = value / baseline;
-            const score = 100 * ratio / (ratio + 0.5);
-            return Math.round(Math.min(Math.max(score, 0), 100));
+            const s = logScore(value, baseline);
+            if (s === null) return 0;
+            return Math.round(Math.min(Math.max(s, 0), 100));
         }
 
         function supportsWebGL() {

@@ -24,22 +24,32 @@
             return runId !== currentRunId;
         }
 
+        // 偵測瀏覽器引擎（各引擎的 JS/DOM/Canvas/儲存實作差異可達數倍，需各自的 baseline）
+        // blink = Chrome/Edge/Opera/Brave（桌面與 Android）；gecko = Firefox；webkit = Safari 及所有 iOS 瀏覽器
+        function detectEngine() {
+            try {
+                if (typeof CSS !== 'undefined' && CSS.supports && CSS.supports('-moz-appearance', 'none')) return 'gecko';
+            } catch (_) {}
+            if (navigator.userAgentData || /\b(Chrome|Chromium|Edg)\//.test(navigator.userAgent)) return 'blink';
+            if (/AppleWebKit/.test(navigator.userAgent)) return 'webkit';
+            return 'blink';
+        }
+        const browserEngine = detectEngine();
+
         // 基準天花板設定 (集中管理)
         // Calibrated against real hardware (M4, Core Ultra 7, Ryzen 7600, Snapdragon 8 Gen 3)
         // With hyperbolic norm: at baseline = ~67 score, 2x = ~80, 0.5x = ~50
-        const BENCHMARK_BASELINE = {
-            cpu: 900,     // M/s  — M4 ~780, Ryzen 7600 ~900, mid-laptop ~400
-            string: 40,   // k ops/s — M4 Chrome ~35k, mid-PC ~20-40k (was 120, way too high)
-            memory: 700,  // cyc/s — mid-range ~300-500, M4 ~1100 (was 200, causing 100% cap)
-            dom: 4000,    // ops/s — Chrome macOS ~2000-5000 (was 30000, 10x too high)
-            gpu: 1000,    // Pts — 階段 1 起為固定工作量吞吐量分數（無上限），M2 Max / Chromium = 1000 Pts。
-                          // 暫定以 M2 Max 為 baseline（=雷達 67）；階段 2 依多裝置、多引擎重新校準
-            crypto: 3000, // MB/s — x86 AES-NI ~2000-3500, M4 ~3200
-            storage: 1500,// MB/s — OPFS NVMe ~1000-3000, mid SSD ~500-1000
-            network: 300, // Mbps — typical broadband; highly variable, low weight
-            canvas2d: 1500000 // draw calls/s（runCanvas2DTest 回傳 ops×100/秒）。2026-11 實測 M2 Max：
-                              // Chromium ~2.8M、Firefox ~230k。原 5000 單位錯誤導致永遠 100 分；暫定值，階段 2 依引擎校準
+        // 各引擎參考值（參考機 = Apple M2 Max 12 核，Standard 模式 3 次中位數，tools/calibrate.js，2026-11-10）
+        // 參考機在各引擎的每一軸都對應 75 分；其他裝置依相對參考機的倍率計分（見 utils.js normalize）。
+        // 同一台機器在不同引擎的原始值可差數倍（如 RAM：WebKit 1037 / Blink 694 / Gecko 183），
+        // 因此必須依引擎取 baseline，否則雷達圖會因瀏覽器而非硬體而極端化。
+        // 待補：更多裝置（中低階筆電、Windows、Android、iPhone）的校準資料。
+        const BENCHMARK_BASELINES = {
+            blink:  { cpu: 1020, string: 26.9, memory: 694,  dom: 47445, canvas2d: 154750, gpu: 1002, crypto: 2278, storage: 658,  network: 300 },
+            gecko:  { cpu: 737,  string: 19.0, memory: 183,  dom: 22602, canvas2d: 154286, gpu: 1026, crypto: 4285, storage: 3193, network: 300 },
+            webkit: { cpu: 362,  string: 20.5, memory: 1037, dom: 17750, canvas2d: 171750, gpu: 1013, crypto: 2488, storage: 1291, network: 300 }
         };
+        const BENCHMARK_BASELINE = BENCHMARK_BASELINES[browserEngine] || BENCHMARK_BASELINES.blink;
 
         // 模式設定: labelKey/descKey 存 i18n key，在執行時再用 t() 取得翻譯（避免定義時 i18n 尚未載入）
         const MODE_SETTINGS = {

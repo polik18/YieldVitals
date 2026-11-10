@@ -61,6 +61,7 @@
                     const results = {};
                     const failures = {};
                     const iters = config.iterations || 1;
+                    const netDirMs = modeValue === 'quick' ? 5000 : 8000; // 網路每個方向的量測時間（多連線、固定時間窗）
 
                     // [結果 key, UI id, 標籤, 逾時(ms), 執行函式]
                     // 每項獨立執行：任一項失敗只標記該項 N/A，其餘照常完成（舊版會整串中斷並以 0 分計入）
@@ -73,7 +74,7 @@
                         ['gpu',      'gpu',      'GPU',      config.gpuTimeLimit + 5000,      tk => runWithSampling('gpu', runThreeJSTest, 1, config, tk)],
                         ['crypto',   'crypto',   'Crypto',   config.otherTime * iters + 5000, tk => runWithSampling('crypto', runCryptoTest, iters, config.otherTime, tk)],
                         ['storage',  'storage',  'Storage',  config.otherTime + 10000,        tk => runWithSampling('storage', runStorageTest, 1, config.otherTime, tk)],
-                        ['network',  'network',  'Network',  60000,                           tk => runWithSampling('network', runNetworkTest, 3, 0, tk, true)]
+                        ['network',  'network',  'Network',  2 * netDirMs + 25000,            tk => runWithSampling('network', runNetworkTest, 1, netDirMs, tk, true)]
                     ];
 
                     for (const [key, uiId, label, timeoutMs, fn] of steps) {
@@ -133,6 +134,8 @@
                             results: results,
                             failures: failures,
                             environment: {
+                                engine: browserEngine,
+                                baseline: BENCHMARK_BASELINE,
                                 userAgent: navigator.userAgent,
                                 cores: cores,
                                 resolution: `${window.innerWidth}x${window.innerHeight}@${window.devicePixelRatio}x`

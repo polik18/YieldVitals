@@ -23,7 +23,9 @@
             if (results.network && typeof results.network === 'object' && results.network.dl) {
                 const networkDl = results.network.dl;
                 const networkUl = results.network.ul != null ? results.network.ul : 'N/A';
-                const networkPing = results.network.ping != null ? results.network.ping : 'N/A';
+                const networkPing = results.network.ping != null
+                    ? `${results.network.ping}${results.network.jitter != null ? ` (jitter ${results.network.jitter})` : ''}`
+                    : 'N/A';
                 text += `\n${t('report_network')}\n`;
                 text += `- ${t('report_network_dl')}: ${networkDl} Mbps\n`;
                 text += `- ${t('report_network_ul')}: ${networkUl} Mbps\n`;
@@ -49,6 +51,7 @@
             }
             
             text += `${t('report_env')}\n`;
+            text += `Engine: ${browserEngine}\n`;
             text += `${t('report_os')}: ${deviceSpecs.platform}\n`;
             text += `${t('report_gpu')}: ${deviceSpecs.gpuRenderer}\n`;
             text += `${t('report_ram')}: ${deviceSpecs.memory}\n`;

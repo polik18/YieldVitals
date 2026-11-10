@@ -154,7 +154,34 @@ Camoufox 回報 `8 核 / "Apple M1, or similar" / Memory Unknown`（實機 12 �
 - 偵測軟體渲染（`SwiftShader`、`llvmpipe`、`Microsoft Basic Render`、FPS 遠低於門檻），標記為「GPU 加速未啟用」而不是給 47 分。
 - 頁面 `visibilitychange` 時暫停並作廢該次結果。
 
-### 階段 2：校準與計分重構（3–5 天）
+### 階段 2：校準與計分重構（3–5 天）— 2026-11-10 已完成第一版（單一參考機）
+
+> **完成狀態**
+> - ✅ `tools/calibrate.js`：Playwright 在 Chromium/Firefox/WebKit 實跑並輸出各項中位數與 CV。
+> - ✅ 校準過程發現並修正量測錯誤（原屬階段 3）：
+>   - CPU：迴圈結果未使用，Safari/JSC 直接最佳化掉 → WebKit CPU 灌水 22 倍（22655 → 362）。String/RAM 同樣加入 sink；改以實際經過時間為分母。
+>   - DOM：改用 MessageChannel 讓出（無 setTimeout 4ms 強制延遲），分母只計工作時間；三引擎差距 14 倍 → 2.7 倍。
+>   - Canvas 2D：每批讀回 1 像素強制光柵化；三引擎由 2.5M/230k/1.16M → 155k/154k/172k（一致）。
+> - ✅ `detectEngine()`（blink/gecko/webkit，iOS 一律 webkit）＋ `BENCHMARK_BASELINES` 依引擎分開。
+> - ✅ 對數計分：參考機 = 75，每 2 倍 ±15；總分 = 各項對數分數加權平均（= 倍率加權幾何平均）。
+> - ✅ 報告與 JSON 匯出加入引擎與 baseline。
+> - ⏳ 只有一台參考機（M2 Max）；需補中低階筆電、Windows、Android、iPhone 的資料驗證曲線。
+> - ⏳ 可信度尚未改用 CV。
+>
+> **驗證（M2 Max，tools/calibrate.js）**：三引擎各項 CV 皆 < 6%；參考機雷達 74–77；
+> Chromium 主執行緒降速 4 倍模擬 → DOM 47445→10939、雷達 75→43（理論 45），總分 75→72，診斷正確指出 DOM 瓶頸。
+
+### 網路測速重寫（原階段 3 網路項目）— 2026-11-10 已完成
+
+> 對照 macOS `networkQuality`（DL ~900 / UL ~932 Mbps / RTT 10–13 ms）：
+> | | 舊版 | 新版（Chromium / Firefox / WebKit） |
+> |---|---|---|
+> | 下載 | 530–717 | 898–914 / 902–915 / 892–907 |
+> | 上傳 | 126–258 | 785–811 / 746–768 / 756–832 |
+> | Ping | 29–77 ms | 9.5 / 8–9 / 9–11 ms |
+>
+> 修正：Ping 扣除 Server-Timing 伺服器處理時間（約 25–30 ms）並取 10 次中位數＋jitter；6 條並行連線、固定時間窗、扣除 1 秒爬升期；上傳自適應區塊並以 **Blob** 為 body（Chromium 用 ArrayBuffer 會卡在 ~300 Mbps）；Mbps 改用 1e6；WebKit 無 serverTiming 時解析回應標頭。
+
 1. **建立校準資料集**：用下方「驗證工具」在至少 6 種裝置 × 2 引擎（Chromium、Firefox；Safari 可選）跑 Standard 模式各 5 次，存成 `calibration/*.json`。
 2. **依引擎分開的 baseline**：`BENCHMARK_BASELINE[engine][test]`，引擎由 feature detection 判斷（不用 UA）；未知引擎回退到 Chromium baseline 並標示「跨引擎不可比」。
 3. **改用對數計分**（業界 Geekbench/Speedometer 做法）：
