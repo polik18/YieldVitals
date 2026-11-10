@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["tr"] = {
   "advice_diy_ram": "Sistem belleği ağır iş yükleri için yetersizdir. Fiziksel RAM'in 16 GB veya 32 GB çift kanala yükseltilmesi önemle tavsiye edilir.",
   "advice_diy_storage": "Disk G/Ç'si bir darboğazdır. Yüksek performanslı bir NVMe SSD'ye yükseltmeyi düşünün veya disk alanınızın az olup olmadığını kontrol edin.",
   "advice_diy_gpu": "Grafik performansı yetersiz. Tarayıcı donanım hızlandırmasının etkinleştirildiğinden emin olun veya 3D görevler için özel bir GPU kurmayı düşünün.",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "İşleme gücü sınırlıdır. İşlemcinizi yükseltmeyi, ağır arka plan uygulamalarını kapatmayı veya yeterli soğutmayı sağlamayı düşünün.",
   "advice_mobile_ram": "Mobil bellek alanı sınırlıdır. Daha iyi kararlılık için arka plan uygulamalarını temizleyin veya daha büyük RAM kapasitesine sahip bir cihazı düşünün.",
   "advice_mobile_storage": "Mobil depolama neredeyse dolu olabilir ve G/Ç hızı düşebilir. Yer açmak için kullanılmayan uygulamaları/fotoğrafları temizleyin.",

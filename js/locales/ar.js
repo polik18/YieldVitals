@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["ar"] = {
   "advice_diy_ram": "ذاكرة النظام غير كافية لأحمال العمل الثقيلة. يوصى بشدة بترقية ذاكرة الوصول العشوائي الفعلية إلى 16 جيجابايت أو 32 جيجابايت ثنائي القناة.",
   "advice_diy_storage": "يعد إدخال/إخراج القرص عنق الزجاجة. فكر في الترقية إلى محرك أقراص NVMe SSD عالي الأداء أو تحقق مما إذا كانت مساحة القرص لديك منخفضة.",
   "advice_diy_gpu": "أداء الرسومات غير موجود. تأكد من تمكين تسريع أجهزة المتصفح، أو فكر في تثبيت وحدة معالجة رسومات مخصصة للمهام ثلاثية الأبعاد.",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "قوة المعالجة مقيدة. فكر في ترقية المعالج الخاص بك، أو إغلاق تطبيقات الخلفية الثقيلة، أو ضمان التبريد المناسب.",
   "advice_mobile_ram": "مساحة الذاكرة المتنقلة مقيدة. امسح تطبيقات الخلفية أو فكر في استخدام جهاز بسعة ذاكرة وصول عشوائي أكبر لتحقيق استقرار أفضل.",
   "advice_mobile_storage": "قد تكون وحدة تخزين الهاتف المحمول ممتلئة تقريبًا، مما يؤدي إلى انخفاض سرعة الإدخال/الإخراج. امسح التطبيقات/الصور غير المستخدمة لتحرير المساحة.",

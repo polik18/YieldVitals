@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["hi"] = {
   "advice_diy_ram": "भारी कार्यभार के लिए सिस्टम मेमोरी अपर्याप्त है। फिजिकल रैम को 16GB या 32GB डुअल-चैनल में अपग्रेड करने की अत्यधिक अनुशंसा की जाती है।",
   "advice_diy_storage": "डिस्क I/O एक अड़चन है. उच्च-प्रदर्शन वाले NVMe SSD में अपग्रेड करने पर विचार करें या जांचें कि क्या आपकी डिस्क में जगह कम है।",
   "advice_diy_gpu": "ग्राफ़िक्स प्रदर्शन में कमी है. सुनिश्चित करें कि ब्राउज़र हार्डवेयर त्वरण सक्षम है, या 3D कार्यों के लिए एक समर्पित GPU स्थापित करने पर विचार करें।",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "प्रसंस्करण शक्ति बाधित है. अपने प्रोसेसर को अपग्रेड करने, भारी बैकग्राउंड वाले ऐप्स को बंद करने या पर्याप्त कूलिंग सुनिश्चित करने पर विचार करें।",
   "advice_mobile_ram": "मोबाइल मेमोरी स्थान सीमित है. बेहतर स्थिरता के लिए बैकग्राउंड ऐप्स साफ़ करें या बड़ी रैम क्षमता वाले डिवाइस पर विचार करें।",
   "advice_mobile_storage": "मोबाइल स्टोरेज लगभग भर सकता है, जिससे I/O गति कम हो सकती है। स्थान खाली करने के लिए अप्रयुक्त ऐप्स/फ़ोटो साफ़ करें।",

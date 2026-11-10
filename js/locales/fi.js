@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["fi"] = {
   "advice_diy_ram": "Järjestelmämuisti ei riitä suurille työkuormille. Fyysisen RAM-muistin päivittäminen 16 Gt tai 32 Gt kaksikanavaiseen on erittäin suositeltavaa.",
   "advice_diy_storage": "Levyn I/O on pullonkaula. Harkitse päivittämistä tehokkaaseen NVMe SSD:hen tai tarkista, onko levytila ​​vähissä.",
   "advice_diy_gpu": "Graafinen suorituskyky puuttuu. Varmista, että selaimen laitteistokiihdytys on käytössä, tai harkitse erillisen GPU:n asentamista 3D-tehtäviä varten.",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "Prosessointitehoa on rajoitettu. Harkitse prosessorin päivittämistä, raskaiden taustasovellusten sulkemista tai riittävän jäähdytyksen varmistamista.",
   "advice_mobile_ram": "Mobiilimuistitila on rajallinen. Tyhjennä taustasovellukset tai harkitse laitetta suuremmalla RAM-kapasiteetilla vakauden parantamiseksi.",
   "advice_mobile_storage": "Mobiilimuisti voi olla melkein täynnä, mikä laskee I/O-nopeutta. Vapauta tilaa tyhjentämällä käyttämättömät sovellukset/kuvat.",

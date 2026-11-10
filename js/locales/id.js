@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["id"] = {
   "advice_diy_ram": "Memori sistem tidak cukup untuk beban kerja yang berat. Sangat disarankan untuk meningkatkan RAM fisik menjadi 16GB atau 32GB dual-channel.",
   "advice_diy_storage": "Disk I/O merupakan hambatan. Pertimbangkan untuk meningkatkan ke SSD NVMe berperforma tinggi atau periksa apakah ruang disk Anda hampir habis.",
   "advice_diy_gpu": "Performa grafisnya kurang. Pastikan akselerasi perangkat keras browser diaktifkan, atau pertimbangkan untuk memasang GPU khusus untuk tugas 3D.",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "Kekuatan pemrosesan dibatasi. Pertimbangkan untuk meningkatkan prosesor Anda, menutup aplikasi berat di latar belakang, atau memastikan pendinginan yang memadai.",
   "advice_mobile_ram": "Ruang memori seluler terbatas. Hapus aplikasi latar belakang atau pertimbangkan perangkat dengan kapasitas RAM lebih besar untuk stabilitas yang lebih baik.",
   "advice_mobile_storage": "Penyimpanan seluler mungkin hampir penuh, sehingga menurunkan kecepatan I/O. Hapus aplikasi/foto yang tidak digunakan untuk mengosongkan ruang.",

@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["ms"] = {
   "advice_diy_ram": "Memori sistem tidak mencukupi untuk beban kerja yang berat. Menaik taraf RAM fizikal kepada 16GB atau 32GB dwi-saluran amat disyorkan.",
   "advice_diy_storage": "Cakera I/O adalah halangan. Pertimbangkan untuk menaik taraf kepada NVMe SSD berprestasi tinggi atau semak sama ada ruang cakera anda rendah.",
   "advice_diy_gpu": "Prestasi grafik kurang. Pastikan pecutan perkakasan penyemak imbas didayakan atau pertimbangkan untuk memasang GPU khusus untuk tugasan 3D.",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "Kuasa pemprosesan adalah terhad. Pertimbangkan untuk meningkatkan pemproses anda, menutup apl latar belakang yang berat atau memastikan penyejukan yang mencukupi.",
   "advice_mobile_ram": "Ruang memori mudah alih dikekang. Kosongkan apl latar belakang atau pertimbangkan peranti dengan kapasiti RAM yang lebih besar untuk kestabilan yang lebih baik.",
   "advice_mobile_storage": "Storan mudah alih mungkin hampir penuh, menurunkan kelajuan I/O. Kosongkan apl/foto yang tidak digunakan untuk mengosongkan ruang.",

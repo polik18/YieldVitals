@@ -551,6 +551,8 @@
                 return {
                     value: unifiedScore,
                     software,
+                    integrated: isIntegratedGPU(rendererName),
+                    renderer: gpuShortName(rendererName),
                     phases: {
                         geometryMtrisPerSec: +geometryMtris.toFixed(1),
                         shaderGiterPerSec: +shaderGiter.toFixed(2),

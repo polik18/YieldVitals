@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["sv"] = {
   "advice_diy_ram": "Systemminnet är otillräckligt för tunga arbetsbelastningar. Uppgradering av fysiskt RAM-minne till 16 GB eller 32 GB dual-channel rekommenderas starkt.",
   "advice_diy_storage": "Disk I/O är en flaskhals. Överväg att uppgradera till en högpresterande NVMe SSD eller kontrollera om ditt diskutrymme är litet.",
   "advice_diy_gpu": "Grafikprestanda saknas. Se till att webbläsarens hårdvaruacceleration är aktiverad, eller överväg att installera en dedikerad GPU för 3D-uppgifter.",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "Processorkraften är begränsad. Överväg att uppgradera din processor, stänga tunga bakgrundsappar eller säkerställa tillräcklig kylning.",
   "advice_mobile_ram": "Det mobila minnesutrymmet är begränsat. Rensa bakgrundsappar eller överväg en enhet med större RAM-kapacitet för bättre stabilitet.",
   "advice_mobile_storage": "Det mobila lagringsutrymmet kan vara nästan fullt, vilket minskar I/O-hastigheten. Rensa oanvända appar/foton för att frigöra utrymme.",

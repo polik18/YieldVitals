@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["zh-CN"] = {
   "advice_diy_ram": "系统内存不足以满足繁重的工作负载。强烈建议将物理 RAM 升级至 16GB 或 32GB 双通道。",
   "advice_diy_storage": "磁盘 I/O 是一个瓶颈。考虑升级到高性能 NVMe SSD 或检查您的磁盘空间是否不足。",
   "advice_diy_gpu": "图形性能缺乏。确保启用浏览器硬件加速，或考虑安装用于 3D 任务的专用 GPU。",
+  "advice_gpu_igpu_win": "浏览器当前使用集成显卡（{gpu}）。若电脑另有独立显卡，请到「Windows 设置 > 系统 > 屏幕 > 显示卡」将浏览器设为「高性能」，或把显示器接到独立显卡；若没有独立显卡，长期有 3D 需求再考虑加装。",
   "advice_diy_cpu": "处理能力受到限制。考虑升级处理器、关闭繁重的后台应用程序或确保足够的冷却。",
   "advice_mobile_ram": "移动存储空间有限。清除后台应用程序或考虑具有更大 RAM 容量的设备以获得更好的稳定性。",
   "advice_mobile_storage": "移动存储可能几乎已满，从而降低 I/O 速度。清除未使用的应用程序/照片以释放空间。",

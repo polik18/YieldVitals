@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["nl"] = {
   "advice_diy_ram": "Systeemgeheugen is onvoldoende voor zware werklasten. Het upgraden van fysiek RAM naar 16 GB of 32 GB dual-channel wordt sterk aanbevolen.",
   "advice_diy_storage": "Schijf-I/O is een knelpunt. Overweeg een upgrade naar een krachtige NVMe SSD of controleer of er weinig schijfruimte is.",
   "advice_diy_gpu": "Grafische prestaties ontbreken. Zorg ervoor dat browserhardwareversnelling is ingeschakeld, of overweeg een speciale GPU voor 3D-taken te installeren.",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "De verwerkingskracht is beperkt. Overweeg om je processor te upgraden, zware achtergrondapps te sluiten of voor voldoende koeling te zorgen.",
   "advice_mobile_ram": "Mobiele geheugenruimte is beperkt. Wis achtergrondapps of overweeg een apparaat met een grotere RAM-capaciteit voor betere stabiliteit.",
   "advice_mobile_storage": "Mobiele opslag kan bijna vol zijn, waardoor de I/O-snelheid afneemt. Wis ongebruikte apps/foto's om ruimte vrij te maken.",

@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["da"] = {
   "advice_diy_ram": "Systemhukommelsen er utilstrækkelig til store arbejdsbelastninger. Opgradering af fysisk RAM til 16 GB eller 32 GB dual-channel anbefales stærkt.",
   "advice_diy_storage": "Disk I/O er en flaskehals. Overvej at opgradere til en højtydende NVMe SSD eller tjek, om din diskplads er lav.",
   "advice_diy_gpu": "Den grafiske ydeevne mangler. Sørg for, at browserhardwareacceleration er aktiveret, eller overvej at installere en dedikeret GPU til 3D-opgaver.",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "Bearbejdningskraften er begrænset. Overvej at opgradere din processor, lukke tunge baggrundsapps eller sikre tilstrækkelig afkøling.",
   "advice_mobile_ram": "Mobil hukommelsesplads er begrænset. Ryd baggrundsapps, eller overvej en enhed med større RAM-kapacitet for bedre stabilitet.",
   "advice_mobile_storage": "Mobil lagerplads kan være næsten fuld, hvilket reducerer I/O-hastigheden. Ryd ubrugte apps/billeder for at frigøre plads.",

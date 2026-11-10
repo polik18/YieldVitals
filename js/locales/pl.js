@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["pl"] = {
   "advice_diy_ram": "Pamięć systemowa jest niewystarczająca do obsługi dużych obciążeń. Zdecydowanie zaleca się wymianę fizycznej pamięci RAM na 16 GB lub 32 GB w trybie dwukanałowym.",
   "advice_diy_storage": "Dyskowe wejścia/wyjścia stanowią wąskie gardło. Rozważ wymianę na wysokowydajny dysk SSD NVMe lub sprawdź, czy na dysku jest mało miejsca.",
   "advice_diy_gpu": "Brakuje wydajności graficznej. Upewnij się, że akceleracja sprzętowa przeglądarki jest włączona lub rozważ zainstalowanie dedykowanego procesora graficznego do zadań 3D.",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "Moc obliczeniowa jest ograniczona. Rozważ modernizację procesora, zamknięcie obciążających aplikacji działających w tle lub zapewnienie odpowiedniego chłodzenia.",
   "advice_mobile_ram": "Przestrzeń pamięci mobilnej jest ograniczona. Wyczyść aplikacje działające w tle lub rozważ urządzenie z większą pojemnością pamięci RAM, aby uzyskać lepszą stabilność.",
   "advice_mobile_storage": "Pamięć mobilna może być prawie pełna, co powoduje spadek szybkości operacji we/wy. Usuń nieużywane aplikacje/zdjęcia, aby zwolnić miejsce.",

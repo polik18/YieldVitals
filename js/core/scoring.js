@@ -78,7 +78,8 @@
                 document.getElementById(`res-${name}`).innerHTML = `${formattedVal} <span class="text-xs font-normal text-slate-500">${unit}</span>`;
             } else if (name === 'gpu') {
                 const gpuRes = fullResults.find(r => r && typeof r === 'object' && resultValue(r) === finalVal);
-                const swTag = gpuRes && gpuRes.software ? ' <span class="text-xs font-normal text-yellow-400">(SW)</span>' : '';
+                const swTag = gpuRes && gpuRes.software ? ' <span class="text-xs font-normal text-yellow-400">(SW)</span>'
+                    : (gpuRes && gpuRes.integrated ? ' <span class="text-xs font-normal text-slate-400" title="Integrated GPU">(iGPU)</span>' : '');
                 setStatus('gpu', `${Math.floor(finalVal)} Pts`, 'done');
                 document.getElementById('res-gpu').innerHTML = `${Math.floor(finalVal)} <span class="text-xs font-normal text-slate-500">Pts</span>${swTag}`;
                 // 保留完整 GPU 結果（各階段吞吐量、軟體渲染旗標）供可信度判斷與 JSON 匯出
@@ -210,7 +211,11 @@
                 {
                     name: t('gpu_webgl'),
                     norm: normGPU,
-                    advice: isMobile ? t('advice_mobile_gpu') : t('advice_diy_gpu')
+                    // Windows 使用內顯時：先建議指定高效能 GPU（可能已有獨顯卻沒被使用），而非直接建議加裝獨顯
+                    advice: isMobile ? t('advice_mobile_gpu')
+                        : (usingWindowsIntegratedGPU
+                            ? t('advice_gpu_igpu_win').replace('{gpu}', gpuShortName(deviceSpecs.gpuRenderer))
+                            : t('advice_diy_gpu'))
                 },
                 {
                     name: t('dom_layout'),

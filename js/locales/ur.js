@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["ur"] = {
   "advice_diy_ram": "بھاری کام کے بوجھ کے لیے سسٹم میموری ناکافی ہے۔ فزیکل ریم کو 16GB یا 32GB ڈوئل چینل میں اپ گریڈ کرنے کی انتہائی سفارش کی جاتی ہے۔",
   "advice_diy_storage": "ڈسک I/O ایک رکاوٹ ہے۔ اعلی کارکردگی والے NVMe SSD میں اپ گریڈ کرنے پر غور کریں یا چیک کریں کہ آیا آپ کی ڈسک کی جگہ کم ہے۔",
   "advice_diy_gpu": "گرافکس کی کارکردگی کا فقدان ہے۔ یقینی بنائیں کہ براؤزر ہارڈویئر ایکسلریشن فعال ہے، یا 3D کاموں کے لیے ایک وقف شدہ GPU انسٹال کرنے پر غور کریں۔",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "پروسیسنگ کی طاقت محدود ہے۔ اپنے پروسیسر کو اپ گریڈ کرنے، بھاری پس منظر والے ایپس کو بند کرنے، یا مناسب ٹھنڈک کو یقینی بنانے پر غور کریں۔",
   "advice_mobile_ram": "موبائل میموری کی جگہ محدود ہے۔ پس منظر کی ایپس کو صاف کریں یا بہتر استحکام کے لیے بڑی RAM کی گنجائش والے ڈیوائس پر غور کریں۔",
   "advice_mobile_storage": "موبائل سٹوریج تقریباً بھرا ہو سکتا ہے، I/O کی رفتار کو کم کر رہا ہے۔ جگہ خالی کرنے کے لیے غیر استعمال شدہ ایپس/تصاویر صاف کریں۔",

@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["th"] = {
   "advice_diy_ram": "หน่วยความจำระบบไม่เพียงพอสำหรับเวิร์กโหลดจำนวนมาก ขอแนะนำให้อัปเกรด RAM จริงเป็นดูอัลแชนเนลขนาด 16GB หรือ 32GB",
   "advice_diy_storage": "Disk I/O เป็นจุดคอขวด ลองอัปเกรดเป็น NVMe SSD ประสิทธิภาพสูงหรือตรวจสอบว่าพื้นที่ดิสก์ของคุณเหลือน้อยหรือไม่",
   "advice_diy_gpu": "ขาดประสิทธิภาพกราฟิก ตรวจสอบให้แน่ใจว่าเปิดใช้งานการเร่งด้วยฮาร์ดแวร์ของเบราว์เซอร์แล้ว หรือพิจารณาติดตั้ง GPU เฉพาะสำหรับงาน 3D",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "พลังการประมวลผลถูกจำกัด พิจารณาอัปเกรดโปรเซสเซอร์ของคุณ ปิดแอปพื้นหลังจำนวนมาก หรือรับประกันการระบายความร้อนที่เพียงพอ",
   "advice_mobile_ram": "พื้นที่หน่วยความจำมือถือถูกจำกัด ล้างแอปพื้นหลังหรือพิจารณาอุปกรณ์ที่มีความจุ RAM มากขึ้นเพื่อความเสถียรที่ดีขึ้น",
   "advice_mobile_storage": "ที่เก็บข้อมูลมือถืออาจใกล้เต็ม ทำให้ความเร็ว I/O ลดลง ล้างแอพ/รูปภาพที่ไม่ได้ใช้เพื่อเพิ่มพื้นที่ว่าง",

@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["en"] = {
   "advice_diy_ram": "System memory is insufficient for heavy workloads. Upgrading physical RAM to 16GB or 32GB dual-channel is highly recommended.",
   "advice_diy_storage": "Disk I/O is a bottleneck. Consider upgrading to a high-performance NVMe SSD or check if your disk space is low.",
   "advice_diy_gpu": "Graphics performance is lacking. Ensure browser hardware acceleration is enabled, or consider installing a dedicated GPU for 3D tasks.",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "Processing power is constrained. Consider upgrading your processor, closing heavy background apps, or ensuring adequate cooling.",
   "advice_mobile_ram": "Mobile memory space is constrained. Clear background apps or consider a device with larger RAM capacity for better stability.",
   "advice_mobile_storage": "Mobile storage may be almost full, dropping I/O speed. Clear unused apps/photos to free up space.",

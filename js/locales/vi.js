@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["vi"] = {
   "advice_diy_ram": "Bộ nhớ hệ thống không đủ cho khối lượng công việc nặng. Nên nâng cấp RAM vật lý lên kênh đôi 16GB hoặc 32GB.",
   "advice_diy_storage": "Đĩa I/O là một nút cổ chai. Hãy cân nhắc nâng cấp lên ổ SSD NVMe hiệu suất cao hoặc kiểm tra xem dung lượng ổ đĩa của bạn có sắp hết hay không.",
   "advice_diy_gpu": "Hiệu suất đồ họa còn thiếu. Đảm bảo bật tính năng tăng tốc phần cứng của trình duyệt hoặc xem xét việc cài đặt GPU chuyên dụng cho tác vụ 3D.",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "Sức mạnh xử lý bị hạn chế. Hãy cân nhắc việc nâng cấp bộ xử lý của bạn, đóng các ứng dụng nền nặng hoặc đảm bảo làm mát đầy đủ.",
   "advice_mobile_ram": "Dung lượng bộ nhớ di động bị hạn chế. Xóa các ứng dụng nền hoặc xem xét một thiết bị có dung lượng RAM lớn hơn để có độ ổn định tốt hơn.",
   "advice_mobile_storage": "Bộ nhớ di động có thể gần đầy, làm giảm tốc độ I/O. Xóa các ứng dụng/ảnh không sử dụng để giải phóng dung lượng.",

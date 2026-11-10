@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["bn"] = {
   "advice_diy_ram": "ভারী কাজের চাপের জন্য সিস্টেম মেমরি অপর্যাপ্ত। ফিজিক্যাল RAM 16GB বা 32GB ডুয়াল-চ্যানেল-এ আপগ্রেড করার সুপারিশ করা হয়।",
   "advice_diy_storage": "ডিস্ক I/O একটি বাধা। একটি উচ্চ-পারফরম্যান্স NVMe SSD-তে আপগ্রেড করার কথা বিবেচনা করুন বা আপনার ডিস্কের স্থান কম আছে কিনা তা পরীক্ষা করুন।",
   "advice_diy_gpu": "গ্রাফিক্স কর্মক্ষমতা অভাব আছে. ব্রাউজার হার্ডওয়্যার ত্বরণ সক্ষম করা হয়েছে তা নিশ্চিত করুন বা 3D কাজের জন্য একটি ডেডিকেটেড GPU ইনস্টল করার কথা বিবেচনা করুন।",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "প্রক্রিয়াকরণ শক্তি সীমাবদ্ধ। আপনার প্রসেসর আপগ্রেড করা, ভারী ব্যাকগ্রাউন্ড অ্যাপ বন্ধ করা বা পর্যাপ্ত শীতলতা নিশ্চিত করার কথা বিবেচনা করুন।",
   "advice_mobile_ram": "মোবাইল মেমরি স্থান সীমাবদ্ধ. ব্যাকগ্রাউন্ড অ্যাপগুলি সাফ করুন বা ভাল স্থিতিশীলতার জন্য বড় RAM ক্ষমতা সহ একটি ডিভাইস বিবেচনা করুন।",
   "advice_mobile_storage": "মোবাইল স্টোরেজ প্রায় পূর্ণ হতে পারে, I/O গতি কমছে। স্থান খালি করতে অব্যবহৃত অ্যাপ/ফটো সাফ করুন।",

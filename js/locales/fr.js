@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["fr"] = {
   "advice_diy_ram": "La mémoire système est insuffisante pour les charges de travail lourdes. La mise à niveau de la RAM physique vers 16 Go ou 32 Go double canal est fortement recommandée.",
   "advice_diy_storage": "Les E/S disque constituent un goulot d'étranglement. Envisagez de passer à un SSD NVMe hautes performances ou vérifiez si votre espace disque est faible.",
   "advice_diy_gpu": "Les performances graphiques font défaut. Assurez-vous que l'accélération matérielle du navigateur est activée ou envisagez d'installer un GPU dédié aux tâches 3D.",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "La puissance de traitement est limitée. Pensez à mettre à niveau votre processeur, à fermer les applications lourdes en arrière-plan ou à assurer un refroidissement adéquat.",
   "advice_mobile_ram": "L'espace mémoire mobile est limité. Effacez les applications en arrière-plan ou envisagez un appareil avec une plus grande capacité de RAM pour une meilleure stabilité.",
   "advice_mobile_storage": "Le stockage mobile peut être presque plein, ce qui réduit la vitesse d'E/S. Effacez les applications/photos inutilisées pour libérer de l'espace.",

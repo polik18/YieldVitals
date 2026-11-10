@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["he"] = {
   "advice_diy_ram": "זיכרון המערכת אינו מספיק לעומסי עבודה כבדים. מומלץ מאוד לשדרג זיכרון RAM פיזי ל-16GB או 32GB כפול ערוץ.",
   "advice_diy_storage": "דיסק I/O הוא צוואר בקבוק. שקול לשדרג ל-NVMe SSD בעל ביצועים גבוהים או בדוק אם שטח הדיסק שלך נמוך.",
   "advice_diy_gpu": "ביצועים גרפיים לוקים בחסר. ודא שהאצת חומרת הדפדפן מופעלת, או שקול התקנת GPU ייעודי למשימות תלת-ממד.",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "כוח העיבוד מוגבל. שקול לשדרג את המעבד שלך, לסגור אפליקציות רקע כבדות או להבטיח קירור נאות.",
   "advice_mobile_ram": "שטח הזיכרון הנייד מוגבל. נקה אפליקציות רקע או שקול מכשיר עם קיבולת זיכרון RAM גדולה יותר ליציבות טובה יותר.",
   "advice_mobile_storage": "האחסון הנייד עשוי להיות כמעט מלא, ומהירות הקלט/פלט יורדת. נקה אפליקציות/תמונות שאינן בשימוש כדי לפנות מקום.",

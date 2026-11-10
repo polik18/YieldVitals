@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["de"] = {
   "advice_diy_ram": "Der Systemspeicher reicht für hohe Arbeitslasten nicht aus. Es wird dringend empfohlen, den physischen RAM auf 16 GB oder 32 GB Dual-Channel aufzurüsten.",
   "advice_diy_storage": "Festplatten-E/A ist ein Engpass. Erwägen Sie ein Upgrade auf eine leistungsstarke NVMe-SSD oder prüfen Sie, ob der Speicherplatz knapp wird.",
   "advice_diy_gpu": "Die Grafikleistung ist mangelhaft. Stellen Sie sicher, dass die Hardwarebeschleunigung des Browsers aktiviert ist, oder erwägen Sie die Installation einer dedizierten GPU für 3D-Aufgaben.",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "Die Rechenleistung ist begrenzt. Erwägen Sie ein Upgrade Ihres Prozessors, das Schließen umfangreicher Hintergrund-Apps oder die Gewährleistung einer ausreichenden Kühlung.",
   "advice_mobile_ram": "Der mobile Speicherplatz ist begrenzt. Löschen Sie Hintergrund-Apps oder ziehen Sie für eine bessere Stabilität ein Gerät mit größerer RAM-Kapazität in Betracht.",
   "advice_mobile_storage": "Der mobile Speicher ist möglicherweise fast voll, wodurch die E/A-Geschwindigkeit sinkt. Löschen Sie ungenutzte Apps/Fotos, um Speicherplatz freizugeben.",

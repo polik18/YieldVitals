@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["cs"] = {
   "advice_diy_ram": "Systémová paměť je pro velké pracovní zatížení nedostatečná. Důrazně se doporučuje upgradovat fyzickou paměť RAM na 16 GB nebo 32 GB dvoukanálový.",
   "advice_diy_storage": "Disk I/O je úzkým hrdlem. Zvažte upgrade na vysoce výkonný NVMe SSD nebo zkontrolujte, zda je na vašem disku málo místa.",
   "advice_diy_gpu": "Chybí grafický výkon. Ujistěte se, že je povolena hardwarová akcelerace prohlížeče, nebo zvažte instalaci vyhrazeného GPU pro 3D úlohy.",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "Výkon zpracování je omezený. Zvažte upgrade procesoru, ukončení náročných aplikací na pozadí nebo zajištění dostatečného chlazení.",
   "advice_mobile_ram": "Mobilní paměťový prostor je omezený. Vymažte aplikace na pozadí nebo zvažte zařízení s větší kapacitou RAM pro lepší stabilitu.",
   "advice_mobile_storage": "Mobilní úložiště může být téměř plné a rychlost I/O klesá. Vymažte nepoužívané aplikace/fotografie, abyste uvolnili místo.",

@@ -92,6 +92,25 @@
 
         const deviceSpecs = getDeviceSpecs();
 
+        // 從 WebGL renderer 字串取出顯示晶片名稱，例如
+        // "ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001638) Direct3D11 vs_5_0 ps_5_0, D3D11)" → "AMD Radeon(TM) Graphics"
+        function gpuShortName(renderer) {
+            const s = String(renderer || '');
+            const m = /^ANGLE \([^,]+,\s*(.+?)(?:\s*\(0x[0-9a-f]+\))?(?:\s+Direct3D.*|\s*,.*)?\)?$/i.exec(s);
+            return (m ? m[1] : s).trim();
+        }
+
+        // 是否為 CPU 內建顯示晶片（Intel UHD/HD/Iris/Arc 內顯、AMD APU 的 Radeon Graphics / 680M / 780M 等）
+        // 獨立顯卡（RTX/GTX/Radeon RX/Arc A 系列）不算。
+        function isIntegratedGPU(renderer) {
+            const n = gpuShortName(renderer);
+            if (/\b(RTX|GTX|Quadro|Tesla|Radeon\s*(\(TM\)\s*)?(RX|Pro)\b|Arc\(TM\)\s*[AB]\d{3})/i.test(n)) return false;
+            return /Intel\(R\)\s*(U?HD|Iris)|Intel\(R\)\s*Arc\(TM\)\s*Graphics|Radeon\(TM\)\s*(Vega\s*\d+\s*)?Graphics|Radeon\(TM\)\s*\d{3,4}M|Radeon\s*(Vega\s*\d+\s*)?Graphics$/i.test(n);
+        }
+
+        // Windows 上瀏覽器正在使用內顯：若電腦另有獨顯，Chrome 常因螢幕接在主機板而只用內顯（實測 powerPreference 無效）
+        const usingWindowsIntegratedGPU = /Windows/i.test(navigator.userAgent) && isIntegratedGPU(deviceSpecs.gpuRenderer);
+
 
         // 模式切換文字連動
         document.querySelectorAll('input[name="testMode"]').forEach(radio => {

@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["es"] = {
   "advice_diy_ram": "La memoria del sistema es insuficiente para cargas de trabajo pesadas. Se recomienda encarecidamente actualizar la RAM física a 16 GB o 32 GB de doble canal.",
   "advice_diy_storage": "La E/S de disco es un cuello de botella. Considere actualizar a un SSD NVMe de alto rendimiento o verifique si tiene poco espacio en disco.",
   "advice_diy_gpu": "Falta rendimiento gráfico. Asegúrese de que la aceleración del hardware del navegador esté habilitada o considere instalar una GPU dedicada para tareas 3D.",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "El poder de procesamiento está limitado. Considere actualizar su procesador, cerrar aplicaciones pesadas en segundo plano o garantizar una refrigeración adecuada.",
   "advice_mobile_ram": "El espacio de la memoria móvil es limitado. Borre las aplicaciones en segundo plano o considere un dispositivo con mayor capacidad de RAM para una mejor estabilidad.",
   "advice_mobile_storage": "El almacenamiento móvil puede estar casi lleno, lo que reduce la velocidad de E/S. Borre aplicaciones/fotos no utilizadas para liberar espacio.",

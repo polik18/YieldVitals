@@ -91,6 +91,7 @@ window.YIELDVITALS_LOCALES["no"] = {
   "advice_diy_ram": "Systemminnet er utilstrekkelig for store arbeidsbelastninger. Det anbefales sterkt å oppgradere fysisk RAM til 16 GB eller 32 GB dual-channel.",
   "advice_diy_storage": "Disk I/O er en flaskehals. Vurder å oppgradere til en høyytelses NVMe SSD eller sjekk om det er lite diskplass.",
   "advice_diy_gpu": "Grafisk ytelse mangler. Sørg for at nettlesermaskinvareakselerasjon er aktivert, eller vurder å installere en dedikert GPU for 3D-oppgaver.",
+  "advice_gpu_igpu_win": "Your browser is using integrated graphics ({gpu}). If this PC also has a dedicated GPU, set the browser to \"High performance\" in Windows Settings > System > Display > Graphics, or plug the monitor into the dedicated GPU. If there is no dedicated GPU, consider adding one for heavy 3D use.",
   "advice_diy_cpu": "Prosessorkraften er begrenset. Vurder å oppgradere prosessoren din, lukke tunge bakgrunnsapper eller sørge for tilstrekkelig kjøling.",
   "advice_mobile_ram": "Mobilminneplass er begrenset. Fjern bakgrunnsapper eller vurder en enhet med større RAM-kapasitet for bedre stabilitet.",
   "advice_mobile_storage": "Mobillagring kan være nesten full, noe som reduserer I/O-hastigheten. Fjern ubrukte apper/bilder for å frigjøre plass.",
